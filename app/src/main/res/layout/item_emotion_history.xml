@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@drawable/card_child_button"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="16dp">
+
+    <!-- EMOTION ICON -->
+    <ImageView
+        android:id="@+id/imgEmotion"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="16dp"
+        android:contentDescription="Emotion icon" />
+
+    <!-- TEXT CONTENT -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <!-- Emotion name -->
+        <TextView
+            android:id="@+id/txtEmotionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Happy"
+            android:textColor="#085F63"
+            android:textStyle="bold"
+            android:textSize="18sp" />
+
+        <!-- Intensity (adapter needs this!) -->
+        <TextView
+            android:id="@+id/txtIntensity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Intensity: 5"
+            android:textColor="#085F63"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Note preview (adapter expects txtNote) -->
+        <!-- Note preview -->
+        <TextView
+            android:id="@+id/txtNotePreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note: Had a great day..."
+            android:textColor="#4C5257"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Timestamp -->
+        <TextView
+            android:id="@+id/txtTimestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20 Feb 2025, 14:07"
+            android:textColor="#4C5257"
+            android:textSize="14sp"
+            android:layout_marginTop="6dp" />
+
+    </LinearLayout>
+
+</LinearLayout>

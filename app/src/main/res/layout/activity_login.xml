@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D7F1F1"
+    tools:context=".view.activities.LoginActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center_horizontal">
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign In to Moodi"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#4C5257"
+            android:layout_marginTop="40dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where emotions make sense — together."
+            android:textSize="14sp"
+            android:textColor="#777777"
+            android:layout_marginTop="4dp"/>
+
+        <!-- SUBTITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi! Enter your name and code to start"
+            android:textSize="16sp"
+            android:textColor="#4C5257"
+            android:layout_marginTop="40dp"/>
+
+        <!-- CHILD AVATAR -->
+        <ImageView
+            android:id="@+id/imgChild"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_child"
+            android:contentDescription="Child Icon"/>
+
+        <!-- WHITE LOGIN CARD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:layout_marginTop="30dp"
+            android:padding="24dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:elevation="3dp"
+            android:layout_marginBottom="8dp"
+            android:clipToOutline="true"
+            android:backgroundTint="#FFFFFF">
+
+            <!-- NAME INPUT -->
+            <EditText
+                android:id="@+id/editChildName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Name"
+                android:textSize="16sp"
+                android:background="@drawable/input_rounded"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- PIN INPUT -->
+            <EditText
+                android:id="@+id/editChildPin"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Enter code"
+                android:inputType="numberPassword"
+                android:textSize="16sp"
+                android:background="@drawable/input_rounded"
+                android:padding="12dp"
+                android:maxLength="4"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- LOGIN BUTTON -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLoginChild"
+                android:layout_width="160dp"
+                android:layout_height="48dp"
+                android:text="Login"
+                android:textColor="#085F63"
+                android:textSize="16sp"
+                android:background="@drawable/btn_login_rounded"
+                android:backgroundTint="@null"
+                android:stateListAnimator="@null"
+                android:elevation="0dp"/>
+
+
+
+        </LinearLayout>
+
+        <!-- CANCEL -->
+        <TextView
+            android:id="@+id/txtCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="16sp"
+            android:textColor="#4C5257"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+
+</ScrollView>

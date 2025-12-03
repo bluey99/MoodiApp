@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D7F1F1">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:paddingLeft="24dp"
+        android:gravity="center_vertical"
+        android:background="#F9E28C">
+
+        <TextView
+            android:id="@+id/txtHeaderTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Feelings"
+            android:textColor="#4C5257"
+            android:textStyle="bold"
+            android:textSize="26sp"/>
+    </LinearLayout>
+
+    <!-- LOG COUNT -->
+    <TextView
+        android:id="@+id/txtLogCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You've logged 0 feelings"
+        android:textColor="#085F63"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center"/>
+
+    <!-- EMPTY MESSAGE -->
+    <TextView
+        android:id="@+id/txtEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No history yet"
+        android:textColor="#4C5257"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:visibility="gone"/>
+
+    <!-- LIST CONTAINER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FFFDEB"
+        android:padding="16dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

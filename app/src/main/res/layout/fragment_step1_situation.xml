@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#E3F4F4"
+    android:padding="24dp">
+
+    <!-- Full-height wrapper enabling true centering -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Centered content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <!-- Yellow rounded panel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/child_panel_background"
+                android:padding="24dp">
+
+                <!-- Step title -->
+                <TextView
+                    android:id="@+id/txtQuestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What happened?"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#085F63"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Buttons (each styled like ChildHome) -->
+
+                <!-- Option 1 -->
+                <LinearLayout
+                    android:id="@+id/btnSituation1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_child_button"
+                    android:padding="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="I went somewhere new"
+                        android:textColor="#085F63"
+                        android:paddingLeft="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Option 2 -->
+                <LinearLayout
+                    android:id="@+id/btnSituation2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_child_button"
+                    android:padding="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="I got a gift"
+                        android:textColor="#085F63"
+                        android:paddingLeft="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Option 3 -->
+                <LinearLayout
+                    android:id="@+id/btnSituation3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_child_button"
+                    android:padding="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="I fought with someone"
+                        android:textColor="#085F63"
+                        android:paddingLeft="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Option 4 -->
+                <LinearLayout
+                    android:id="@+id/btnSituation4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_child_button"
+                    android:padding="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="I had a test"
+                        android:textColor="#085F63"
+                        android:paddingLeft="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <!-- Option 5 -->
+                <LinearLayout
+                    android:id="@+id/btnSituation5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/card_child_button"
+                    android:padding="16dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_star" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Something else"
+                        android:textColor="#085F63"
+                        android:paddingLeft="12dp"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>

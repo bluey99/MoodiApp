@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D7F1F1"
+    tools:context=".view.activities.ChildHomeActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="100dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Child avatar -->
+        <ImageView
+            android:id="@+id/imgChildAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_child"
+            android:contentDescription="Child avatar" />
+
+
+        <!-- Greeting -->
+        <TextView
+            android:id="@+id/txtGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Good morning!"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#085F63"
+            android:layout_gravity="center"
+            android:layout_marginTop="12dp" />
+
+        <!-- Streak badge -->
+        <LinearLayout
+            android:id="@+id/layoutStreak"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/card_child_button">
+
+            <TextView
+                android:id="@+id/txtStreak"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 days in a row !"
+                android:textSize="14sp"
+                android:textColor="#085F63"
+                android:padding="8dp" />
+        </LinearLayout>
+
+        <!-- Yellow rounded panel -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/child_panel_background"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <!-- Section title -->
+            <TextView
+                android:id="@+id/txtQuestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="How are you feeling?"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#085F63"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Log My Emotion -->
+            <LinearLayout
+                android:id="@+id/btnLogEmotion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_child_button"
+                android:padding="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_add" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Log My Emotion\nhow are you feeling?"
+                    android:textColor="#085F63"
+                    android:paddingLeft="16dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- My Tasks -->
+            <LinearLayout
+                android:id="@+id/btnTasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_child_button"
+                android:padding="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_star" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Tasks"
+                    android:textColor="#085F63"
+                    android:paddingLeft="16dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- My History -->
+            <LinearLayout
+                android:id="@+id/btnHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_child_button"
+                android:padding="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_book" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My History\nLook at my past feelings"
+                    android:textColor="#085F63"
+                    android:paddingLeft="16dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Calming Tools -->
+            <LinearLayout
+                android:id="@+id/btnCalmingTools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_child_button"
+                android:padding="20dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_heart" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Calming Tools\nHelp me feel better"
+                    android:textColor="#085F63"
+                    android:paddingLeft="16dp"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
