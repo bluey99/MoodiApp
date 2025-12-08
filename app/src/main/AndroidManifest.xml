@@ -2,6 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Camera for Step 5 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Allow install on devices without a camera -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,9 +19,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ASDProject"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
 
-        <!-- Entry point of the application. Initializes Firebase and routes to login. -->
+        <!-- Google API key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+
+        <!-- Launch screen -->
         <activity
             android:name=".view.activities.RoleSelectionActivity"
             android:exported="true">
@@ -25,27 +39,27 @@
 
         </activity>
 
-        <!-- Child login screen -->
+        <!-- Child login -->
         <activity
             android:name=".view.activities.LoginActivity"
             android:exported="false" />
 
-        <!-- Child home dashboard -->
+        <!-- Child home -->
         <activity
             android:name=".view.activities.ChildHomeActivity"
             android:exported="false" />
 
-        <!-- Emotion logging screen -->
+        <!-- Emotion logging flow -->
         <activity
             android:name=".view.activities.EmotionLogActivity"
             android:exported="false" />
 
-        <!-- Emotion history list -->
+        <!-- History list -->
         <activity
             android:name=".view.activities.ChildHistoryActivity"
             android:exported="false" />
 
-        <!-- Emotion detail view -->
+        <!-- History detail -->
         <activity
             android:name=".view.activities.EmotionDetailActivity"
             android:exported="false" />

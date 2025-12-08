@@ -10,41 +10,49 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asdproject.R;
 import com.example.asdproject.model.EmotionLogDraft;
+import com.example.asdproject.model.Feeling;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
+import com.example.asdproject.view.fragments.Step2WhereFragment;
+import com.example.asdproject.view.fragments.Step3FeelingFragment;
+import com.example.asdproject.view.fragments.Step4IntensityFragment;
+import com.example.asdproject.view.fragments.Step5PhotoFragment;
 
 /**
- * Activity that manages the multi-step emotion logging flow.
- * Each step is represented by a fragment responsible for collecting
- * a single component of the final log (situation, location, feeling, etc.).
+ * Hosts the multi-step emotion logging flow for the child.
+ * Each step is implemented as a fragment and collects one part of the log:
  *
- * User selections are stored in an EmotionLogDraft object until the
- * final confirmation step. The completed data will later be converted
- * into an EmotionLog and saved to Firestore.
+ * 1 → Situation
+ * 2 → Location
+ * 3 → Feeling
+ * 4 → Intensity
+ * 5 → Photo
+ * 6 → Notes (coming next)
+ * 7 → Review + Save (coming later)
  *
- * This version implements Step 1 only. Remaining fragments will be added gradually.
+ * All inputs are stored in an EmotionLogDraft object until the flow is complete.
  */
 public class EmotionLogActivity extends AppCompatActivity
-        implements Step1SituationFragment.Listener {
+        implements Step1SituationFragment.Listener,
+        Step2WhereFragment.Listener,
+        Step3FeelingFragment.Listener,
+        Step4IntensityFragment.Listener,
+        Step5PhotoFragment.Listener {
 
-    /** Draft object used to store all user inputs across steps before final submission. */
+    /** Temporary container for in-progress user inputs. */
     private final EmotionLogDraft draft = new EmotionLogDraft();
 
-    /** Firestore child document ID associated with the logged-in child. */
+    /** Firestore ID of the current child. */
     private String childId;
 
-    /** Current step number in the logging workflow (1–7). */
+    /** Current step index. */
     private int currentStep = 1;
 
-    /** UI label displaying the current step count (e.g., "Step 1 of 7"). */
+    /** UI elements. */
     private TextView txtStepIndicator;
-
-    /** Back button used for step navigation. */
     private ImageView btnBack;
-
-    /** Visual progress bar fill used to indicate step progression. */
     private View stepProgressFill;
 
-    /** Total number of steps in the logging flow. */
+    /** Total number of steps in the wizard. */
     private static final int TOTAL_STEPS = 7;
 
     @Override
@@ -52,50 +60,44 @@ public class EmotionLogActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emotion_log);
 
-        // Retrieve child identifier from the previous activity.
         childId = getIntent().getStringExtra("childId");
 
-        // Initialize UI elements.
-        txtStepIndicator = findViewById(R.id.txtStepIndicator);
-        btnBack = findViewById(R.id.btnBack);
-        stepProgressFill = findViewById(R.id.stepProgressFill);
+        initViews();
+        setupBackButton();
 
-        // Configure back button behavior.
-        btnBack.setOnClickListener(v -> handleBack());
-
-        // Display the first step.
         showStep(1);
     }
 
-    /**
-     * Handles backward navigation.
-     * If the user is on the first step, the activity is closed.
-     */
-    private void handleBack() {
-        if (currentStep == 1) {
-            finish();
-            return;
-        }
-        showStep(currentStep - 1);
+    /** Connect views from layout. */
+    private void initViews() {
+        txtStepIndicator = findViewById(R.id.txtStepIndicator);
+        btnBack = findViewById(R.id.btnBack);
+        stepProgressFill = findViewById(R.id.stepProgressFill);
     }
 
-    /**
-     * Updates the step indicator text.
-     */
+    /** Handles back navigation between steps. */
+    private void setupBackButton() {
+        btnBack.setOnClickListener(v -> {
+            if (currentStep == 1) {
+                finish();
+            } else {
+                showStep(currentStep - 1);
+            }
+        });
+    }
+
+    /** Updates the step label text. */
     private void updateStepIndicator() {
         txtStepIndicator.setText("Step " + currentStep + " of " + TOTAL_STEPS);
     }
 
-    /**
-     * Updates the progress bar width based on the current step.
-     */
+    /** Updates the horizontal progress bar. */
     private void updateProgressBar() {
         float fraction = (float) currentStep / TOTAL_STEPS;
 
-        // The update is posted to ensure the parent width is known before computing the fill width.
         stepProgressFill.post(() -> {
-            View parentBar = findViewById(R.id.stepProgressBar);
-            int totalWidth = parentBar.getWidth();
+            View bar = findViewById(R.id.stepProgressBar);
+            int totalWidth = bar.getWidth();
             int newWidth = (int) (totalWidth * fraction);
 
             ViewGroup.LayoutParams params = stepProgressFill.getLayoutParams();
@@ -105,9 +107,8 @@ public class EmotionLogActivity extends AppCompatActivity
     }
 
     /**
-     * Displays the fragment associated with the requested step number.
-     *
-     * @param step the step number to load
+     * Displays the fragment for the selected step.
+     * All step navigation routes through here.
      */
     public void showStep(int step) {
         currentStep = step;
@@ -118,16 +119,24 @@ public class EmotionLogActivity extends AppCompatActivity
             case 1:
                 replaceFragment(new Step1SituationFragment());
                 break;
-
-            // Steps 2–7 will be implemented progressively.
+            case 2:
+                replaceFragment(new Step2WhereFragment());
+                break;
+            case 3:
+                replaceFragment(new Step3FeelingFragment());
+                break;
+            case 4:
+                replaceFragment(new Step4IntensityFragment());
+                break;
+            case 5:
+                replaceFragment(Step5PhotoFragment.newInstance(childId));
+                break;
+            // Step 6 → Notes (coming next)
+            // Step 7 → Review (coming later)
         }
     }
 
-    /**
-     * Replaces the fragment displayed in the fragment container.
-     *
-     * @param fragment the fragment instance to display
-     */
+    /** Replaces the visible fragment. */
     private void replaceFragment(androidx.fragment.app.Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -135,15 +144,37 @@ public class EmotionLogActivity extends AppCompatActivity
                 .commit();
     }
 
-    /**
-     * Callback from Step 1 fragment.
-     * Saves the selected situation and moves to Step 2.
-     *
-     * @param situation the situation selected by the user
-     */
+    // -------------------------------------------------------------
+    // Step callbacks
+    // -------------------------------------------------------------
+
     @Override
     public void onSituationSelected(String situation) {
         draft.situation = situation;
         showStep(2);
+    }
+
+    @Override
+    public void onLocationSelected(String location) {
+        draft.location = location;
+        showStep(3);
+    }
+
+    @Override
+    public void onFeelingSelected(Feeling feeling) {
+        draft.feeling = feeling.getLabel();
+        showStep(4);
+    }
+
+    @Override
+    public void onIntensitySelected(int intensityLevel) {
+        draft.intensity = intensityLevel;
+        showStep(5);
+    }
+
+    @Override
+    public void onPhotoCaptured(String photoUrl) {
+        draft.photoUri = photoUrl;
+        showStep(6);
     }
 }
