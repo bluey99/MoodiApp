@@ -6,11 +6,24 @@ package com.example.asdproject.model;
  */
 public class EmotionLogDraft {
 
+    // Step 1
     public String situation;
+
+    // Step 2
     public String location;
-    public String emotion;
-    public int intensity;
+
+    // Step 3
+    public String feeling;   // renamed from "emotion"
+
+    // Step 4
+    public int intensity;    // 1–5 scale later
+
+    // Step 5
     public String photoUri;
+
+    // Step 6
     public String extraText;
+
+    // Optional voice recording (future)
     public String voiceUri;
 }
