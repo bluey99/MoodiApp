@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#E3F4F4"
+    android:padding="24dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <!-- Yellow rounded panel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/child_panel_background"
+                android:padding="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Can we see your feeling?"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#085F63"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Take a photo of your face right now"
+                    android:textSize="14sp"
+                    android:textColor="#51787C"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Camera card / preview area -->
+                <FrameLayout
+                    android:id="@+id/cameraCard"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/step_button_selector"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:layout_width="56dp"
+                            android:layout_height="56dp"
+                            android:src="@drawable/ic_camera" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tap to take a photo"
+                            android:textColor="#085F63"
+                            android:textSize="14sp"
+                            android:layout_marginTop="8dp" />
+                    </LinearLayout>
+                </FrameLayout>
+
+                <!-- Photo preview (hidden until a photo is taken) -->
+                <ImageView
+                    android:id="@+id/imgPhotoPreview"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/step_button_selector"
+                    android:visibility="gone" />
+
+                <!-- Upload progress -->
+                <ProgressBar
+                    android:id="@+id/photoUploadProgress"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
+
+                <!-- Retake button -->
+                <Button
+                    android:id="@+id/btnRetakePhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Retake"
+                    android:textAllCaps="false"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/step_button_selector"
+                    android:textColor="#085F63"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- Continue button -->
+            <Button
+                android:id="@+id/btnPhotoContinue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continue"
+                android:textAllCaps="false"
+                android:layout_marginTop="24dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:background="@drawable/btn_login_rounded"
+                android:textColor="#085F63" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>
