@@ -11,30 +11,23 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.ChildButtonHelper;
 
 /**
- * Fragment representing Step 1 of the emotion logging workflow.
- * The user selects a situation describing what happened before the emotion.
- *
- * This fragment communicates user selections back to EmotionLogActivity
- * through the Listener interface. The activity hosting this fragment
- * must implement Step1SituationFragment.Listener.
+ * Step 1 of the child emotion-logging flow.
+ * The child selects a situation describing what happened before the feeling.
+ * This fragment uses ChildButtonHelper to unify click animation + selection behavior.
  */
 public class Step1SituationFragment extends Fragment {
 
-    /**
-     * Callback interface for delivering the user’s selection
-     * to the hosting activity.
-     */
+    /** Callback interface implemented by the hosting Activity. */
     public interface Listener {
         void onSituationSelected(String situation);
     }
 
     private Listener listener;
+    private View[] allButtons;
 
-    /**
-     * Ensures that the hosting activity implements the required listener.
-     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -42,44 +35,62 @@ public class Step1SituationFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException(
-                    "Parent activity must implement Step1SituationFragment.Listener");
+            throw new IllegalStateException("Parent must implement Step1SituationFragment.Listener");
         }
     }
 
-    /**
-     * Inflates the layout and registers click listeners for all
-     * situation selection options.
-     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(
-                R.layout.fragment_step1_situation,
-                container,
-                false
-        );
+        View view = inflater.inflate(R.layout.fragment_step1_situation, container, false);
 
-        // Register button interactions
-        view.findViewById(R.id.btnSituation1).setOnClickListener(v -> send("I went somewhere new"));
-        view.findViewById(R.id.btnSituation2).setOnClickListener(v -> send("I got a gift"));
-        view.findViewById(R.id.btnSituation3).setOnClickListener(v -> send("I fought with someone"));
-        view.findViewById(R.id.btnSituation4).setOnClickListener(v -> send("I had a test"));
-        view.findViewById(R.id.btnSituation5).setOnClickListener(v -> send("Something else"));
+        // Collect all button references
+        View btn1 = view.findViewById(R.id.btnSituation1);
+        View btn2 = view.findViewById(R.id.btnSituation2);
+        View btn3 = view.findViewById(R.id.btnSituation3);
+        View btn4 = view.findViewById(R.id.btnSituation4);
+        View btn5 = view.findViewById(R.id.btnSituation5);
 
+        allButtons = new View[]{ btn1, btn2, btn3, btn4, btn5 };
+
+        // Attach click behavior using shared helper
+        setupButtons();
 
         return view;
     }
 
     /**
-     * Sends the selected situation back to the hosting activity.
+     * Registers each button with its corresponding situation text.
+     * Uses ChildButtonHelper for unified animation + selected-state handling.
      */
-    private void send(String situation) {
-        if (listener != null) {
-            listener.onSituationSelected(situation);
-        }
+    private void setupButtons() {
+
+        ChildButtonHelper.setup(
+                allButtons[0], allButtons,
+                () -> listener.onSituationSelected("I went somewhere new")
+        );
+
+        ChildButtonHelper.setup(
+                allButtons[1], allButtons,
+                () -> listener.onSituationSelected("I got a gift")
+        );
+
+        ChildButtonHelper.setup(
+                allButtons[2], allButtons,
+                () -> listener.onSituationSelected("I fought with someone")
+        );
+
+        ChildButtonHelper.setup(
+                allButtons[3], allButtons,
+                () -> listener.onSituationSelected("I had a test")
+        );
+
+        ChildButtonHelper.setup(
+                allButtons[4], allButtons,
+                () -> listener.onSituationSelected("Something else")
+        );
     }
 }

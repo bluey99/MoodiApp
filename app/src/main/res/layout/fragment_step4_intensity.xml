@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="#E3F4F4"
+    android:padding="24dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
+
+            <!-- Yellow rounded panel -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/child_panel_background"
+                android:padding="24dp">
+
+                <!-- Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How big was the feeling?"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#085F63"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="4dp" />
+
+                <!-- Subtitle -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tap to fill the glass with your feeling"
+                    android:textSize="14sp"
+                    android:textColor="#51787C"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Glass container -->
+                <FrameLayout
+                    android:id="@+id/glassContainer"
+                    android:layout_width="120dp"
+                    android:layout_height="260dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/intensity_glass_background"
+                    android:padding="8dp"
+                    android:clipToOutline="true">
+
+                    <!-- Bottom-aligned fill -->
+                    <FrameLayout
+                        android:id="@+id/fillContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="bottom"
+                        android:clipToOutline="true">
+
+                        <View
+                            android:id="@+id/fillView"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/intensity_fill_level1" />
+                    </FrameLayout>
+
+                </FrameLayout>
+
+                <!-- Intensity label -->
+                <TextView
+                    android:id="@+id/txtIntensityLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Just a little"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#085F63"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="8dp" />
+
+            </LinearLayout>
+
+            <!-- Continue button -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnIntensityContinue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continue"
+                android:textAllCaps="false"
+                android:textColor="#085F63"
+                android:textSize="16sp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/pill_button_selector" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</ScrollView>
