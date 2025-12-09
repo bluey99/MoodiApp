@@ -17,6 +17,7 @@ import com.example.asdproject.view.fragments.Step3FeelingFragment;
 import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
 import com.example.asdproject.view.fragments.Step6NoteFragment;
+import com.example.asdproject.view.fragments.Step7ReviewFragment;
 
 /**
  * Hosts the multi-step emotion logging flow for the child.
@@ -38,7 +39,8 @@ public class EmotionLogActivity extends AppCompatActivity
         Step3FeelingFragment.Listener,
         Step4IntensityFragment.Listener,
         Step5PhotoFragment.Listener,
-        Step6NoteFragment.Listener {
+        Step6NoteFragment.Listener,
+        Step7ReviewFragment.Listener {
 
     /** Temporary container for in-progress user inputs. */
     private final EmotionLogDraft draft = new EmotionLogDraft();
@@ -136,8 +138,10 @@ public class EmotionLogActivity extends AppCompatActivity
             case 6:
                 replaceFragment(new Step6NoteFragment());
                 break;
+            case 7:
+                replaceFragment(Step7ReviewFragment.newInstance(draft));
+                break;
 
-            // Step 7 → Review (coming later)
         }
     }
 
@@ -188,5 +192,13 @@ public class EmotionLogActivity extends AppCompatActivity
         draft.note = note;    // may be null
         showStep(7);          // next step: review screen (coming next)
     }
+
+    @Override
+    public void onReviewConfirmed() {
+        // Later → convert draft to EmotionLog and save to Firestore
+        // For now:
+        finish();
+    }
+
 
 }

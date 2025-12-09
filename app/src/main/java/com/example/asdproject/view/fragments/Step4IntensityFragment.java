@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.fragment.app.Fragment;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.IntensityHelper;
 
 /**
  * Step 4 of the child logging flow.
@@ -147,7 +148,9 @@ public class Step4IntensityFragment extends Fragment {
         int previous = currentLevel;
         currentLevel = level;
 
-        updateLabelAndColor(level);
+        txtLabel.setText(IntensityHelper.getLabel(level));
+        fillView.setBackgroundResource(IntensityHelper.getFillDrawable(level));
+
 
         // If layout not measured yet, apply after measurement
         if (maxFillHeightPx == 0) {

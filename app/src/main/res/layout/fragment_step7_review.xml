@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E3F4F4"
+    android:padding="24dp"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- YELLOW PANEL -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/child_panel_background"
+            android:padding="24dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Let's review your feeling"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#085F63"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- SUMMARY CONTAINER (Step 1–3, 6) -->
+            <LinearLayout
+                android:id="@+id/summaryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:divider="@drawable/divider_line"
+                android:showDividers="middle" />
+
+            <!-- INTENSITY BLOCK -->
+            <LinearLayout
+                android:id="@+id/intensityBlock"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                android:paddingBottom="10dp"
+                android:gravity="center_vertical">
+
+                <!-- GLASS -->
+                <FrameLayout
+                    android:id="@+id/reviewGlassContainer"
+                    android:layout_width="60dp"
+                    android:layout_height="130dp"
+                    android:background="@drawable/intensity_glass_background"
+                    android:padding="4dp"
+                    android:clipToOutline="true">
+
+                    <View
+                        android:id="@+id/reviewFillView"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="bottom" />
+                </FrameLayout>
+
+                <!-- Intensity labels -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="16dp">
+
+                    <TextView
+                        android:id="@+id/txtIntensityLabelReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Intensity: Medium"
+                        android:textColor="#085F63"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtIntensityNumberReview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3 / 5"
+                        android:textColor="#51787C"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- PHOTO PREVIEW (optional) -->
+            <ImageView
+                android:id="@+id/imgSummaryPhoto"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:background="@drawable/step_button_selector"
+                android:visibility="gone"
+                android:layout_marginTop="16dp" />
+
+        </LinearLayout>
+
+        <!-- Confirm Button -->
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnConfirmLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:textAllCaps="false"
+            android:textColor="#085F63"
+            android:textSize="16sp"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/pill_button_selector" />
+
+    </LinearLayout>
+
+</ScrollView>
