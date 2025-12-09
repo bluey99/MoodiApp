@@ -28,16 +28,13 @@ import com.google.firebase.storage.StorageReference;
 import java.io.ByteArrayOutputStream;
 
 /**
- * Step 5 of the child emotion-logging flow.
- * The child takes a photo of their face to document the feeling.
- * The captured image is uploaded to Firebase Storage and the download URL
- * is returned to the hosting activity.
+ * Step 5 – Optional photo capture.
+ * Child may take a picture, or skip directly.
  */
 public class Step5PhotoFragment extends Fragment {
 
-    /** Callback to the hosting activity with the uploaded photo URL. */
     public interface Listener {
-        void onPhotoCaptured(String photoUrl);
+        void onPhotoCaptured(String photoUrl); // may be null
     }
 
     private static final String ARG_CHILD_ID = "childId";
@@ -55,14 +52,14 @@ public class Step5PhotoFragment extends Fragment {
     // State
     private String uploadedPhotoUrl;
 
-    // Launcher for camera preview (returns a Bitmap)
+    // Camera launcher
     private final ActivityResultLauncher<Void> takePictureLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.TakePicturePreview(),
                     this::handleCameraResult
             );
 
-    // Launcher for runtime CAMERA permission
+    // Permission launcher
     private final ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(),
@@ -71,13 +68,13 @@ public class Step5PhotoFragment extends Fragment {
                             launchCamera();
                         } else {
                             Toast.makeText(getContext(),
-                                    "Camera permission is required to take a photo",
+                                    "Camera permission denied",
                                     Toast.LENGTH_SHORT).show();
                         }
                     }
             );
 
-    /** Factory method to create this fragment with the childId argument. */
+    /** Factory */
     public static Step5PhotoFragment newInstance(String childId) {
         Step5PhotoFragment fragment = new Step5PhotoFragment();
         Bundle args = new Bundle();
@@ -93,7 +90,7 @@ public class Step5PhotoFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Parent must implement Step5PhotoFragment.Listener");
+            throw new IllegalStateException("Parent must implement Listener");
         }
     }
 
@@ -120,26 +117,25 @@ public class Step5PhotoFragment extends Fragment {
         btnContinue = view.findViewById(R.id.btnPhotoContinue);
         progressBar = view.findViewById(R.id.photoUploadProgress);
 
-        // Initial state
+        // Initial UI state
         imgPreview.setVisibility(View.GONE);
         btnRetake.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        btnContinue.setEnabled(false);
-        btnContinue.setAlpha(0.5f);
+        btnContinue.setText("Skip");   // default state → no photo taken yet
 
-        // Tap to start camera
+
+        // Continue is always enabled (photo is optional)
+        btnContinue.setAlpha(1f);
+
+
+        // Click events
         cameraCard.setOnClickListener(v -> checkPermissionAndOpenCamera());
         imgPreview.setOnClickListener(v -> checkPermissionAndOpenCamera());
         btnRetake.setOnClickListener(v -> checkPermissionAndOpenCamera());
 
         btnContinue.setOnClickListener(v -> {
-            if (uploadedPhotoUrl == null) {
-                Toast.makeText(getContext(),
-                        "Please wait for the upload to finish",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
             if (listener != null) {
+                // may be null if user skipped photo
                 listener.onPhotoCaptured(uploadedPhotoUrl);
             }
         });
@@ -147,7 +143,7 @@ public class Step5PhotoFragment extends Fragment {
         return view;
     }
 
-    /** Ensures CAMERA permission is granted before launching the camera. */
+    /** CAMERA permission logic */
     private void checkPermissionAndOpenCamera() {
         if (getContext() == null) return;
 
@@ -159,47 +155,38 @@ public class Step5PhotoFragment extends Fragment {
         }
     }
 
-    /** Launches the camera using TakePicturePreview (returns a Bitmap only). */
     private void launchCamera() {
         takePictureLauncher.launch(null);
     }
 
-    /** Called when a Bitmap result is returned from the camera. */
+    /** Camera returned a bitmap */
     private void handleCameraResult(Bitmap bitmap) {
-        if (bitmap == null) {
-            return;
-        }
+        if (bitmap == null) return;
 
-        // Update UI to show preview
         cameraCard.setVisibility(View.GONE);
         imgPreview.setVisibility(View.VISIBLE);
         imgPreview.setImageBitmap(bitmap);
         btnRetake.setVisibility(View.VISIBLE);
 
-        // Start upload to Firebase Storage
         uploadPhotoToFirebase(bitmap);
     }
 
-    /** Uploads the captured Bitmap to Firebase Storage and stores the download URL. */
+    /** Upload captured photo */
     private void uploadPhotoToFirebase(Bitmap bitmap) {
         if (childId == null || getContext() == null) {
-            Toast.makeText(getContext(),
-                    "Missing child information",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Missing child information", Toast.LENGTH_SHORT).show();
             return;
         }
 
         progressBar.setVisibility(View.VISIBLE);
-        btnContinue.setEnabled(false);
-        btnContinue.setAlpha(0.5f);
 
-        // Convert bitmap to JPEG bytes
+        // Convert → JPEG
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, baos);
         byte[] data = baos.toByteArray();
 
-        // children/{childId}/photos/{timestamp}.jpg
         String fileName = System.currentTimeMillis() + ".jpg";
+
         StorageReference ref = FirebaseStorage.getInstance()
                 .getReference()
                 .child("children")
@@ -208,18 +195,18 @@ public class Step5PhotoFragment extends Fragment {
                 .child(fileName);
 
         ref.putBytes(data)
-                .addOnSuccessListener(taskSnapshot ->
+                .addOnSuccessListener(task ->
                         ref.getDownloadUrl().addOnSuccessListener(uri -> {
                             uploadedPhotoUrl = uri.toString();
                             progressBar.setVisibility(View.GONE);
-                            btnContinue.setEnabled(true);
+
+                            // Highlight button now that photo exists
                             btnContinue.setAlpha(1f);
-                        }))
+                        })
+                )
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),
-                            "Upload failed. Please try again.",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_SHORT).show();
                 });
     }
 }

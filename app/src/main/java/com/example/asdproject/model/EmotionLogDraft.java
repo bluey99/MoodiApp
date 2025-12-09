@@ -22,8 +22,8 @@ public class EmotionLogDraft {
     public String photoUri;
 
     // Step 6
-    public String extraText;
+    public String note;   // Optional free-text note from Step 6
 
-    // Optional voice recording (future)
-    public String voiceUri;
+
+    // Optional voice recording (future) public String voiceUri;
 }

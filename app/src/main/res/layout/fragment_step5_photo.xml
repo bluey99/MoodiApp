@@ -17,7 +17,7 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- Yellow rounded panel -->
+            <!-- FRAME PANEL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -25,6 +25,7 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
+                <!-- Title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,7 +45,7 @@
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- Camera card / preview area -->
+                <!-- CAMERA CARD (initial state) -->
                 <FrameLayout
                     android:id="@+id/cameraCard"
                     android:layout_width="200dp"
@@ -74,53 +75,61 @@
                     </LinearLayout>
                 </FrameLayout>
 
-                <!-- Photo preview (hidden until a photo is taken) -->
+                <!-- PHOTO PREVIEW -->
                 <ImageView
                     android:id="@+id/imgPhotoPreview"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:scaleType="centerCrop"
                     android:background="@drawable/step_button_selector"
+                    android:scaleType="centerCrop"
                     android:visibility="gone" />
 
-                <!-- Upload progress -->
+                <!-- Upload spinner -->
                 <ProgressBar
                     android:id="@+id/photoUploadProgress"
                     style="?android:attr/progressBarStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:layout_marginTop="12dp"
                     android:visibility="gone" />
 
-                <!-- Retake button -->
+                <!-- RETAKE BUTTON -->
                 <Button
                     android:id="@+id/btnRetakePhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Retake"
                     android:textAllCaps="false"
-                    android:layout_gravity="center"
                     android:layout_marginTop="16dp"
+                    android:paddingLeft="28dp"
+                    android:paddingRight="28dp"
                     android:background="@drawable/step_button_selector"
                     android:textColor="#085F63"
                     android:visibility="gone" />
 
             </LinearLayout>
 
-            <!-- Continue button -->
-            <Button
+            <!-- CONTINUE BUTTON -->
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnPhotoContinue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Continue"
                 android:textAllCaps="false"
-                android:layout_marginTop="24dp"
+                android:textColor="#085F63"
+                android:textSize="16sp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:background="@drawable/btn_login_rounded"
-                android:textColor="#085F63" />
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/pill_button_selector" />
+
+
+
+
 
         </LinearLayout>
 

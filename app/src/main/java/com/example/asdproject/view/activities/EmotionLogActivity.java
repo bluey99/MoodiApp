@@ -16,6 +16,7 @@ import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
 import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
+import com.example.asdproject.view.fragments.Step6NoteFragment;
 
 /**
  * Hosts the multi-step emotion logging flow for the child.
@@ -36,7 +37,8 @@ public class EmotionLogActivity extends AppCompatActivity
         Step2WhereFragment.Listener,
         Step3FeelingFragment.Listener,
         Step4IntensityFragment.Listener,
-        Step5PhotoFragment.Listener {
+        Step5PhotoFragment.Listener,
+        Step6NoteFragment.Listener {
 
     /** Temporary container for in-progress user inputs. */
     private final EmotionLogDraft draft = new EmotionLogDraft();
@@ -131,7 +133,10 @@ public class EmotionLogActivity extends AppCompatActivity
             case 5:
                 replaceFragment(Step5PhotoFragment.newInstance(childId));
                 break;
-            // Step 6 → Notes (coming next)
+            case 6:
+                replaceFragment(new Step6NoteFragment());
+                break;
+
             // Step 7 → Review (coming later)
         }
     }
@@ -177,4 +182,11 @@ public class EmotionLogActivity extends AppCompatActivity
         draft.photoUri = photoUrl;
         showStep(6);
     }
+
+    @Override
+    public void onNoteEntered(String note) {
+        draft.note = note;    // may be null
+        showStep(7);          // next step: review screen (coming next)
+    }
+
 }
