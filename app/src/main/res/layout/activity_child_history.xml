@@ -3,24 +3,24 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D7F1F1">
+    android:background="#E3F4F4">
 
-    <!-- HEADER -->
+    <!-- HEADER PANEL -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="120dp"
+        android:background="#F9E28C"
         android:paddingLeft="24dp"
-        android:gravity="center_vertical"
-        android:background="#F9E28C">
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/txtHeaderTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="My Feelings"
-            android:textColor="#4C5257"
+            android:textSize="26sp"
             android:textStyle="bold"
-            android:textSize="26sp"/>
+            android:textColor="#4C5257"/>
     </LinearLayout>
 
     <!-- LOG COUNT -->
@@ -29,36 +29,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="You've logged 0 feelings"
-        android:textColor="#085F63"
         android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center"/>
-
-    <!-- EMPTY MESSAGE -->
-    <TextView
-        android:id="@+id/txtEmpty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="No history yet"
-        android:textColor="#4C5257"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
-        android:visibility="gone"/>
+        android:textColor="#085F63"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/pill_button_selector" />
 
-    <!-- LIST CONTAINER -->
+    <!-- EMPTY STATE -->
     <LinearLayout
+        android:id="@+id/emptyContainer"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/ic_child" />
+
+        <TextView
+            android:id="@+id/txtEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No feelings logged yet"
+            android:textSize="18sp"
+            android:textColor="#51787C"
+            android:layout_marginTop="12dp"/>
+    </LinearLayout>
+
+    <!-- LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#FFFDEB"
-        android:padding="16dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerHistory"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"/>
-
-    </LinearLayout>
+        android:padding="16dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>

@@ -8,22 +8,23 @@
     android:gravity="center_vertical"
     android:layout_marginBottom="16dp">
 
-    <!-- EMOTION ICON -->
+    <!-- Emotion Icon -->
     <ImageView
         android:id="@+id/imgEmotion"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginRight="16dp"
+        android:src="@drawable/ic_child"
         android:contentDescription="Emotion icon" />
 
-    <!-- TEXT CONTENT -->
+    <!-- Text content -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <!-- Emotion name -->
+        <!-- Feeling title -->
         <TextView
             android:id="@+id/txtEmotionName"
             android:layout_width="wrap_content"
@@ -33,23 +34,39 @@
             android:textStyle="bold"
             android:textSize="18sp" />
 
-        <!-- Intensity (adapter needs this!) -->
+        <!-- Intensity Label -->
         <TextView
             android:id="@+id/txtIntensity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Intensity: 5"
+            android:text="Intensity: 4"
             android:textColor="#085F63"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
 
-        <!-- Note preview (adapter expects txtNote) -->
+        <!-- MINI INTENSITY GLASS -->
+        <FrameLayout
+            android:id="@+id/historyGlassContainer"
+            android:layout_width="28dp"
+            android:layout_height="52dp"
+            android:background="@drawable/intensity_glass_background"
+            android:padding="2dp"
+            android:layout_marginTop="4dp"
+            android:clipToOutline="true">
+
+            <View
+                android:id="@+id/historyFillView"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_gravity="bottom" />
+        </FrameLayout>
+
         <!-- Note preview -->
         <TextView
             android:id="@+id/txtNotePreview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Note: Had a great day..."
+            android:text="No note"
             android:textColor="#4C5257"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
@@ -59,7 +76,6 @@
             android:id="@+id/txtTimestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="20 Feb 2025, 14:07"
             android:textColor="#4C5257"
             android:textSize="14sp"
             android:layout_marginTop="6dp" />

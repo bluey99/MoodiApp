@@ -5,10 +5,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asdproject.R;
+import com.example.asdproject.controller.EmotionRepository;
+import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.model.EmotionLogDraft;
 import com.example.asdproject.model.Feeling;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
@@ -23,15 +26,16 @@ import com.example.asdproject.view.fragments.Step7ReviewFragment;
  * Hosts the multi-step emotion logging flow for the child.
  * Each step is implemented as a fragment and collects one part of the log:
  *
- * 1 → Situation
- * 2 → Location
- * 3 → Feeling
- * 4 → Intensity
- * 5 → Photo
- * 6 → Notes (coming next)
- * 7 → Review + Save (coming later)
+ *  1 → Situation
+ *  2 → Location
+ *  3 → Feeling
+ *  4 → Intensity
+ *  5 → Photo (optional)
+ *  6 → Notes (optional)
+ *  7 → Review + Save
  *
  * All inputs are stored in an EmotionLogDraft object until the flow is complete.
+ * Only when the child confirms in Step 7 do we create an EmotionLog and save it.
  */
 public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
@@ -42,16 +46,19 @@ public class EmotionLogActivity extends AppCompatActivity
         Step6NoteFragment.Listener,
         Step7ReviewFragment.Listener {
 
-    /** Temporary container for in-progress user inputs. */
+    /** Temporary container for in-progress user inputs across steps. */
     private final EmotionLogDraft draft = new EmotionLogDraft();
 
-    /** Firestore ID of the current child. */
+    /** Repository that knows how to save EmotionLog objects to Firestore. */
+    private final EmotionRepository emotionRepository = new EmotionRepository();
+
+    /** Firestore ID of the current child, passed from previous screen. */
     private String childId;
 
-    /** Current step index. */
+    /** Current step index (1–7). */
     private int currentStep = 1;
 
-    /** UI elements. */
+    /** UI elements shared across steps. */
     private TextView txtStepIndicator;
     private ImageView btnBack;
     private View stepProgressFill;
@@ -64,38 +71,42 @@ public class EmotionLogActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emotion_log);
 
+        // Child ID is required so we can store under children/{childId}/history
         childId = getIntent().getStringExtra("childId");
 
         initViews();
         setupBackButton();
 
+        // Start at Step 1
         showStep(1);
     }
 
-    /** Connect views from layout. */
+    /** Connect shared UI elements from the layout. */
     private void initViews() {
         txtStepIndicator = findViewById(R.id.txtStepIndicator);
         btnBack = findViewById(R.id.btnBack);
         stepProgressFill = findViewById(R.id.stepProgressFill);
     }
 
-    /** Handles back navigation between steps. */
+    /** Handles back navigation between steps or closes the flow on Step 1. */
     private void setupBackButton() {
         btnBack.setOnClickListener(v -> {
             if (currentStep == 1) {
+                // If we are at the first step → exit the flow
                 finish();
             } else {
+                // Otherwise go back one step
                 showStep(currentStep - 1);
             }
         });
     }
 
-    /** Updates the step label text. */
+    /** Updates the "Step X of Y" label. */
     private void updateStepIndicator() {
         txtStepIndicator.setText("Step " + currentStep + " of " + TOTAL_STEPS);
     }
 
-    /** Updates the horizontal progress bar. */
+    /** Updates the horizontal progress bar based on the current step. */
     private void updateProgressBar() {
         float fraction = (float) currentStep / TOTAL_STEPS;
 
@@ -112,7 +123,7 @@ public class EmotionLogActivity extends AppCompatActivity
 
     /**
      * Displays the fragment for the selected step.
-     * All step navigation routes through here.
+     * All navigation (Next / Back) routes through here.
      */
     public void showStep(int step) {
         currentStep = step;
@@ -139,13 +150,13 @@ public class EmotionLogActivity extends AppCompatActivity
                 replaceFragment(new Step6NoteFragment());
                 break;
             case 7:
+                // Pass the full draft to the review screen
                 replaceFragment(Step7ReviewFragment.newInstance(draft));
                 break;
-
         }
     }
 
-    /** Replaces the visible fragment. */
+    /** Replaces the visible fragment inside the container. */
     private void replaceFragment(androidx.fragment.app.Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -154,7 +165,7 @@ public class EmotionLogActivity extends AppCompatActivity
     }
 
     // -------------------------------------------------------------
-    // Step callbacks
+    // Step callbacks (called by each Fragment)
     // -------------------------------------------------------------
 
     @Override
@@ -171,34 +182,66 @@ public class EmotionLogActivity extends AppCompatActivity
 
     @Override
     public void onFeelingSelected(Feeling feeling) {
+        // Store label only (e.g., "Angry", "Happy")
         draft.feeling = feeling.getLabel();
         showStep(4);
     }
 
     @Override
     public void onIntensitySelected(int intensityLevel) {
-        draft.intensity = intensityLevel;
+        draft.intensity = intensityLevel;   // 1–5
         showStep(5);
     }
 
     @Override
     public void onPhotoCaptured(String photoUrl) {
+        // May be null if child chose "Skip" in Step 5
         draft.photoUri = photoUrl;
         showStep(6);
     }
 
     @Override
     public void onNoteEntered(String note) {
-        draft.note = note;    // may be null
-        showStep(7);          // next step: review screen (coming next)
+        // May be empty or null → Step 6 is optional
+        draft.note = note;
+        showStep(7);
     }
 
+    /**
+     * Final callback from Step 7 when the child presses "Submit".
+     * Here we:
+     *  - Convert the draft into a final EmotionLog
+     *  - Ask EmotionRepository to save it to Firestore
+     *  - Close the flow
+     */
     @Override
     public void onReviewConfirmed() {
-        // Later → convert draft to EmotionLog and save to Firestore
-        // For now:
-        finish();
+        saveFinalEmotionLog();
     }
 
+    /**
+     * Converts the current EmotionLogDraft into a final EmotionLog
+     * and saves it to Firestore via EmotionRepository.
+     */
+    private void saveFinalEmotionLog() {
 
+        if (childId == null || childId.trim().isEmpty()) {
+            Toast.makeText(this, "Error: Missing child information", Toast.LENGTH_SHORT).show();
+            // We cannot save without a child ID
+            finish();
+            return;
+        }
+
+        // Build final Firestore-ready model from the draft
+        EmotionLog finalLog = new EmotionLog(childId, draft);
+
+        // Very simple UX for now; can be improved with a "success" screen
+        Toast.makeText(this, "Saving your feeling...", Toast.LENGTH_SHORT).show();
+
+        // Fire-and-forget save. EmotionRepository logs success/failure.
+        emotionRepository.addEmotionLog(finalLog);
+
+        // Close the flow and return to previous screen
+        finish();
+    }
 }

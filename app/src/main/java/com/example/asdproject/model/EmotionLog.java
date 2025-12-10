@@ -3,109 +3,100 @@ package com.example.asdproject.model;
 import java.util.Date;
 
 /**
- * Data model representing a single emotion entry logged by a child.
- * This class is stored under the Firestore path:
- * children/{childId}/history/{emotionLogId}
+ * Final data model saved to Firestore after the 7-step child emotion-logging flow.
  *
- * Firestore requires a public no-argument constructor and public setters
- * to deserialize objects into this model.
+ * This class is used ONLY for persistent storage (the final result).
+ * All in-progress values during the flow are stored inside EmotionLogDraft.
+ *
+ * Firestore requires:
+ *  - A public no-argument constructor
+ *  - Public getters and setters for each field (for deserialization)
+ *
+ * Stored under Firestore path:
+ *      children/{childId}/history/{generatedLogId}
  */
 public class EmotionLog implements java.io.Serializable {
 
-    /**
-     * Firestore document ID for this log entry.
-     * Set manually after retrieving the document.
-     */
+    private static final long serialVersionUID = 1L;
+
+    // ----------------------------- Firestore fields -----------------------------
+
+    /** Firestore document ID (set after saving or when reading from DB). */
     private String id;
 
-    /**
-     * Identifier of the child who created the emotion entry.
-     * Matches the Firestore child document ID.
-     */
+    /** Child ID used in Firestore path. Must not be null. */
     private String childId;
 
-    /** The emotion selected by the user (e.g., Happy, Sad, Angry). */
-    private String emotion;
+    /** Step 1: Situation chosen by the child. */
+    private String situation;
 
-    /** Intensity level of the emotion (0–100 or SeekBar scale). */
+    /** Step 2: Location selected by the child. */
+    private String location;
+
+    /** Step 3: Feeling label (e.g., Happy, Angry, Scared). */
+    private String feeling;
+
+    /** Step 4: Intensity level on a 1–5 scale. */
     private int intensity;
 
-    /** Optional descriptive note written by the child. */
+    /** Step 5: Download URL of the uploaded photo (or null if skipped). */
+    private String photoUri;
+
+    /** Step 6: Optional note text written by the child. */
     private String note;
 
-    /** Timestamp indicating when the emotion entry was created. */
+    /** Automatically assigned when saving the log. */
     private Date timestamp;
 
-    /**
-     * Required empty constructor for Firestore deserialization.
-     * Do not remove.
-     */
-    public EmotionLog() {
-    }
+    /** Required empty constructor for Firestore. DO NOT REMOVE. */
+    public EmotionLog() { }
 
     /**
-     * Creates a new emotion log entry at the current time.
+     * Creates a final EmotionLog object from the EmotionLogDraft.
+     * This is called in Step 7 when the child confirms their log.
      *
-     * @param childId   Firestore ID of the child
-     * @param emotion   Selected emotion label
-     * @param intensity Selected intensity level
-     * @param note      Optional note entered by the user
+     * @param childId Firestore child document ID
+     * @param draft   All collected data from the 7-step flow
      */
-    public EmotionLog(String childId, String emotion, int intensity, String note) {
+    public EmotionLog(String childId, EmotionLogDraft draft) {
         this.childId = childId;
-        this.emotion = emotion;
-        this.intensity = intensity;
-        this.note = note;
+        this.situation = draft.situation;
+        this.location = draft.location;
+        this.feeling = draft.feeling;
+        this.intensity = draft.intensity;
+        this.photoUri = draft.photoUri;
+        this.note = draft.note;
+
+        // The timestamp should be the moment of saving the final log
         this.timestamp = new Date();
     }
 
-    // Getters and setters required by Firestore
+    // ----------------------------- Getters & Setters -----------------------------
 
-    public String getId() {
-        return id;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getChildId() { return childId; }
+    public void setChildId(String childId) { this.childId = childId; }
 
-    public String getChildId() {
-        return childId;
-    }
+    public String getSituation() { return situation; }
+    public void setSituation(String situation) { this.situation = situation; }
 
-    public void setChildId(String childId) {
-        this.childId = childId;
-    }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
-    public String getEmotion() {
-        return emotion;
-    }
+    public String getFeeling() { return feeling; }
+    public void setFeeling(String feeling) { this.feeling = feeling; }
 
-    public void setEmotion(String emotion) {
-        this.emotion = emotion;
-    }
+    public int getIntensity() { return intensity; }
+    public void setIntensity(int intensity) { this.intensity = intensity; }
 
-    public int getIntensity() {
-        return intensity;
-    }
+    public String getPhotoUri() { return photoUri; }
+    public void setPhotoUri(String photoUri) { this.photoUri = photoUri; }
 
-    public void setIntensity(int intensity) {
-        this.intensity = intensity;
-    }
+    public String getNote() { return note; }
+    public void setNote(String note) { this.note = note; }
 
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
+    public Date getTimestamp() { return timestamp; }
+    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
 }

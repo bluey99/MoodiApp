@@ -5,19 +5,18 @@ import android.util.Log;
 import com.example.asdproject.controller.EmotionRepository;
 import com.example.asdproject.controller.FirebaseManager;
 import com.example.asdproject.model.EmotionLog;
+import com.example.asdproject.model.EmotionLogDraft;
 
 /**
  * Utility class used for development-time testing of Firestore connectivity
  * and EmotionRepository functionality.
  *
- * This class is not used in the production workflow and should only be
- * executed manually during debugging.
+ * Not used in production — call manually during debugging.
  */
 public class TestController {
 
     /**
-     * Writes a simple test document to Firestore to verify database connectivity.
-     * Creates a collection named "test" with a single message field.
+     * Writes a simple test document to Firestore to verify connectivity.
      */
     public static void testFirestore() {
         FirebaseManager.getDb()
@@ -32,20 +31,25 @@ public class TestController {
     }
 
     /**
-     * Demonstrates creating and saving an EmotionLog
-     * using the EmotionRepository class.
-     * This method is intended for manual testing only.
+     * Demonstrates building and saving an EmotionLog from a fake draft.
+     * Used only for manual debugging.
      */
     public static void testAddEmotion() {
         EmotionRepository repo = new EmotionRepository();
 
-        EmotionLog log = new EmotionLog(
-                "child001",       // Example child ID; must match an existing document
-                "Happy",
-                5,
-                "I felt very good today."
-        );
+        // Create a fake draft
+        EmotionLogDraft draft = new EmotionLogDraft();
+        draft.situation = "At school";
+        draft.location = "Playground";
+        draft.feeling = "Happy";
+        draft.intensity = 5;
+        draft.photoUri = null;
+        draft.note = "I felt very good today.";
 
+        // Convert draft → final log
+        EmotionLog log = new EmotionLog("child001", draft);
+
+        // Save
         repo.addEmotionLog(log);
     }
 }

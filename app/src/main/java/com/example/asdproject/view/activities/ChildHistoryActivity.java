@@ -18,20 +18,11 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Displays the history of emotion entries recorded for a specific child.
- * Loads the logs from Firestore and presents them in a RecyclerView.
- */
 public class ChildHistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerHistory;
-    private TextView txtEmpty;
-    private HistoryAdapter adapter;
+    private TextView txtEmpty, txtLogCount;
 
-    // In-memory list used to populate the RecyclerView
-    private final List<EmotionLog> historyList = new ArrayList<>();
-
-    // Firestore document ID for the current child
     private String childId;
 
     @Override
@@ -39,62 +30,72 @@ public class ChildHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_history);
 
-        // Connect UI components
         recyclerHistory = findViewById(R.id.recyclerHistory);
         txtEmpty = findViewById(R.id.txtEmpty);
+        txtLogCount = findViewById(R.id.txtLogCount);
 
-        // Configure RecyclerView for vertical scrolling
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new HistoryAdapter(historyList);
-        recyclerHistory.setAdapter(adapter);
 
-        // Retrieve the child ID passed from ChildHomeActivity
         childId = getIntent().getStringExtra("childId");
 
-        // Load emotion history from Firestore
         loadHistory();
     }
 
-    /**
-     * Retrieves emotion logs from Firestore for the specified child.
-     * Uses descending timestamp order so the newest entries appear first.
-     */
     private void loadHistory() {
-        FirebaseFirestore db = FirebaseManager.getDb();
 
-        // Validate that a child ID was received
         if (childId == null) {
-            txtEmpty.setText("No child selected");
             txtEmpty.setVisibility(View.VISIBLE);
+            txtEmpty.setText("No child selected");
             return;
         }
 
-        // Query Firestore: children/{childId}/history ordered by timestamp (newest first)
+        FirebaseFirestore db = FirebaseManager.getDb();
+
         db.collection("children")
                 .document(childId)
                 .collection("history")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(snap -> {
-                    historyList.clear();
 
-                    // Show empty message if there are no logs
-                    if (snap.isEmpty()) {
+                    List<EmotionLog> historyList = new ArrayList<>();
+                    snap.forEach(doc -> {
+                        EmotionLog log = doc.toObject(EmotionLog.class);
+                        log.setId(doc.getId());
+                        historyList.add(log);
+                    });
+
+                    // UPDATE "You've logged X feelings"
+                    txtLogCount.setText("You've logged " + historyList.size() + " feelings");
+
+                    if (historyList.isEmpty()) {
                         txtEmpty.setVisibility(View.VISIBLE);
+                        recyclerHistory.setAdapter(null);
                         return;
                     }
 
                     txtEmpty.setVisibility(View.GONE);
 
-                    // Convert each Firestore document into an EmotionLog object
-                    snap.forEach(doc -> {
-                        EmotionLog log = doc.toObject(EmotionLog.class);
-                        log.setId(doc.getId()); // Assign Firestore document ID
-                        historyList.add(log);
-                    });
+                    // ---------- GROUPING ----------
+                    List<Object> groupedList = new ArrayList<>();
 
-                    // Refresh RecyclerView with the updated data
-                    adapter.notifyDataSetChanged();
+                    groupedList.add("This Week");
+                    for (EmotionLog log : historyList) {
+                        long days = (System.currentTimeMillis() - log.getTimestamp().getTime())
+                                / (1000 * 60 * 60 * 24);
+                        if (days <= 7) groupedList.add(log);
+                    }
+
+                    groupedList.add("Older Entries");
+                    for (EmotionLog log : historyList) {
+                        long days = (System.currentTimeMillis() - log.getTimestamp().getTime())
+                                / (1000 * 60 * 60 * 24);
+                        if (days > 7) groupedList.add(log);
+                    }
+
+                    // Final adapter
+                    HistoryAdapter adapter = new HistoryAdapter(groupedList);
+                    recyclerHistory.setAdapter(adapter);
                 });
     }
 }

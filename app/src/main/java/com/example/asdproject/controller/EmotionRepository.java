@@ -1,30 +1,40 @@
 package com.example.asdproject.controller;
 
+import android.util.Log;
+
 import com.example.asdproject.model.EmotionLog;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Repository responsible for writing emotion log entries to Firestore.
- * The data path used is:
- * children/{childId}/history/{generatedLogId}
  *
- * This class abstracts database access for emotion-related operations.
+ * Firestore data path:
+ *   children/{childId}/history/{logId}
+ *
+ * This class abstracts all emotion-log related database operations.
  */
 public class EmotionRepository {
 
-    /** Shared Firestore instance obtained through FirebaseManager. */
+    private static final String TAG = "EmotionRepository";
+
+    /** Shared Firestore instance from FirebaseManager. */
     private final FirebaseFirestore db = FirebaseManager.getDb();
 
     /**
-     * Adds a new emotion log entry under the child's history collection.
+     * Saves a completed EmotionLog under:
+     *   children/{childId}/history/
      *
-     * @param log EmotionLog object provided by the UI layer.
-     *            The log must contain a valid childId.
+     * This method is fire-and-forget for now:
+     *  - EmotionLogActivity calls this
+     *  - Success/failure is only logged to Logcat
+     *
+     * @param log Final EmotionLog produced in Step 7.
      */
     public void addEmotionLog(EmotionLog log) {
-        // Validate childId before writing to Firestore
-        if (log.getChildId() == null) {
-            // Child ID is required to correctly store logs under the child document
+
+        // Safety check
+        if (log.getChildId() == null || log.getChildId().trim().isEmpty()) {
+            Log.e(TAG, "Cannot save log: childId is null or empty");
             return;
         }
 
@@ -33,10 +43,12 @@ public class EmotionRepository {
                 .collection("history")
                 .add(log)
                 .addOnSuccessListener(docRef -> {
-                    // Entry successfully written to Firestore
+                    // Save the Firestore document ID inside the model
+                    log.setId(docRef.getId());
+                    Log.d(TAG, "Emotion log saved. ID = " + docRef.getId());
                 })
                 .addOnFailureListener(e -> {
-                    // Handle write failure (logging recommended for debugging)
+                    Log.e(TAG, "Failed to save emotion log", e);
                 });
     }
 }
