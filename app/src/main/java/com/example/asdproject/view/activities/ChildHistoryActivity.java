@@ -81,17 +81,24 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
                     groupedList.add("This Week");
                     for (EmotionLog log : historyList) {
-                        long days = (System.currentTimeMillis() - log.getTimestamp().getTime())
+                        if (log.getTimestamp() == null) continue;
+
+                        long days = (System.currentTimeMillis() - log.getTimestamp().toDate().getTime()
+                        )
                                 / (1000 * 60 * 60 * 24);
                         if (days <= 7) groupedList.add(log);
                     }
 
                     groupedList.add("Older Entries");
                     for (EmotionLog log : historyList) {
-                        long days = (System.currentTimeMillis() - log.getTimestamp().getTime())
+                        if (log.getTimestamp() == null) continue;
+
+                        long days = (System.currentTimeMillis() - log.getTimestamp().toDate().getTime()
+                        )
                                 / (1000 * 60 * 60 * 24);
                         if (days > 7) groupedList.add(log);
                     }
+
 
                     // Final adapter
                     HistoryAdapter adapter = new HistoryAdapter(groupedList);

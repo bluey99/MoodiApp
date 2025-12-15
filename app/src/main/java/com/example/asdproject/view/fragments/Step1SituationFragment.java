@@ -23,6 +23,7 @@ public class Step1SituationFragment extends Fragment {
     /** Callback interface implemented by the hosting Activity. */
     public interface Listener {
         void onSituationSelected(String situation);
+        void onRequestCustomSituation();
     }
 
     private Listener listener;
@@ -90,7 +91,9 @@ public class Step1SituationFragment extends Fragment {
 
         ChildButtonHelper.setup(
                 allButtons[4], allButtons,
-                () -> listener.onSituationSelected("Something else")
+                () -> listener.onRequestCustomSituation()
         );
+
     }
 }
+

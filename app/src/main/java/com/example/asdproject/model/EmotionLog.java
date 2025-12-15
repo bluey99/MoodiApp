@@ -1,6 +1,6 @@
 package com.example.asdproject.model;
 
-import java.util.Date;
+import com.google.firebase.Timestamp;
 
 /**
  * Final data model saved to Firestore after the 7-step child emotion-logging flow.
@@ -46,7 +46,7 @@ public class EmotionLog implements java.io.Serializable {
     private String note;
 
     /** Automatically assigned when saving the log. */
-    private Date timestamp;
+    private Timestamp timestamp;
 
     /** Required empty constructor for Firestore. DO NOT REMOVE. */
     public EmotionLog() { }
@@ -68,7 +68,8 @@ public class EmotionLog implements java.io.Serializable {
         this.note = draft.note;
 
         // The timestamp should be the moment of saving the final log
-        this.timestamp = new Date();
+        this.timestamp = Timestamp.now();
+
     }
 
     // ----------------------------- Getters & Setters -----------------------------
@@ -97,6 +98,6 @@ public class EmotionLog implements java.io.Serializable {
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
 
-    public Date getTimestamp() { return timestamp; }
-    public void setTimestamp(Date timestamp) { this.timestamp = timestamp; }
+    public Timestamp getTimestamp() { return timestamp; }
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 }

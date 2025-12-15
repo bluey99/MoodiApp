@@ -81,7 +81,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
 
         if (log.getTimestamp() != null) {
-            h.txtTimestamp.setText(sdf.format(log.getTimestamp()));
+            h.txtTimestamp.setText(
+                    sdf.format(log.getTimestamp().toDate())
+            );
+
         }
 
         h.imgEmotion.setImageResource(R.drawable.ic_child);
@@ -112,7 +115,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         intent.putExtra("intensity", log.getIntensity());
         intent.putExtra("note", log.getNote());
         intent.putExtra("timestamp", log.getTimestamp() != null
-                ? log.getTimestamp().getTime() : 0L);
+                ? log.getTimestamp().toDate().getTime()
+                : 0L);
         context.startActivity(intent);
     }
 

@@ -14,6 +14,7 @@ import com.example.asdproject.controller.EmotionRepository;
 import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.model.EmotionLogDraft;
 import com.example.asdproject.model.Feeling;
+import com.example.asdproject.view.fragments.CustomSituationFragment;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
 import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
@@ -39,6 +40,7 @@ import com.example.asdproject.view.fragments.Step7ReviewFragment;
  */
 public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
+        CustomSituationFragment.Listener,
         Step2WhereFragment.Listener,
         Step3FeelingFragment.Listener,
         Step4IntensityFragment.Listener,
@@ -217,6 +219,17 @@ public class EmotionLogActivity extends AppCompatActivity
     @Override
     public void onReviewConfirmed() {
         saveFinalEmotionLog();
+    }
+
+    @Override
+    public void onRequestCustomSituation() {
+        replaceFragment(new CustomSituationFragment());
+    }
+
+    @Override
+    public void onCustomSituationEntered(String situation) {
+        draft.situation = situation;
+        showStep(2);  // Continue to Step 2
     }
 
     /**
