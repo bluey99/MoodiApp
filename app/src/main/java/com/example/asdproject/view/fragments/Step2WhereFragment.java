@@ -14,15 +14,15 @@ import com.example.asdproject.R;
 import com.example.asdproject.util.ChildButtonHelper;
 
 /**
- * Step 2 of the child emotion-logging flow.
- * The child selects where the event occurred.
- * Uses ChildButtonHelper to unify animation + selection behavior.
+ * Step 2 of the emotion logging flow.
+ * The child selects where the event happened.
  */
 public class Step2WhereFragment extends Fragment {
 
-    /** Callback interface implemented by the hosting Activity. */
+    /** Callbacks handled by EmotionLogActivity */
     public interface Listener {
         void onLocationSelected(String location);
+        void onRequestCustomLocation();
     }
 
     private Listener listener;
@@ -31,60 +31,61 @@ public class Step2WhereFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Parent must implement Step2WhereFragment.Listener");
+            throw new IllegalStateException(
+                    "Parent must implement Step2WhereFragment.Listener"
+            );
         }
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
         View view = inflater.inflate(R.layout.fragment_step2_where, container, false);
 
-        // Collect all button references
         View btnSchool = view.findViewById(R.id.btnWhere1);
-        View btnHome = view.findViewById(R.id.btnWhere2);
-        View btnUnknown = view.findViewById(R.id.btnWhere3);
-        View btnElse = view.findViewById(R.id.btnWhere4);
+        View btnHome   = view.findViewById(R.id.btnWhere2);
+        View btnOther  = view.findViewById(R.id.btnWhere3);
+        View btnCustom = view.findViewById(R.id.btnWhere4);
 
-        allButtons = new View[]{ btnSchool, btnHome, btnUnknown, btnElse };
+        allButtons = new View[]{ btnSchool, btnHome, btnOther, btnCustom };
 
-        // Attach click behavior using shared helper
-        setupButtons(btnSchool, btnHome, btnUnknown, btnElse);
+        setupButtons(btnSchool, btnHome, btnOther, btnCustom);
 
         return view;
     }
 
-    /**
-     * Registers click handlers for each location option.
-     * Uses ChildButtonHelper to ensure consistent animation + selection.
-     */
-    private void setupButtons(View btnSchool, View btnHome, View btnUnknown, View btnElse) {
-
+    /** Registers all location buttons using the shared helper */
+    private void setupButtons(
+            View btnSchool,
+            View btnHome,
+            View btnOther,
+            View btnCustom
+    ) {
         ChildButtonHelper.setup(
                 btnSchool, allButtons,
-                () -> listener.onLocationSelected("At School")
+                () -> listener.onLocationSelected("At school")
         );
 
         ChildButtonHelper.setup(
                 btnHome, allButtons,
-                () -> listener.onLocationSelected("At Home")
+                () -> listener.onLocationSelected("At home")
         );
 
         ChildButtonHelper.setup(
-                btnUnknown, allButtons,
-                () -> listener.onLocationSelected("I don't know")
-        );
-
-        ChildButtonHelper.setup(
-                btnElse, allButtons,
+                btnOther, allButtons,
                 () -> listener.onLocationSelected("Somewhere else")
+        );
+
+        ChildButtonHelper.setup(
+                btnCustom, allButtons,
+                () -> listener.onRequestCustomLocation()
         );
     }
 }
