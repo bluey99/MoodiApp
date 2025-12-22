@@ -14,8 +14,7 @@ import com.example.asdproject.controller.EmotionRepository;
 import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.model.EmotionLogDraft;
 import com.example.asdproject.model.Feeling;
-import com.example.asdproject.view.fragments.CustomLocationFragment;
-import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
+import com.example.asdproject.view.fragments.CustomLocationBottomSheet;
 import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
 import com.example.asdproject.view.fragments.Step2WhereFragment;
@@ -42,7 +41,7 @@ public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
         CustomSituationBottomSheet.Listener,
         Step2WhereFragment.Listener,
-        CustomLocationFragment.Listener,
+        CustomLocationBottomSheet.Listener,
         Step3FeelingFragment.Listener,
         Step4IntensityFragment.Listener,
         Step5PhotoFragment.Listener,
@@ -188,18 +187,15 @@ public class EmotionLogActivity extends AppCompatActivity
 
     @Override
     public void onRequestCustomLocation() {
-        replaceFragment(new CustomLocationFragment());
+        new CustomLocationBottomSheet()
+                .show(getSupportFragmentManager(), "CustomLocationBottomSheet");
     }
+
 
     @Override
     public void onCustomLocationEntered(String location) {
         draft.location = location;
         showStep(3);
-    }
-
-    @Override
-    public void onBackToWhereStep() {
-        showStep(2);
     }
 
     @Override

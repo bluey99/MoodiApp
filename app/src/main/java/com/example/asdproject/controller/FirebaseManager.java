@@ -1,6 +1,7 @@
 package com.example.asdproject.controller;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,49 +10,61 @@ import com.google.firebase.storage.FirebaseStorage;
 
 /**
  * Centralized manager for Firebase services.
- * This class ensures that all Firebase components are initialized once
- * and provides access to shared instances throughout the application.
- *
- * Required initialization call:
- * FirebaseManager.init(context);
- * This should be executed before any Firebase service is used.
+ * Initializes Firebase SDK and ensures authentication is established
+ * before any database operations are performed.
  */
 public class FirebaseManager {
 
     private static FirebaseAuth auth;
     private static FirebaseFirestore db;
     private static FirebaseStorage storage;
+    private static boolean initialized = false;
 
     /**
      * Initializes all Firebase components.
-     * This should be called in the earliest activity (RoleSelectionActivity or MainActivity).
-     *
-     * @param context application or activity context used to initialize FirebaseApp.
+     * Must be called once at app startup (RoleSelectionActivity).
      */
     public static void init(Context context) {
+        if (initialized) return;
+
         FirebaseApp.initializeApp(context);
+
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+
+        // 🔐 Ensure Firebase Authentication (Anonymous)
+        if (auth.getCurrentUser() == null) {
+            Log.e("AUTH_CHECK", "❌ No Firebase user, signing in anonymously");
+
+            auth.signInAnonymously()
+                    .addOnSuccessListener(result ->
+                            Log.e(
+                                    "AUTH_CHECK",
+                                    "✅ Signed in anonymously: " + result.getUser().getUid()
+                            )
+                    )
+                    .addOnFailureListener(e ->
+                            Log.e("AUTH_CHECK", "❌ Anonymous auth failed", e)
+                    );
+        } else {
+            Log.e(
+                    "AUTH_CHECK",
+                    "✅ Already authenticated: " + auth.getCurrentUser().getUid()
+            );
+        }
+
+        initialized = true;
     }
 
-    /**
-     * Provides a shared FirebaseAuth instance.
-     */
     public static FirebaseAuth getAuth() {
         return auth;
     }
 
-    /**
-     * Provides a shared Firestore database instance.
-     */
     public static FirebaseFirestore getDb() {
         return db;
     }
 
-    /**
-     * Provides a shared Firebase Storage instance.
-     */
     public static FirebaseStorage getStorage() {
         return storage;
     }

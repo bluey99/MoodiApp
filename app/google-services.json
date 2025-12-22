@@ -15,7 +15,26 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDC6ti7dN3j4ulQUYFDKWSjMOD0bXbYQsc"
+          "current_key": "AIzaSyD9W1XWGdz99xfeqr7rc65uXYQciDlUK1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18786483617:android:5825942086f3e218041fe0",
+        "android_client_info": {
+          "package_name": "com.example.parenthomeactivity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9W1XWGdz99xfeqr7rc65uXYQciDlUK1A"
         }
       ],
       "services": {
