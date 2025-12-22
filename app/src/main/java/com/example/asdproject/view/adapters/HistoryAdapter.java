@@ -75,10 +75,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         h.txtIntensity.setText("Intensity: " + log.getIntensity());
 
         if (log.getNote() != null && !log.getNote().trim().isEmpty()) {
+            h.txtNotePreview.setVisibility(View.VISIBLE);
             h.txtNotePreview.setText(log.getNote());
         } else {
-            h.txtNotePreview.setText("No note");
+            h.txtNotePreview.setVisibility(View.GONE);
         }
+
 
         if (log.getTimestamp() != null) {
             h.txtTimestamp.setText(

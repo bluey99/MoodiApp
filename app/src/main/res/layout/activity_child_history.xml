@@ -5,30 +5,17 @@
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-    <!-- HEADER PANEL -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#FFF3C4"
-        android:paddingLeft="24dp"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/txtHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Feelings"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:textColor="#4C5257"/>
-    </LinearLayout>
+    <!-- REUSABLE HEADER -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_header" />
 
     <!-- LOG COUNT -->
     <TextView
         android:id="@+id/txtLogCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You've logged 0 feelings"
+        android:text="Saved feelings: 0"
         android:textSize="18sp"
         android:layout_gravity="center"
         android:textColor="#085F63"

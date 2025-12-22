@@ -15,7 +15,8 @@ import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.model.EmotionLogDraft;
 import com.example.asdproject.model.Feeling;
 import com.example.asdproject.view.fragments.CustomLocationFragment;
-import com.example.asdproject.view.fragments.CustomSituationFragment;
+import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
+import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
 import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
@@ -39,7 +40,7 @@ import com.example.asdproject.view.fragments.Step7ReviewFragment;
  */
 public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
-        CustomSituationFragment.Listener,
+        CustomSituationBottomSheet.Listener,
         Step2WhereFragment.Listener,
         CustomLocationFragment.Listener,
         Step3FeelingFragment.Listener,
@@ -64,8 +65,9 @@ public class EmotionLogActivity extends AppCompatActivity
     private TextView txtStepIndicator;
     private ImageView btnBack;
     private View stepProgressFill;
-
     private static final int TOTAL_STEPS = 7;
+    private View headerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,10 +84,20 @@ public class EmotionLogActivity extends AppCompatActivity
 
     /** Binds shared views */
     private void initViews() {
+
+        // Header include
+        headerView = findViewById(R.id.header);
+
+        // Header views
+        btnBack = headerView.findViewById(R.id.btnBack);
+        TextView txtHeaderTitle = headerView.findViewById(R.id.txtHeaderTitle);
+        txtHeaderTitle.setText("Log My Feelings");
+
+        // Step UI
         txtStepIndicator = findViewById(R.id.txtStepIndicator);
-        btnBack = findViewById(R.id.btnBack);
         stepProgressFill = findViewById(R.id.stepProgressFill);
     }
+
 
     /** Handles back navigation */
     private void setupBackButton() {
@@ -154,8 +166,13 @@ public class EmotionLogActivity extends AppCompatActivity
 
     @Override
     public void onRequestCustomSituation() {
-        replaceFragment(new CustomSituationFragment());
+        CustomSituationBottomSheet sheet = new CustomSituationBottomSheet();
+        sheet.show(
+                getSupportFragmentManager(),
+                "CustomSituationBottomSheet"
+        );
     }
+
 
     @Override
     public void onCustomSituationEntered(String situation) {

@@ -21,22 +21,26 @@ import java.util.List;
 public class ChildHistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerHistory;
-    private TextView txtEmpty, txtLogCount;
-
+    private TextView txtLogCount;
     private String childId;
+    private View emptyContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_history);
+        TextView headerTitle = findViewById(R.id.txtHeaderTitle);
+        headerTitle.setText("My History");
+
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+
 
         recyclerHistory = findViewById(R.id.recyclerHistory);
-        txtEmpty = findViewById(R.id.txtEmpty);
         txtLogCount = findViewById(R.id.txtLogCount);
-
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
-
         childId = getIntent().getStringExtra("childId");
+        emptyContainer = findViewById(R.id.emptyContainer);
 
         loadHistory();
     }
@@ -44,10 +48,12 @@ public class ChildHistoryActivity extends AppCompatActivity {
     private void loadHistory() {
 
         if (childId == null) {
-            txtEmpty.setVisibility(View.VISIBLE);
-            txtEmpty.setText("No child selected");
+            emptyContainer.setVisibility(View.VISIBLE);
+            recyclerHistory.setAdapter(null);
+            txtLogCount.setVisibility(View.GONE);
             return;
         }
+
 
         FirebaseFirestore db = FirebaseManager.getDb();
 
@@ -66,38 +72,52 @@ public class ChildHistoryActivity extends AppCompatActivity {
                     });
 
                     // UPDATE "You've logged X feelings"
-                    txtLogCount.setText("You've logged " + historyList.size() + " feelings");
+                    txtLogCount.setText("Saved feelings: " + historyList.size());
+
 
                     if (historyList.isEmpty()) {
-                        txtEmpty.setVisibility(View.VISIBLE);
+                        emptyContainer.setVisibility(View.VISIBLE);
                         recyclerHistory.setAdapter(null);
+                        txtLogCount.setVisibility(View.GONE);
                         return;
                     }
 
-                    txtEmpty.setVisibility(View.GONE);
+                    emptyContainer.setVisibility(View.GONE);
+                    txtLogCount.setVisibility(View.VISIBLE);
 
                     // ---------- GROUPING ----------
                     List<Object> groupedList = new ArrayList<>();
 
-                    groupedList.add("This Week");
+                    List<EmotionLog> thisWeek = new ArrayList<>();
+                    List<EmotionLog> older = new ArrayList<>();
+
                     for (EmotionLog log : historyList) {
                         if (log.getTimestamp() == null) continue;
 
-                        long days = (System.currentTimeMillis() - log.getTimestamp().toDate().getTime()
-                        )
-                                / (1000 * 60 * 60 * 24);
-                        if (days <= 7) groupedList.add(log);
+                        long days =
+                                (System.currentTimeMillis() - log.getTimestamp().toDate().getTime())
+                                        / (1000 * 60 * 60 * 24);
+
+                        if (days <= 7) {
+                            thisWeek.add(log);
+                        } else {
+                            older.add(log);
+                        }
                     }
 
-                    groupedList.add("Older Entries");
-                    for (EmotionLog log : historyList) {
-                        if (log.getTimestamp() == null) continue;
-
-                        long days = (System.currentTimeMillis() - log.getTimestamp().toDate().getTime()
-                        )
-                                / (1000 * 60 * 60 * 24);
-                        if (days > 7) groupedList.add(log);
+                    // Add sections ONLY if they have items
+                    if (!thisWeek.isEmpty()) {
+                        groupedList.add("This Week");
+                        groupedList.addAll(thisWeek);
                     }
+
+                    if (!older.isEmpty()) {
+                        groupedList.add("Earlier");
+                        groupedList.addAll(older);
+                    }
+
+
+
 
 
                     // Final adapter
