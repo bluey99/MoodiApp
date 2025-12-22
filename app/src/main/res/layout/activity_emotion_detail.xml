@@ -1,82 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D7F1F1"
-    android:padding="24dp">
+    android:orientation="vertical"
+    android:background="#E3F4F4">
 
-    <LinearLayout
+    <!-- REUSABLE HEADER (same height as ChildHistory) -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_header" />
+
+    <!-- SCROLLABLE CONTENT -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Yellow header -->
+        <!-- CONTENT CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:background="#F9E28C"
-            android:gravity="center_vertical"
-            android:paddingLeft="24dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp"
+            android:layout_marginTop="24dp"
+            android:gravity="center_horizontal">
 
+            <!-- Emotion title -->
             <TextView
                 android:id="@+id/txtDetailEmotionName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="My Feeling"
-                android:textSize="26sp"
+                android:text="Surprised"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                android:textColor="#4C5257"/>
+                android:textColor="#4C5257"
+                android:padding="16dp"
+                android:background="@drawable/card_child_button"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Emotion icon -->
+            <ImageView
+                android:id="@+id/imgDetailEmotion"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/ic_child"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Intensity glass -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <FrameLayout
+                    android:id="@+id/detailGlassContainer"
+                    android:layout_width="44dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/intensity_glass_background"
+                    android:padding="4dp"
+                    android:clipToOutline="true">
+
+                    <View
+                        android:id="@+id/detailFillView"
+                        android:layout_width="match_parent"
+                        android:layout_height="16dp"
+                        android:layout_gravity="bottom"/>
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/txtDetailIntensity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="How strong it felt: 3 / 5"
+                    android:textSize="16sp"
+                    android:textColor="#085F63"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+
+            <!-- Timestamp -->
+            <TextView
+                android:id="@+id/txtDetailTimestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#4C5257"
+                android:layout_marginTop="12dp"/>
+
+            <!-- Divider -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#85C1C1"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- Note -->
+            <TextView
+                android:id="@+id/txtDetailNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#4C5257"
+                android:padding="12dp"
+                android:background="@drawable/card_child_button"/>
+
         </LinearLayout>
 
-        <!-- Emotion icon -->
-        <ImageView
-            android:id="@+id/imgDetailEmotion"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_marginTop="24dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_child"/>
+    </ScrollView>
 
-        <!-- Intensity -->
-        <TextView
-            android:id="@+id/txtDetailIntensity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Intensity: 5"
-            android:textSize="18sp"
-            android:textColor="#085F63"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"/>
-
-        <!-- Timestamp -->
-        <TextView
-            android:id="@+id/txtDetailTimestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="20 Feb 2025, 14:07"
-            android:textSize="16sp"
-            android:textColor="#4C5257"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"/>
-
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#85C1C1"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"/>
-
-        <!-- Note -->
-        <TextView
-            android:id="@+id/txtDetailNote"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Note: Today I felt..."
-            android:textSize="18sp"
-            android:textColor="#4C5257"
-            android:padding="8dp"
-            android:background="@drawable/card_child_button"/>
-
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

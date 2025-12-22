@@ -13,11 +13,11 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.fragment.app.Fragment;
 
 import com.example.asdproject.R;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-public class CustomSituationFragment extends Fragment {
+public class CustomSituationBottomSheet extends BottomSheetDialogFragment {
 
     public interface Listener {
         void onCustomSituationEntered(String situation);
@@ -31,7 +31,9 @@ public class CustomSituationFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Activity must implement CustomSituationFragment.Listener");
+            throw new IllegalStateException(
+                    "Activity must implement CustomSituationBottomSheet.Listener"
+            );
         }
     }
 
@@ -42,15 +44,21 @@ public class CustomSituationFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
     ) {
-        View view = inflater.inflate(R.layout.fragment_custom_situation, container, false);
+        View view = inflater.inflate(
+                R.layout.fragment_custom_situation,
+                container,
+                false
+        );
 
         EditText input = view.findViewById(R.id.editCustomSituation);
-        AppCompatButton btnConfirm = view.findViewById(R.id.btnConfirmCustomSituation);
+        AppCompatButton btnConfirm =
+                view.findViewById(R.id.btnConfirmCustomSituation);
+        AppCompatButton btnCancel =
+                view.findViewById(R.id.btnCancelCustomSituation);
 
-        // Initial disabled state (same as other steps)
+
         disableButton(btnConfirm);
 
-        // Enable button only when text is entered
         input.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -69,15 +77,18 @@ public class CustomSituationFragment extends Fragment {
             String text = input.getText().toString().trim();
             if (!TextUtils.isEmpty(text)) {
                 listener.onCustomSituationEntered(text);
+                dismiss(); // 👈 close the bottom sheet
             }
         });
+
+        btnCancel.setOnClickListener(v -> dismiss());
 
         return view;
     }
 
     private void disableButton(AppCompatButton button) {
         button.setEnabled(false);
-        button.setAlpha(0.5f);
+        button.setAlpha(0.4f);
     }
 
     private void enableButton(AppCompatButton button) {
