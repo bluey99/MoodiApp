@@ -1,1 +1,3 @@
 /build
+# Firebase config (DO NOT COMMIT)
+app/google-services.json
