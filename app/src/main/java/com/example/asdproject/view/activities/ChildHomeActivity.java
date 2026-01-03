@@ -65,7 +65,8 @@ public class ChildHomeActivity extends AppCompatActivity {
         btnCalmingTools = findViewById(R.id.btnCalmingTools);
 
         // Display personalized greeting
-        txtGreeting.setText("Good morning, " + childName + "!");
+        txtGreeting.setText(getTimeBasedGreeting() + ", " + childName + "!");
+
 
         // Navigate to emotion logging flow
         btnLogEmotion.setOnClickListener(v -> {
@@ -206,6 +207,30 @@ public class ChildHomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        txtGreeting.setText(getTimeBasedGreeting() + ", " + getIntent().getStringExtra("childName") + "!");
         loadCheckInStreak();
     }
+
+    /**
+     * Returns a greeting message based on the current time of day.
+     *
+     * Used to display a friendly, context-aware greeting
+     * when the child opens the home screen.
+     *
+     * @return a time-appropriate greeting string
+     */
+    private String getTimeBasedGreeting() {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+
+        if (hour >= 5 && hour <= 11) {
+            return "Good morning";
+        } else if (hour >= 12 && hour <= 16) {
+            return "Good afternoon";
+        } else if (hour >= 17 && hour <= 21) {
+            return "Good evening";
+        } else {
+            return "Hello";
+        }
+    }
+
 }
