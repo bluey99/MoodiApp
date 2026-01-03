@@ -20,6 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
+import com.example.asdproject.model.Feeling;
+import com.example.asdproject.util.FeelingUiMapper;
+
+
 /**
  * Adapter that supports 2 view types:
  * - SECTION HEADER ("This Week", "Older Entries")
@@ -71,9 +75,27 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         EmotionLog log = (EmotionLog) list.get(position);
         Context context = h.itemView.getContext();
 
-        h.txtEmotion.setText(log.getFeeling());
+        // ---------------- Emotion (single source of truth) ----------------
+        Feeling feeling;
+        try {
+            feeling = Feeling.valueOf(log.getFeeling());
+        } catch (Exception e) {
+            feeling = Feeling.UNSURE; // safety for old/broken data
+        }
+
+        // Label + Emoji from mapper
+        h.txtEmotion.setText(
+                FeelingUiMapper.getLabel(feeling)
+        );
+
+        h.imgEmotion.setImageResource(
+                FeelingUiMapper.getEmojiRes(feeling)
+        );
+
+        // ---------------- Intensity ----------------
         h.txtIntensity.setText("Intensity: " + log.getIntensity());
 
+        // ---------------- Note preview ----------------
         if (log.getNote() != null && !log.getNote().trim().isEmpty()) {
             h.txtNotePreview.setVisibility(View.VISIBLE);
             h.txtNotePreview.setText(log.getNote());
@@ -81,21 +103,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h.txtNotePreview.setVisibility(View.GONE);
         }
 
-
+        // ---------------- Timestamp ----------------
         if (log.getTimestamp() != null) {
             h.txtTimestamp.setText(
                     sdf.format(log.getTimestamp().toDate())
             );
-
+        } else {
+            h.txtTimestamp.setText("");
         }
 
-        h.imgEmotion.setImageResource(R.drawable.ic_child);
-
-        // Mini glass fill
+        // ---------------- Mini glass intensity fill ----------------
         View glass = h.itemView.findViewById(R.id.historyGlassContainer);
         View fill = h.itemView.findViewById(R.id.historyFillView);
 
-        fill.setBackgroundResource(IntensityHelper.getFillDrawable(log.getIntensity()));
+        fill.setBackgroundResource(
+                IntensityHelper.getFillDrawable(log.getIntensity())
+        );
 
         glass.post(() -> {
             int maxHeight = glass.getHeight();
@@ -108,8 +131,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             fill.setLayoutParams(lp);
         });
 
+        // ---------------- Click → detail screen ----------------
         h.itemView.setOnClickListener(v -> openDetailScreen(context, log));
     }
+
 
     private void openDetailScreen(Context context, EmotionLog log) {
         Intent intent = new Intent(context, EmotionDetailActivity.class);

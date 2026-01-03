@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment;
 import com.example.asdproject.R;
 import com.example.asdproject.model.Feeling;
 import com.example.asdproject.util.ChildButtonHelper;
+import android.widget.ImageView;
+import com.example.asdproject.util.FeelingUiMapper;
+
 
 /**
  * Step 3 of the child emotion-logging flow.
@@ -58,6 +61,15 @@ public class Step3FeelingFragment extends Fragment {
         View btnUnsure    = view.findViewById(R.id.btnUnsure);
         View btnOther     = view.findViewById(R.id.btnOtherFeeling);
 
+        bindEmoji(btnHappy, Feeling.HAPPY);
+        bindEmoji(btnSad, Feeling.SAD);
+        bindEmoji(btnAngry, Feeling.ANGRY);
+        bindEmoji(btnSurprised, Feeling.SURPRISED);
+        bindEmoji(btnScared, Feeling.AFRAID);
+        bindEmoji(btnDisgust, Feeling.DISGUST);
+        bindEmoji(btnUnsure, Feeling.UNSURE);
+
+
         allButtons = new View[]{
                 btnHappy, btnSad, btnAngry, btnSurprised,
                 btnScared, btnDisgust, btnUnsure, btnOther
@@ -102,4 +114,10 @@ public class Step3FeelingFragment extends Fragment {
         ChildButtonHelper.setup(btnOther, allButtons,
                 () -> listener.onFeelingSelected(Feeling.OTHER));
     }
+
+    private void bindEmoji(View btn, Feeling feeling) {
+        ImageView img = (ImageView) ((ViewGroup) btn).getChildAt(0);
+        img.setImageResource(FeelingUiMapper.getEmojiRes(feeling));
+    }
+
 }

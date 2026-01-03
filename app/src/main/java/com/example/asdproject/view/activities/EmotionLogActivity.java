@@ -200,7 +200,7 @@ public class EmotionLogActivity extends AppCompatActivity
 
     @Override
     public void onFeelingSelected(Feeling feeling) {
-        draft.feeling = feeling.getLabel();
+        draft.feeling = feeling.name();
         showStep(4);
     }
 

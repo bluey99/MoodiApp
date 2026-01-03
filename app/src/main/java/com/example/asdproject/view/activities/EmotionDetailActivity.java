@@ -15,6 +15,10 @@ import java.util.Locale;
 import android.view.ViewGroup;
 import com.example.asdproject.util.IntensityHelper;
 
+import com.example.asdproject.model.Feeling;
+import com.example.asdproject.util.FeelingUiMapper;
+
+
 
 /**
  * Displays the detailed information for a single recorded emotion entry.
@@ -46,7 +50,15 @@ public class EmotionDetailActivity extends AppCompatActivity {
         txtNote = findViewById(R.id.txtDetailNote);
 
         // Extract emotion entry data passed from the history list
-        String emotion = getIntent().getStringExtra("feeling");
+        String emotionStr = getIntent().getStringExtra("feeling");
+
+        Feeling feeling;
+        try {
+            feeling = Feeling.valueOf(emotionStr);
+        } catch (Exception e) {
+            feeling = Feeling.UNSURE; // safety for old logs
+        }
+
         int intensity = getIntent().getIntExtra("intensity", 0);
         String note = getIntent().getStringExtra("note");
         long timestamp = getIntent().getLongExtra("timestamp", 0);
@@ -71,7 +83,9 @@ public class EmotionDetailActivity extends AppCompatActivity {
 
 
         // Display emotion name and intensity
-        txtEmotionName.setText(emotion);
+        txtEmotionName.setText(
+                FeelingUiMapper.getLabel(feeling)
+        );
         txtIntensity.setText("How strong it felt: " + intensity + " / 5");
 
         // Format and display the timestamp
@@ -93,35 +107,12 @@ public class EmotionDetailActivity extends AppCompatActivity {
 
 
         // Assign an icon based on the emotion type
-        setEmotionIcon(emotion);
+        imgEmotion.setImageResource(
+                FeelingUiMapper.getEmojiRes(feeling)
+        );
 
     }
 
-    /**
-     * Sets the displayed icon based on the emotion's name.
-     * This uses placeholder icons until emotion-specific resources are added.
-     *
-     * @param emotion The emotion string provided from the history entry.
-     */
-    private void setEmotionIcon(String emotion) {
-        if (emotion == null) {
-            imgEmotion.setImageResource(R.drawable.ic_child);
-            return;
-        }
 
-        switch (emotion.toLowerCase(Locale.ROOT)) {
-            case "happy":
-                imgEmotion.setImageResource(R.drawable.ic_child);
-                break;
-
-            case "sad":
-                imgEmotion.setImageResource(R.drawable.ic_child);
-                break;
-
-            default:
-                imgEmotion.setImageResource(R.drawable.ic_child);
-                break;
-        }
-    }
 
 }
