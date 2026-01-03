@@ -35,7 +35,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="12dp" />
 
-        <!-- Streak badge -->
+        <!-- Streak / Check-in badge -->
         <LinearLayout
             android:id="@+id/layoutStreak"
             android:orientation="horizontal"
@@ -43,17 +43,19 @@
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/card_child_button">
+            android:background="@drawable/card_child_button"
+            android:visibility="gone">  <!-- start hidden -->
 
             <TextView
                 android:id="@+id/txtStreak"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5 days in a row !"
+                android:text=""
                 android:textSize="14sp"
                 android:textColor="#085F63"
                 android:padding="8dp" />
         </LinearLayout>
+
 
         <!-- Yellow rounded panel -->
         <LinearLayout
