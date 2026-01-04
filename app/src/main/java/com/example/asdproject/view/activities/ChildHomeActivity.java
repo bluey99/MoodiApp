@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,14 +16,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
+import com.example.asdproject.view.fragments.NotificationsBottomSheetFragment;
+
+
 
 /**
  * ChildHomeActivity
- *
  * Displays the main home screen for the child user after login.
  * Acts as a central navigation hub and provides gentle, non-intrusive
  * feedback about recent emotional check-ins.
- *
  * Design principles:
  * - No pressure or negative feedback
  * - No notifications or reminders
@@ -36,6 +38,9 @@ public class ChildHomeActivity extends AppCompatActivity {
     private LinearLayout btnTasks;
     private LinearLayout btnHistory;
     private LinearLayout btnCalmingTools;
+    private ImageView btnNotifications;
+    private ImageView btnSettings;
+
 
     // Gentle check-in indicator (streak-style feedback)
     private LinearLayout layoutStreak;
@@ -48,6 +53,18 @@ public class ChildHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_home);
+
+        //Bind header UI elements
+        btnNotifications = findViewById(R.id.btnNotifications);
+        btnSettings = findViewById(R.id.btnSettings);
+
+        findViewById(R.id.btnNotifications).setOnClickListener(v -> {
+            NotificationsBottomSheetFragment sheet =
+                    new NotificationsBottomSheetFragment();
+            sheet.show(getSupportFragmentManager(), "NotificationsBottomSheet");
+        });
+
+
 
         // Bind streak UI elements
         layoutStreak = findViewById(R.id.layoutStreak);

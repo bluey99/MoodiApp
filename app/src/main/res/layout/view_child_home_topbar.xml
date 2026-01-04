@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="?attr/actionBarSize"
+    android:paddingBottom="12dp"
+    android:paddingHorizontal="16dp"
+    android:background="#D7F1F1">
+
+
+    <!-- App title / branding -->
+    <TextView
+        android:id="@+id/txtAppTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Moodi"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#085F63" />
+
+    <!-- Notifications button -->
+    <ImageView
+        android:id="@+id/btnNotifications"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:contentDescription="Notifications"
+        android:src="@drawable/ic_notifications"
+        android:padding="4dp" />
+
+    <!-- Settings button -->
+    <ImageView
+        android:id="@+id/btnSettings"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="12dp"
+        android:contentDescription="Settings"
+        android:src="@drawable/ic_settings"
+        android:padding="4dp" />
+
+</LinearLayout>
