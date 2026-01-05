@@ -34,7 +34,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
 
-    private final List<Object> list; // MIX of String headers + EmotionLog objects
+    private List<Object> list;
 
     private final SimpleDateFormat sdf =
             new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
@@ -180,4 +180,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             txtTimestamp = itemView.findViewById(R.id.txtTimestamp);
         }
     }
+    /**
+     * Replaces the adapter data and refreshes the RecyclerView.
+     * Used when filters are applied or cleared.
+     *
+     * @param newList grouped list containing section headers and EmotionLog items
+     */
+    public void updateData(List<Object> newList) {
+        this.list = newList;
+        notifyDataSetChanged();
+    }
+
 }
