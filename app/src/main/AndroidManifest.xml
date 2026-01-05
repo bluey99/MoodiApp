@@ -1,12 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.asdproject">
-
-
-<!-- Camera for Step 5 -->
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- Allow install on devices without a camera -->
+    <!-- Camera for Step 5 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- Allow install on devices without a camera -->
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -14,57 +11,68 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ASDProject"
-        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
-
-        <!-- Google API key -->
+        <activity
+            android:name=".view.activities.ChildTasksActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.MomTasksActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ReportsHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.TherapistNotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.NewTaskActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.NewReportActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.EmotionHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ParentHomeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ParentLoginActivity"
+            android:exported="false" /> <!-- Google API key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${GOOGLE_MAPS_API_KEY}" />
-
-        <!-- Launch screen -->
+            android:value="${GOOGLE_MAPS_API_KEY}" /> <!-- Launch screen -->
         <activity
             android:name=".view.activities.RoleSelectionActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-        </activity>
-
-        <!-- Child login -->
+        </activity> <!-- Child login -->
         <activity
             android:name=".view.activities.LoginActivity"
-            android:exported="false" />
-
-        <!-- Child home -->
+            android:exported="false" /> <!-- Child home -->
         <activity
             android:name=".view.activities.ChildHomeActivity"
-            android:exported="false" />
-
-        <!-- Emotion logging flow -->
+            android:exported="false" /> <!-- Emotion logging flow -->
         <activity
             android:name=".view.activities.EmotionLogActivity"
-            android:exported="false" />
-
-        <!-- History list -->
+            android:exported="false" /> <!-- History list -->
         <activity
             android:name=".view.activities.ChildHistoryActivity"
-            android:exported="false" />
-
-        <!-- History detail -->
+            android:exported="false" /> <!-- History detail -->
         <activity
             android:name=".view.activities.EmotionDetailActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>

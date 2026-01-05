@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E2F6F7">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvTherapistTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Therapist Feedback"
+        android:textSize="33sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:paddingTop="24dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/tvTherapistSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Here are all of your child's therapist notes for easy review."
+        android:textSize="14sp"
+        android:gravity="center"
+        android:textColor="#506070"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTherapistTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Filter button -->
+    <Button
+        android:id="@+id/btnFilterNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="• Filter By"
+        android:textSize="13sp"
+        android:paddingHorizontal="18dp"
+        android:paddingVertical="6dp"
+        android:backgroundTint="#FFFFFF"
+        android:textColor="#3E7F6B"
+        android:elevation="2dp"
+        app:cornerRadius="20dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTherapistSubtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp" />
+
+    <!-- Scroll area (EMPTY — no notes yet) -->
+    <ScrollView
+        android:id="@+id/scrollTherapistNotes"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/btnFilterNotes"
+        app:layout_constraintBottom_toTopOf="@id/btnBackFromNotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/containerTherapistNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
+
+            <!-- no cards inside - empty page -->
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Go Back button -->
+    <Button
+        android:id="@+id/btnBackFromNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="← Go Back"
+        android:textSize="14sp"
+        android:paddingHorizontal="28dp"
+        android:paddingVertical="10dp"
+        android:backgroundTint="#C7F0CF"
+        android:textColor="#2F6A43"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="20dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

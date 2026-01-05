@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E2F6F7">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/txtTitleNewReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="New Report"
+                android:textSize="26sp"
+                android:layout_marginTop="28dp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+
+            <!-- Subtitle -->
+            <TextView
+                android:id="@+id/txtSubtitleNewReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:text="Share what your child experienced"
+                android:textSize="15sp" />
+
+            <!-- View history button (top-right) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btnViewHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🕑view history"
+                    android:textSize="12sp"
+                    android:paddingHorizontal="28dp"
+                    android:paddingVertical="10dp"
+                    android:backgroundTint="#C7F0CF"
+                    android:textColor="#2F6A43"
+                    app:cornerRadius="24dp"
+                    android:layout_marginBottom="20dp" />
+            </LinearLayout>
+
+            <!-- Space -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp" />
+
+            <!-- Situation -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  Situation :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtSituation"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="Describe the situation you're reporting on"
+                    android:background="@drawable/white_card_pg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Date & Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  Timestamp :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtDateTime"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="When did this happen?"
+                    android:background="@drawable/white_card_pg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Location -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  Location :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtLocation"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="Where did this happen?"
+                    android:background="@drawable/white_card_pg"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <!-- Child's reaction -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  Child's reaction :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtChildReaction"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="How did your child respond ?"
+                    android:gravity="top|start"
+                    android:background="@drawable/white_card_pg"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <!-- How you handled it -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  How you handled it :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtHowHandled"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="Describe how you managed the situation."
+                    android:gravity="top|start"
+                    android:background="@drawable/white_card_pg"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <!-- Questions for therapist -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="top">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="•  Questions for the therapist (optional) :"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/edtQuestionsTherapist"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:hint="Anything you'd like the therapist to focus on?"
+                    android:gravity="top|start"
+                    android:background="@drawable/white_card_pg"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <!-- Bottom buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <Button
+                    android:id="@+id/btnSendReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Send"
+                    android:textSize="14sp"
+                    android:paddingHorizontal="28dp"
+                    android:paddingVertical="10dp"
+                    android:backgroundTint="#C7F0CF"
+                    android:textColor="#2F6A43"
+                    app:cornerRadius="24dp"
+                    android:layout_marginBottom="20dp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/btnGoBackReport"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="← Go Back"
+                    android:textSize="14sp"
+                    android:paddingHorizontal="28dp"
+                    android:paddingVertical="10dp"
+                    android:backgroundTint="#C7F0CF"
+                    android:textColor="#2F6A43"
+                    app:cornerRadius="24dp"
+                    android:layout_marginBottom="20dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

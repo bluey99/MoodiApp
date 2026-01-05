@@ -1,108 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D7F1F1"
-    tools:context=".view.activities.RoleSelectionActivity">
+    android:background="#E2F6F7">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/contentLoginChoice"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:gravity="center_horizontal"
         android:padding="24dp"
-        android:layout_marginTop="100dp"
-        android:orientation="vertical">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- TITLE -->
+        <!-- Title -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign In to Moodi"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="#4C5257"
-            android:layout_marginTop="40dp" />
+            android:textSize="37sp"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
+        <!-- Subtitle -->
         <TextView
+            android:id="@+id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Where emotions make sense — together."
-            android:textSize="14sp"
-            android:textColor="#777777"
+            android:textSize="19sp"
             android:layout_marginTop="4dp" />
 
+        <!-- Select text -->
         <TextView
+            android:id="@+id/txtSelect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Please select who you are to log in"
             android:textSize="16sp"
-            android:textColor="#4C5257"
-            android:layout_marginTop="40dp" />
+            android:layout_marginTop="32dp" />
 
-        <!-- CHILD -->
+        <!-- Child card -->
         <LinearLayout
             android:id="@+id/btnChild"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
-            android:background="@drawable/role_card"
-            android:padding="16dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="20dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/role_card_bg">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_child" />
+                android:id="@+id/imgChild"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_child"
+                android:contentDescription="Child icon" />
 
             <TextView
+                android:id="@+id/txtChild"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Child"
                 android:textSize="18sp"
-                android:textColor="#4C5257"
-                android:paddingLeft="16dp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:layout_marginStart="12dp" />
         </LinearLayout>
 
-        <!-- PARENT -->
+        <!-- Parent card -->
         <LinearLayout
             android:id="@+id/btnParent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            android:background="@drawable/role_card"
-            android:padding="16dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="20dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:background="@drawable/role_card_bg">
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/ic_parent" />
+                android:id="@+id/imgParent"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_parent"
+                android:contentDescription="Parent icon" />
 
             <TextView
+                android:id="@+id/txtParent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Parent"
                 android:textSize="18sp"
-                android:textColor="#4C5257"
-                android:paddingLeft="16dp"
-                android:textStyle="bold" />
+                android:textColor="@color/black"
+                android:layout_marginStart="12dp" />
         </LinearLayout>
 
-        <!-- SIGN UP -->
-        <TextView
-            android:id="@+id/txtSignUp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Don’t have an account? Sign Up"
-            android:textColor="#3454DC"
-            android:textSize="14sp"
-            android:layout_marginTop="32dp" />
-
+        <!-- Sign up link -->
+        <!--        <TextView-->
+        <!--            android:id="@+id/txtSignUp"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="Don’t have an account? Sign Up"-->
+        <!--            android:textSize="14sp"-->
+        <!--            android:textColor="#0000FF"-->
+        <!--            android:layout_marginTop="32dp" />-->
     </LinearLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

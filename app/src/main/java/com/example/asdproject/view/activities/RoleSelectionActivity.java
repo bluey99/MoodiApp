@@ -11,7 +11,7 @@ import com.example.asdproject.controller.FirebaseManager;
 
 /**
  * Entry point of the application.
- * Allows the user to select their role. Currently only the child role is enabled.
+ * Allows the user to select their role (Child or Parent).
  * Initializes Firebase before navigating to authentication.
  */
 public class RoleSelectionActivity extends AppCompatActivity {
@@ -20,20 +20,26 @@ public class RoleSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Firebase initialization is required before any authentication or database operations
+        // Initialize Firebase before any DB/Auth usage
         FirebaseManager.init(this);
 
         setContentView(R.layout.activity_role_selection);
 
-        // UI element representing the child role option
-        LinearLayout childBtn = findViewById(R.id.btnChild);
+        // Role buttons
+        LinearLayout btnChild = findViewById(R.id.btnChild);
+        LinearLayout btnParent = findViewById(R.id.btnParent);
 
-        // Navigate to LoginActivity when the child role is selected
-        childBtn.setOnClickListener(v -> {
+        // Child role → Child login
+        btnChild.setOnClickListener(v -> {
             Intent intent = new Intent(RoleSelectionActivity.this, LoginActivity.class);
             startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        });
 
-            // Apply a simple fade transition during navigation
+        // Parent role → Parent login
+        btnParent.setOnClickListener(v -> {
+            Intent intent = new Intent(RoleSelectionActivity.this, ParentLoginActivity.class);
+            startActivity(intent);
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         });
     }

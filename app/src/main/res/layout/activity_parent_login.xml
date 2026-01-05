@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#D7F1F1">
+
+    <LinearLayout
+        android:id="@+id/contentParentLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="100dp"
+        android:gravity="center_horizontal">
+
+        <!-- TITLE -->
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign In to Moodi"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#4C5257"
+            android:layout_marginTop="40dp"/>
+
+        <!-- SUBTITLE -->
+        <TextView
+            android:id="@+id/txtSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Where emotions make sense — together."
+            android:textSize="14sp"
+            android:textColor="#777777"
+            android:layout_marginTop="4dp"/>
+
+        <!-- HELPER TEXT -->
+        <TextView
+            android:id="@+id/txtHelper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hi! Enter your email and password to start"
+            android:textSize="16sp"
+            android:textColor="#4C5257"
+            android:layout_marginTop="40dp"/>
+
+        <!-- PARENT AVATAR -->
+        <ImageView
+            android:id="@+id/imgParentBig"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_parent"
+            android:contentDescription="Parent Icon"/>
+
+        <!-- WHITE LOGIN CARD -->
+        <LinearLayout
+            android:id="@+id/cardLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:layout_marginTop="30dp"
+            android:padding="24dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:elevation="3dp"
+            android:layout_marginBottom="8dp"
+            android:clipToOutline="true"
+            android:backgroundTint="#FFFFFF">
+
+            <!-- EMAIL INPUT -->
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:textSize="16sp"
+                android:background="@drawable/password_bg"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- PASSWORD INPUT -->
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Enter password"
+                android:inputType="textPassword"
+                android:textSize="16sp"
+                android:background="@drawable/password_bg"
+                android:padding="12dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- LOGIN BUTTON -->
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLogin"
+                android:layout_width="160dp"
+                android:layout_height="48dp"
+                android:text="Login"
+                android:textColor="#085F63"
+                android:textSize="16sp"
+                android:background="@drawable/btn_login_rounded"
+                android:backgroundTint="@null"
+                android:stateListAnimator="@null"
+                android:elevation="0dp"/>
+
+
+        </LinearLayout>
+
+        <!-- CANCEL BUTTON -->
+        <TextView
+            android:id="@+id/txtCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel"
+            android:textSize="16sp"
+            android:textColor="#4C5257"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
+</ScrollView>
