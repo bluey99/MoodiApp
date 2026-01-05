@@ -23,14 +23,17 @@ import java.util.List;
 /**
  * ChildHistoryActivity
  *
- * Displays the child's emotion history.
- * Supports filtering by emotion, intensity, and time range.
+ * Displays the child's emotion history and supports filtering by:
+ * - Emotion
+ * - Intensity range
+ * - Time range
  *
- * Responsibilities:
- * - Fetch emotion logs from Firestore
- * - Apply selected filters
- * - Group results by time sections
- * - Update UI and empty state accordingly
+ * Data is fetched once from Firestore and cached locally.
+ * All filters are applied locally to ensure fast UI updates.
+ *
+ * UX note:
+ * Filter feedback is shown ONLY in the log count pill
+ * (e.g. "Filtered feelings (Surprised): 1")
  */
 public class ChildHistoryActivity extends AppCompatActivity {
 
@@ -38,81 +41,79 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerHistory;
     private HistoryAdapter historyAdapter;
-    private TextView txtLogCount;
-    private View emptyContainer;
-    private ImageView btnFilter;
 
-    // Cached full history from Firestore
-    private List<EmotionLog> cachedLogs = new ArrayList<>();
+    private TextView txtLogCount;
     private TextView txtLoading;
+
+    private View emptyContainer;
     private View loadingContainer;
 
-
-
+    private ImageView btnFilter;
 
     /* ===================== DATA ===================== */
 
     private String childId;
+    private final List<EmotionLog> cachedLogs = new ArrayList<>();
 
     /* ===================== FILTER STATE ===================== */
 
-    private String selectedEmotion = null;   // null = no emotion filter
-    private int minIntensity = -1;            // -1 = no minimum
-    private int maxIntensity = -1;            // -1 = no maximum
+    private String selectedEmotion = null;
+    private int minIntensity = -1;
+    private int maxIntensity = -1;
     private TimeFilter selectedTime = TimeFilter.ALL;
 
-    // Time filter options for history filtering.
     private enum TimeFilter {
         ALL,
         LAST_7_DAYS,
         LAST_30_DAYS
     }
 
+    /* ===================== LIFECYCLE ===================== */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_history);
 
-
-        /* ---------- Header ---------- */
-
-        TextView headerTitle = findViewById(R.id.txtHeaderTitle);
-        headerTitle.setText("My History");
-
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-        btnFilter = findViewById(R.id.btnFilter);
-
-        /* ---------- Main UI ---------- */
-
-        recyclerHistory = findViewById(R.id.recyclerHistory);
-        txtLogCount = findViewById(R.id.txtLogCount);
-        emptyContainer = findViewById(R.id.emptyContainer);
-        txtLoading = findViewById(R.id.txtLoading);
-        loadingContainer = findViewById(R.id.loadingContainer);
-
-
-
-        recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
-
-        /*
-         * Adapter is created once and reused.
-         * This prevents UI lag and RecyclerView warnings.
-         */
-        historyAdapter = new HistoryAdapter(new ArrayList<>());
-        recyclerHistory.setAdapter(historyAdapter);
+        setupHeader();
+        setupViews();
+        setupRecycler();
 
         childId = getIntent().getStringExtra("childId");
-
-        /* ---------- Filter Button ---------- */
 
         btnFilter.setOnClickListener(v -> openFilterBottomSheet());
 
         loadHistoryWithFilters();
     }
 
-    /**
-     * Opens the bottom sheet used to select history filters.
-     */
+    /* ===================== SETUP ===================== */
+
+    private void setupHeader() {
+        View header = findViewById(R.id.header);
+
+        TextView headerTitle = header.findViewById(R.id.txtHeaderTitle);
+        headerTitle.setText("My History");
+
+        header.findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        btnFilter = header.findViewById(R.id.btnFilter);
+    }
+
+    private void setupViews() {
+        recyclerHistory = findViewById(R.id.recyclerHistory);
+        txtLogCount = findViewById(R.id.txtLogCount);
+        emptyContainer = findViewById(R.id.emptyContainer);
+        loadingContainer = findViewById(R.id.loadingContainer);
+        txtLoading = findViewById(R.id.txtLoading);
+    }
+
+    private void setupRecycler() {
+        recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
+        historyAdapter = new HistoryAdapter(new ArrayList<>());
+        recyclerHistory.setAdapter(historyAdapter);
+    }
+
+    /* ===================== FILTER UI ===================== */
+
     private void openFilterBottomSheet() {
         HistoryFilterBottomSheetFragment sheet =
                 new HistoryFilterBottomSheetFragment();
@@ -137,9 +138,8 @@ public class ChildHistoryActivity extends AppCompatActivity {
         sheet.show(getSupportFragmentManager(), "HistoryFilter");
     }
 
-    /**
-     * Fetches history logs from Firestore and applies active filters.
-     */
+    /* ===================== DATA LOADING ===================== */
+
     private void loadHistoryWithFilters() {
 
         if (childId == null) {
@@ -147,13 +147,11 @@ public class ChildHistoryActivity extends AppCompatActivity {
             return;
         }
 
-        // If we already have data → filter locally
+        // Already fetched → filter locally
         if (!cachedLogs.isEmpty()) {
-            hideLoadingState();
             applyFiltersAndUpdateUI();
             return;
         }
-
 
         showLoadingState();
 
@@ -176,18 +174,11 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
                     applyFiltersAndUpdateUI();
                 })
-                .addOnFailureListener(e -> {
-                    showEmptyState();
-                });
+                .addOnFailureListener(e -> showEmptyState());
     }
 
+    /* ===================== FILTERING ===================== */
 
-    /**
-     * Applies emotion, intensity, and time filters to the full log list.
-     *
-     * @param logs Full list of emotion logs
-     * @return Filtered list
-     */
     private List<EmotionLog> applyFilters(List<EmotionLog> logs) {
 
         List<EmotionLog> result = new ArrayList<>();
@@ -195,28 +186,23 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         for (EmotionLog log : logs) {
 
-            // Emotion filter
             if (selectedEmotion != null) {
-                String logFeeling = (log.getFeeling() == null) ? "" : log.getFeeling().trim().toUpperCase();
-                if (!selectedEmotion.equals(logFeeling)) {
-                    continue;
-                }
+                String feeling = log.getFeeling() == null
+                        ? ""
+                        : log.getFeeling().trim().toUpperCase();
+                if (!selectedEmotion.equals(feeling)) continue;
             }
 
-
-            // Intensity filters
             if (minIntensity != -1 && log.getIntensity() < minIntensity) continue;
             if (maxIntensity != -1 && log.getIntensity() > maxIntensity) continue;
 
-            // Time filter
             if (selectedTime != TimeFilter.ALL && log.getTimestamp() != null) {
-
-                long diffDays =
+                long days =
                         (now - log.getTimestamp().toDate().getTime())
                                 / (1000 * 60 * 60 * 24);
 
-                if (selectedTime == TimeFilter.LAST_7_DAYS && diffDays > 7) continue;
-                if (selectedTime == TimeFilter.LAST_30_DAYS && diffDays > 30) continue;
+                if (selectedTime == TimeFilter.LAST_7_DAYS && days > 7) continue;
+                if (selectedTime == TimeFilter.LAST_30_DAYS && days > 30) continue;
             }
 
             result.add(log);
@@ -224,29 +210,16 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         return result;
     }
+
     private void applyFiltersAndUpdateUI() {
-        List<EmotionLog> filtered = applyFilters(cachedLogs);
-        updateHistoryUI(filtered);
+        updateHistoryUI(applyFilters(cachedLogs));
     }
 
+    /* ===================== UI UPDATE ===================== */
 
-    /**
-     * Updates the RecyclerView and empty state based on filtered results.
-     *
-     * @param logs Filtered emotion logs
-     */
     private void updateHistoryUI(List<EmotionLog> logs) {
 
         hideLoadingState();
-
-        if (logs.isEmpty()) {
-            showEmptyState();
-            historyAdapter.updateData(new ArrayList<>());
-            return;
-        }
-
-        hideEmptyState();
-        txtLogCount.setText("Saved feelings: " + logs.size());
 
         boolean filtersActive =
                 selectedEmotion != null ||
@@ -254,14 +227,41 @@ public class ChildHistoryActivity extends AppCompatActivity {
                         maxIntensity != -1 ||
                         selectedTime != TimeFilter.ALL;
 
+        // --- EMPTY RESULT CASE ---
+        if (logs.isEmpty()) {
+
+            txtLogCount.setVisibility(View.VISIBLE);
+
+            if (filtersActive) {
+                txtLogCount.setText(
+                        "Filtered feelings" + buildFilterSuffix() + ": 0"
+                );
+            } else {
+                txtLogCount.setText("Saved feelings: 0");
+            }
+
+            recyclerHistory.setVisibility(View.GONE);
+            emptyContainer.setVisibility(View.VISIBLE);
+
+            historyAdapter.updateData(new ArrayList<>());
+            return;
+        }
+
+        // --- NON-EMPTY CASE ---
+        emptyContainer.setVisibility(View.GONE);
+        recyclerHistory.setVisibility(View.VISIBLE);
+        txtLogCount.setVisibility(View.VISIBLE);
+
         if (filtersActive) {
-            txtLogCount.setText("Filtered feelings: " + logs.size());
+            txtLogCount.setText(
+                    "Filtered feelings" + buildFilterSuffix() + ": " + logs.size()
+            );
         } else {
             txtLogCount.setText("Saved feelings: " + logs.size());
         }
 
-
-        List<Object> groupedList = new ArrayList<>();
+        // --- GROUP LOGS ---
+        List<Object> grouped = new ArrayList<>();
         List<EmotionLog> thisWeek = new ArrayList<>();
         List<EmotionLog> older = new ArrayList<>();
 
@@ -274,41 +274,50 @@ public class ChildHistoryActivity extends AppCompatActivity {
                     (now - log.getTimestamp().toDate().getTime())
                             / (1000 * 60 * 60 * 24);
 
-            if (days <= 7) {
-                thisWeek.add(log);
-            } else {
-                older.add(log);
-            }
+            if (days <= 7) thisWeek.add(log);
+            else older.add(log);
         }
 
         if (!thisWeek.isEmpty()) {
-            groupedList.add("This Week");
-            groupedList.addAll(thisWeek);
+            grouped.add("This Week");
+            grouped.addAll(thisWeek);
         }
 
         if (!older.isEmpty()) {
-            groupedList.add("Earlier");
-            groupedList.addAll(older);
+            grouped.add("Earlier");
+            grouped.addAll(older);
         }
 
-        historyAdapter.updateData(groupedList);
+        historyAdapter.updateData(grouped);
     }
 
-    /**
-     * Displays the empty state UI.
-     */
-    private void showEmptyState() {
-        emptyContainer.setVisibility(View.VISIBLE);
-        txtLogCount.setVisibility(View.GONE);
-    }
+    /* ===================== FILTER SUMMARY ===================== */
 
     /**
-     * Hides the empty state UI.
+     * Builds a short filter description for the log count pill.
+     * Example: " (Surprised, Last 7 days)"
      */
-    private void hideEmptyState() {
-        emptyContainer.setVisibility(View.GONE);
-        txtLogCount.setVisibility(View.VISIBLE);
+    private String buildFilterSuffix() {
+
+        List<String> parts = new ArrayList<>();
+
+        if (selectedEmotion != null) {
+            parts.add(capitalize(selectedEmotion.toLowerCase()));
+        }
+
+        if (selectedTime == TimeFilter.LAST_7_DAYS) {
+            parts.add("Last 7 days");
+        } else if (selectedTime == TimeFilter.LAST_30_DAYS) {
+            parts.add("Last 30 days");
+        }
+
+        if (parts.isEmpty()) return "";
+
+        return " (" + String.join(", ", parts) + ")";
     }
+
+    /* ===================== UI STATES ===================== */
+
     private void showLoadingState() {
         loadingContainer.setVisibility(View.VISIBLE);
         recyclerHistory.setVisibility(View.INVISIBLE);
@@ -319,7 +328,23 @@ public class ChildHistoryActivity extends AppCompatActivity {
     private void hideLoadingState() {
         loadingContainer.setVisibility(View.GONE);
         recyclerHistory.setVisibility(View.VISIBLE);
+        txtLogCount.setVisibility(View.VISIBLE);
+    }
+
+    private void showEmptyState() {
+        loadingContainer.setVisibility(View.GONE);
+        recyclerHistory.setVisibility(View.GONE);
+        emptyContainer.setVisibility(View.VISIBLE);
+
+        // IMPORTANT:
+        // txtLogCount visibility is controlled by updateHistoryUI()
     }
 
 
+    /* ===================== UTIL ===================== */
+
+    private String capitalize(String text) {
+        if (text == null || text.isEmpty()) return text;
+        return text.substring(0, 1).toUpperCase() + text.substring(1);
+    }
 }
