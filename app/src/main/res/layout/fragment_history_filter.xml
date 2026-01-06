@@ -162,12 +162,44 @@
         android:textColor="#4C5257"
         android:layout_marginBottom="6dp"/>
 
+    <FrameLayout
+        android:id="@+id/glassContainer"
+        android:layout_width="100dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/intensity_glass_background"
+        android:padding="8dp"
+        android:clipToOutline="true">
+
+        <FrameLayout
+            android:id="@+id/fillContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom"
+            android:clipToOutline="true">
+
+            <View
+                android:id="@+id/fillView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/intensity_fill_level1" />
+        </FrameLayout>
+
+    </FrameLayout>
+
     <TextView
+        android:id="@+id/txtIntensityLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="(intensity range coming next)"
+        android:text="Tap to set intensity"
         android:textColor="#7A7A7A"
-        android:layout_marginBottom="16dp"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"/>
+
 
     <!-- Time placeholder -->
     <TextView

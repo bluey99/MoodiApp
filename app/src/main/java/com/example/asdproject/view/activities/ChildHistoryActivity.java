@@ -58,8 +58,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
     /* ===================== FILTER STATE ===================== */
 
     private String selectedEmotion = null;
-    private int minIntensity = -1;
-    private int maxIntensity = -1;
+    private int selectedIntensity = -1;
     private TimeFilter selectedTime = TimeFilter.ALL;
 
     private enum TimeFilter {
@@ -118,11 +117,10 @@ public class ChildHistoryActivity extends AppCompatActivity {
         HistoryFilterBottomSheetFragment sheet =
                 new HistoryFilterBottomSheetFragment();
 
-        sheet.setListener((emotion, minI, maxI, time) -> {
+        sheet.setListener((emotion, intensity, time) -> {
 
             selectedEmotion = emotion;
-            minIntensity = minI;
-            maxIntensity = maxI;
+            selectedIntensity = intensity;
 
             if ("LAST_7_DAYS".equals(time)) {
                 selectedTime = TimeFilter.LAST_7_DAYS;
@@ -134,6 +132,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
             loadHistoryWithFilters();
         });
+
 
         sheet.show(getSupportFragmentManager(), "HistoryFilter");
     }
@@ -193,8 +192,10 @@ public class ChildHistoryActivity extends AppCompatActivity {
                 if (!selectedEmotion.equals(feeling)) continue;
             }
 
-            if (minIntensity != -1 && log.getIntensity() < minIntensity) continue;
-            if (maxIntensity != -1 && log.getIntensity() > maxIntensity) continue;
+            if (selectedIntensity != -1 && log.getIntensity() != selectedIntensity) {
+                continue;
+            }
+
 
             if (selectedTime != TimeFilter.ALL && log.getTimestamp() != null) {
                 long days =
@@ -223,8 +224,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         boolean filtersActive =
                 selectedEmotion != null ||
-                        minIntensity != -1 ||
-                        maxIntensity != -1 ||
+                        selectedIntensity != -1 ||
                         selectedTime != TimeFilter.ALL;
 
         // --- EMPTY RESULT CASE ---
