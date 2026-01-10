@@ -99,6 +99,7 @@ public class ChildHomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //Navigate to Task screen
         btnTasks.setOnClickListener(v -> {
             Intent intent = new Intent(ChildHomeActivity.this, ChildTasksActivity.class);
             intent.putExtra("childId", childId);     // can be null, ChildTasksActivity will handle
@@ -106,7 +107,13 @@ public class ChildHomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Tasks and calming tools navigation will be implemented later
+        //Navigate to Calming tools screen
+        btnCalmingTools.setOnClickListener(v -> {
+            Intent intent = new Intent(ChildHomeActivity.this, ChildCalmingToolsActivity.class);
+            intent.putExtra("childId", childId); // optional, but consistent
+            startActivity(intent);
+        });
+
 
         // Initial load of check-in feedback
         loadCheckInStreak();

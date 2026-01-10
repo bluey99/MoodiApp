@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E3F4F4">
+
+    <!-- HEADER (REUSED EXACTLY) -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_history_header" />
+
+    <!-- SCROLLABLE CONTENT (same structure as ChildHome) -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- MAIN CONTENT PANEL -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@drawable/child_panel_background">
+
+                <!-- INTRO TEXT -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Choose something to help you feel better"
+                    android:textSize="16sp"
+                    android:textColor="#085F63"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- BREATHING TOOL -->
+                <LinearLayout
+                    android:id="@+id/cardBreathing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/pill_button_selector">
+
+                    <TextView
+                        android:text="Breathing Exercise"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#085F63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Breathe slowly to stay calm"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- MUSIC TOOL -->
+                <LinearLayout
+                    android:id="@+id/cardMusic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/pill_button_selector">
+
+                    <TextView
+                        android:text="Music"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#085F63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Listen to peaceful sounds"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- VISUAL TOOL (NEW) -->
+                <LinearLayout
+                    android:id="@+id/cardVisual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:layout_marginBottom="14dp"
+                    android:background="@drawable/pill_button_selector">
+
+                    <TextView
+                        android:text="Visual Calm"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#085F63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Look at something calming"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- ASK FOR HELP TOOL -->
+                <LinearLayout
+                    android:id="@+id/cardAskForHelp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp"
+                    android:background="@drawable/pill_button_selector">
+
+                    <TextView
+                        android:text="Ask for help"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:textColor="#085F63"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Tell someone I need support"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- ENCOURAGEMENT -->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginBottom="8dp"
+                    android:src="@drawable/ic_heart"
+                    android:tint="#68C4C5" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="You're doing great.\nTaking time to calm yourself is a wonderful skill."
+                    android:textColor="#085F63"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

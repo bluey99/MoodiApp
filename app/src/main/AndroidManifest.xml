@@ -73,6 +73,10 @@
         <activity
             android:name=".view.activities.EmotionDetailActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.activities.ChildCalmingToolsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
