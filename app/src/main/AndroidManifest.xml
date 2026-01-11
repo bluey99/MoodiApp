@@ -20,6 +20,15 @@
         android:theme="@style/Theme.ASDProject"
         tools:targetApi="31">
         <activity
+            android:name=".view.activities.Step6ForTasksActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.Step6ForTasks"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.ChildLogsHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.activities.ChildTasksActivity"
             android:exported="false" />
         <activity
@@ -72,6 +81,9 @@
             android:exported="false" /> <!-- History detail -->
         <activity
             android:name=".view.activities.EmotionDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.activities.SelectionHistoryActivity"
             android:exported="false" />
     </application>
 

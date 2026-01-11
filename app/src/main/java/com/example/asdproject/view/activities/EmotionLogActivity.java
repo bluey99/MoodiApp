@@ -21,6 +21,7 @@ import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
 import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
+
 import com.example.asdproject.view.fragments.Step6NoteFragment;
 import com.example.asdproject.view.fragments.Step7ReviewFragment;
 
@@ -32,7 +33,7 @@ import com.example.asdproject.view.fragments.Step7ReviewFragment;
  *  3 → Feeling
  *  4 → Intensity
  *  5 → Photo (optional)
- *  6 → Notes (optional)
+ *  6 → Notes (optional) / Discussion Prompts (for tasks)
  *  7 → Review + Save
  * All inputs are stored in an EmotionLogDraft object until the flow is complete.
  * Only when the child confirms in Step 7 do we create an EmotionLog and save it.
@@ -46,6 +47,7 @@ public class EmotionLogActivity extends AppCompatActivity
         Step4IntensityFragment.Listener,
         Step5PhotoFragment.Listener,
         Step6NoteFragment.Listener,
+        Step6ForTasksActivity.Listener,
         Step7ReviewFragment.Listener {
 
     /** Temporary container for all user inputs */
@@ -67,6 +69,13 @@ public class EmotionLogActivity extends AppCompatActivity
     private static final int TOTAL_STEPS = 7;
     private View headerView;
 
+    // ✅ controls whether we start from step 1 or step 3
+    private int startStep = 1;
+    private String logType = "SELF"; // default
+
+    // ✅ discussion prompts (only for TASK)
+    private String discussionPrompts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,10 +84,30 @@ public class EmotionLogActivity extends AppCompatActivity
 
         childId = getIntent().getStringExtra("childId");
 
+        // ✅ Determine mode (SELF default)
+        logType = getIntent().getStringExtra("LOG_TYPE");
+        if (logType == null) logType = "SELF";
+
+        // ✅ Get prompts from task screen (may be null for SELF)
+        discussionPrompts = getIntent().getStringExtra("discussionPrompts");
+
+        // ✅ If TASK → start directly at Feeling page (Step 3)
+        startStep = "TASK".equals(logType) ? 2 : 1;
+
+        // ✅ (Optional) prefill for TASK so review isn't empty
+        if ("TASK".equals(logType)) {
+            String taskTitle = getIntent().getStringExtra("taskTitle");
+
+            draft.situation = (taskTitle != null && !taskTitle.trim().isEmpty())
+                    ? ("Task: " + taskTitle)
+                    : "Task";
+            draft.location = "From task";
+        }
+
         initViews();
         setupBackButton();
 
-        showStep(1);
+        showStep(startStep);
     }
 
     /** Binds shared views */
@@ -101,6 +130,13 @@ public class EmotionLogActivity extends AppCompatActivity
     /** Handles back navigation */
     private void setupBackButton() {
         btnBack.setOnClickListener(v -> {
+
+            // ✅ If we started at step 3 (task logging), back exits
+            if (currentStep == startStep) {
+                finish();
+                return;
+            }
+
             if (currentStep == 1) {
                 finish();
             } else {
@@ -140,7 +176,16 @@ public class EmotionLogActivity extends AppCompatActivity
             case 3: replaceFragment(new Step3FeelingFragment()); break;
             case 4: replaceFragment(new Step4IntensityFragment()); break;
             case 5: replaceFragment(Step5PhotoFragment.newInstance(childId)); break;
-            case 6: replaceFragment(new Step6NoteFragment()); break;
+
+            // ✅ Step 6: if TASK use Step6ForTasks, else normal Step6NoteFragment
+            case 6:
+                if ("TASK".equals(logType)) {
+                    replaceFragment(Step6ForTasksActivity.newInstance(discussionPrompts));
+                } else {
+                    replaceFragment(new Step6NoteFragment());
+                }
+                break;
+
             case 7: replaceFragment(Step7ReviewFragment.newInstance(draft)); break;
         }
     }
@@ -172,7 +217,6 @@ public class EmotionLogActivity extends AppCompatActivity
         );
     }
 
-
     @Override
     public void onCustomSituationEntered(String situation) {
         draft.situation = situation;
@@ -190,7 +234,6 @@ public class EmotionLogActivity extends AppCompatActivity
         new CustomLocationBottomSheet()
                 .show(getSupportFragmentManager(), "CustomLocationBottomSheet");
     }
-
 
     @Override
     public void onCustomLocationEntered(String location) {
@@ -216,9 +259,17 @@ public class EmotionLogActivity extends AppCompatActivity
         showStep(6);
     }
 
+    // SELF Step 6 callback
     @Override
     public void onNoteEntered(String note) {
         draft.note = note;
+        showStep(7);
+    }
+
+    // ✅ TASK Step 6 callback (answers for prompts)
+    @Override
+    public void onTaskAnswerEntered(String answer) {
+        draft.note = answer; // store answers inside note to keep everything else unchanged
         showStep(7);
     }
 

@@ -1,5 +1,6 @@
 package com.example.asdproject.view.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -29,13 +30,16 @@ public class MomTasksActivity extends AppCompatActivity {
         txtPrompt   = findViewById(R.id.txtPrompt);
         Button btnLogNow = findViewById(R.id.btnLogNow);
 
-        // Back arrow → return to ChildTasksActivity
+        // Back arrow → return
         btnBack.setOnClickListener(v -> finish());
 
         // --------- data from clicked task ----------
         String taskName          = getIntent().getStringExtra("taskName");
         String displayWhen       = getIntent().getStringExtra("displayWhen");
         String discussionPrompts = getIntent().getStringExtra("discussionPrompts");
+
+        // ✅ IMPORTANT: pass childId to EmotionLogActivity (needed to save)
+        String childId = getIntent().getStringExtra("childId");
 
         if (taskName != null) {
             txtTaskName.setText(taskName);
@@ -51,9 +55,22 @@ public class MomTasksActivity extends AppCompatActivity {
             txtPrompt.setText(discussionPrompts);
         }
 
-        // Later: move to emotion log / save response
         btnLogNow.setOnClickListener(v -> {
-            // TODO: open emotion-log screen or write child's response to Firestore
+            Intent i = new Intent(MomTasksActivity.this, EmotionLogActivity.class);
+
+            // ✅ Tell the flow: this is task logging
+            i.putExtra("LOG_TYPE", "TASK");
+
+            // ✅ Needed for saving
+            i.putExtra("childId", childId);
+
+            // ✅ Nice for the review text
+            i.putExtra("taskTitle", taskName);
+
+            // ✅ THIS WAS MISSING (this is why Step 6 is empty)
+            i.putExtra("discussionPrompts", discussionPrompts);
+
+            startActivity(i);
         });
     }
 }

@@ -1,8 +1,6 @@
 package com.example.asdproject.view.activities;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +9,13 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
@@ -25,15 +24,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class EmotionHistoryActivity extends AppCompatActivity {
+public class ChildLogsHistoryActivity extends AppCompatActivity {
 
     private TableLayout table;
     private Button btnGoBack, btnFilterBy;
 
     private String childId;
     private String childName;
-
-    private ListenerRegistration historyReg;
 
     private final SimpleDateFormat sdf =
             new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
@@ -43,18 +40,20 @@ public class EmotionHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_emotion_history);
+        setContentView(R.layout.activity_child_logs_history);
 
         childId = getIntent().getStringExtra("CHILD_ID");
         childName = getIntent().getStringExtra("CHILD_NAME");
 
-        if (childName != null && !childName.isEmpty()) {
-            setTitle("Tasks History – " + childName);
+        if (childName != null && !childName.trim().isEmpty()) {
+            setTitle("Child Logs – " + childName);
+        } else {
+            setTitle("Child Logs History");
         }
 
-        table = findViewById(R.id.tableEmotionHistory);
-        btnGoBack = findViewById(R.id.btnGoBackEmotion);
+        table = findViewById(R.id.tableChildLogs);
         btnFilterBy = findViewById(R.id.btnFilterBy);
+        btnGoBack = findViewById(R.id.btnGoBackChildLogs);
 
         btnGoBack.setOnClickListener(v -> finish());
         btnFilterBy.setOnClickListener(v -> showFilterDialog());
@@ -65,18 +64,17 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         }
 
         FirebaseManager.init(this);
-        listenToHistoryLive();
+        listenToChildLogsLive();
     }
 
-    private void listenToHistoryLive() {
+    private void listenToChildLogsLive() {
         FirebaseFirestore db = FirebaseManager.getDb();
 
-        historyReg = db.collection("children")
+        db.collection("children")
                 .document(childId)
                 .collection("history")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snap, e) -> {
-
                     if (e != null) {
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         return;
@@ -87,45 +85,35 @@ public class EmotionHistoryActivity extends AppCompatActivity {
 
                     for (DocumentSnapshot doc : snap.getDocuments()) {
 
-                        // ✅ FILTER: show ONLY TASK logs
                         String situation = safe(doc.getString("situation"));
-                        if (!isTaskLog(situation)) {
-                            continue; // skip child self logs
+
+                        // ✅ FILTER: show ONLY SELF logs (skip task logs)
+                        if (isTaskLog(situation)) {
+                            continue;
                         }
 
-                        // Must match Firestore fields saved by EmotionRepository
-                        String emotion = safe(doc.getString("feeling"));
+                        String location  = safe(doc.getString("location"));
+                        String emotion   = safe(doc.getString("feeling"));
+                        String note      = safe(doc.getString("note"));
+
                         Long intensityLong = doc.getLong("intensity");
                         int intensity = (intensityLong == null) ? 0 : intensityLong.intValue();
-                        String note = safe(doc.getString("note"));
 
-                        // Task name: try field, else derive from "Task: ..."
-                        String taskName = safe(doc.getString("taskName"));
-                        if (taskName.isEmpty()) {
-                            taskName = deriveTaskNameFromSituation(situation);
-                        }
-                        if (taskName.isEmpty()) taskName = "—";
+                        String photo = safe(doc.getString("photoUri"));
+                        if (photo.isEmpty()) photo = safe(doc.getString("photoUrl"));
+                        if (photo.isEmpty()) photo = "—";
 
                         Timestamp ts = doc.getTimestamp("timestamp");
                         long tsMillis = (ts == null) ? 0L : ts.toDate().getTime();
                         String tsText = (tsMillis == 0L) ? "" : sdf.format(new Date(tsMillis));
 
-                        addRow(tsText, taskName, emotion, String.valueOf(intensity), note, tsMillis);
+                        addRow(tsText, situation, location, emotion, String.valueOf(intensity), note, photo, tsMillis);
                     }
                 });
     }
 
     private boolean isTaskLog(String situation) {
         return situation != null && situation.trim().toLowerCase().startsWith("task:");
-    }
-
-    private String deriveTaskNameFromSituation(String situation) {
-        if (situation == null) return "";
-        String s = situation.trim();
-        if (s.toLowerCase().startsWith("task:")) {
-            return s.substring(5).trim(); // remove "Task:"
-        }
-        return "";
     }
 
     private void clearDataRows() {
@@ -136,14 +124,24 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         dataRows.clear();
     }
 
-    private void addRow(String timestamp, String taskName, String emotion, String intensity, String note, long tsMillis) {
+    private void addRow(String timestamp,
+                        String situation,
+                        String location,
+                        String emotion,
+                        String intensity,
+                        String note,
+                        String photo,
+                        long tsMillis) {
+
         TableRow row = new TableRow(this);
 
         row.addView(makeCell(timestamp));
-        row.addView(makeCell(taskName));
+        row.addView(makeCell(situation));
+        row.addView(makeCell(location));
         row.addView(makeCell(emotion));
         row.addView(makeCell(intensity));
         row.addView(makeCell(note));
+        row.addView(makeCell(photo));
 
         row.setTag(tsMillis);
 
@@ -168,7 +166,8 @@ public class EmotionHistoryActivity extends AppCompatActivity {
     private void showFilterDialog() {
         String[] options = {
                 "Emotion",
-                "Task Name",
+                "Situation",
+                "Location",
                 "Timestamp",
                 "Clear filters"
         };
@@ -176,10 +175,11 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Filter by:")
                 .setItems(options, (dialog, which) -> {
-                    if (which == 0) { showEmotionFilterDialog(); }
-                    else if (which == 1) { showTaskNameFilterDialog(); }
-                    else if (which == 2) { showTimestampFilterDialog(); }
-                    else { showAllRows(); }
+                    if (which == 0) showEmotionFilterDialog();
+                    else if (which == 1) showSituationFilterDialog();
+                    else if (which == 2) showLocationFilterDialog();
+                    else if (which == 3) showTimestampFilterDialog();
+                    else showAllRows();
                 })
                 .show();
     }
@@ -200,7 +200,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                     if (chosen.equals("Other...")) {
                         showOtherEmotionInput();
                     } else {
-                        filterTableByEmotion(chosen);
+                        filterByTextColumn(3, chosen);
                     }
                 })
                 .show();
@@ -219,51 +219,54 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                         Toast.makeText(this, "Please enter an emotion", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    filterTableByEmotion(typed);
+                    filterByTextColumn(3, typed);
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void filterTableByEmotion(String chosenEmotion) {
-        final int EMOTION_COL_INDEX = 2;
-
-        for (TableRow row : dataRows) {
-            TextView cell = (TextView) row.getChildAt(EMOTION_COL_INDEX);
-            String rowEmotion = cell.getText().toString().trim();
-            row.setVisibility(rowEmotion.equalsIgnoreCase(chosenEmotion) ? View.VISIBLE : View.GONE);
-        }
-    }
-
-    private void showTaskNameFilterDialog() {
+    private void showSituationFilterDialog() {
         final android.widget.EditText input = new android.widget.EditText(this);
-        input.setHint("Type task name (ex: homework, walk...)");
+        input.setHint("Type situation (ex: School)");
 
         new AlertDialog.Builder(this)
-                .setTitle("Search by Task Name")
+                .setTitle("Filter by Situation")
                 .setView(input)
-                .setPositiveButton("Search", (d, w) -> {
-                    String q = input.getText().toString();
-                    filterTableByTaskName(q);
-                })
+                .setPositiveButton("Apply", (d, w) -> filterByTextColumn(1, input.getText().toString()))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    private void filterTableByTaskName(String query) {
-        final int TASK_COL_INDEX = 1;
+    private void showLocationFilterDialog() {
+        final android.widget.EditText input = new android.widget.EditText(this);
+        input.setHint("Type location (ex: Home)");
 
+        new AlertDialog.Builder(this)
+                .setTitle("Filter by Location")
+                .setView(input)
+                .setPositiveButton("Apply", (d, w) -> filterByTextColumn(2, input.getText().toString()))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void filterByTextColumn(int colIndex, String query) {
         String q = (query == null) ? "" : query.trim().toLowerCase();
 
         for (TableRow row : dataRows) {
-            TextView cell = (TextView) row.getChildAt(TASK_COL_INDEX);
-            String taskText = cell.getText().toString().trim().toLowerCase();
 
-            if (q.isEmpty() || taskText.contains(q)) {
+            if (q.isEmpty()) {
                 row.setVisibility(View.VISIBLE);
-            } else {
-                row.setVisibility(View.GONE);
+                continue;
             }
+
+            View cellView = row.getChildAt(colIndex);
+            if (!(cellView instanceof TextView)) {
+                row.setVisibility(View.VISIBLE);
+                continue;
+            }
+
+            String cellText = ((TextView) cellView).getText().toString().trim().toLowerCase();
+            row.setVisibility(cellText.contains(q) ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -274,12 +277,12 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                 .setTitle("Sort by time")
                 .setItems(options, (dialog, which) -> {
                     boolean newestFirst = (which == 0);
-                    sortTableByTimestamp(newestFirst);
+                    sortByTimestamp(newestFirst);
                 })
                 .show();
     }
 
-    private void sortTableByTimestamp(boolean newestFirst) {
+    private void sortByTimestamp(boolean newestFirst) {
         dataRows.sort((r1, r2) -> {
             long t1 = (r1.getTag() instanceof Long) ? (Long) r1.getTag() : 0L;
             long t2 = (r2.getTag() instanceof Long) ? (Long) r2.getTag() : 0L;
@@ -292,11 +295,5 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         for (TableRow row : dataRows) {
             table.addView(row);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (historyReg != null) historyReg.remove();
     }
 }

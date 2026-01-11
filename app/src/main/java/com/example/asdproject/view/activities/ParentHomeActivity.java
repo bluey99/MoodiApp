@@ -65,7 +65,7 @@ public class ParentHomeActivity extends AppCompatActivity {
 
         // 👉 All these screens will work for the CURRENT selected child
         btnViewHistory.setOnClickListener(v -> {
-            Intent i = new Intent(ParentHomeActivity.this, EmotionHistoryActivity.class);
+            Intent i = new Intent(ParentHomeActivity.this, SelectionHistoryActivity.class);
             putChildExtras(i);
             startActivity(i);
         });

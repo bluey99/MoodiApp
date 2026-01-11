@@ -19,7 +19,6 @@ public class TaskAdapters extends RecyclerView.Adapter<TaskAdapters.TaskViewHold
 
     private List<Task> taskList;
 
-    // Constructor must match class name
     public TaskAdapters(List<Task> taskList) {
         this.taskList = taskList;
     }
@@ -45,10 +44,15 @@ public class TaskAdapters extends RecyclerView.Adapter<TaskAdapters.TaskViewHold
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MomTasksActivity.class);
+
             intent.putExtra("taskId", task.getId());
             intent.putExtra("taskName", task.getTaskName());
             intent.putExtra("displayWhen", task.getDisplayWhen());
             intent.putExtra("discussionPrompts", task.getDiscussionPrompts());
+
+            // ✅ MAIN FIX: pass childId forward
+            intent.putExtra("childId", task.getChildId());
+
             v.getContext().startActivity(intent);
         });
     }

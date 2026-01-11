@@ -4,11 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="#E2F6F7">
 
     <ScrollView
-        android:id="@+id/scrollRoot"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -18,7 +16,6 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
-            android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -27,27 +24,25 @@
 
             <!-- TITLE -->
             <TextView
-                android:id="@+id/txtWhenTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Emotional History"
-                android:textSize="30sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:gravity="center"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="6dp"/>
 
             <!-- SUBTITLE -->
             <TextView
-                android:id="@+id/txtWhenSubtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Overview of your child's recorded emotions"
                 android:textSize="14sp"
                 android:textColor="#666666"
                 android:gravity="center"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"/>
 
-            <!-- FILTER BUTTON -->
+            <!-- FILTER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,60 +58,68 @@
                     android:paddingVertical="6dp"
                     android:backgroundTint="#FFFFFF"
                     android:textColor="#3E7F6B"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="20dp"/>
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="12dp" />
+                android:layout_height="12dp"/>
 
-            <!-- HORIZONTAL SCROLL WITH VISIBLE BAR -->
+            <!-- TABLE -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fillViewport="true"
                 android:scrollbars="horizontal"
                 android:fadeScrollbars="false">
 
                 <TableLayout
                     android:id="@+id/tableEmotionHistory"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="4">
 
                     <!-- HEADER -->
                     <TableRow>
-                        <TextView android:text="Timestamp" android:padding="8dp" android:background="@drawable/table_cell_bg" android:textStyle="bold"/>
-                        <TextView android:text="Task Name" android:padding="8dp" android:background="@drawable/table_cell_bg" android:textStyle="bold"/>
-                        <TextView android:text="Emotion" android:padding="8dp" android:background="@drawable/table_cell_bg" android:textStyle="bold"/>
-                        <TextView android:text="Intensity level" android:padding="8dp" android:background="@drawable/table_cell_bg" android:textStyle="bold"/>
-                        <TextView android:text="Notes" android:padding="8dp" android:background="@drawable/table_cell_bg" android:textStyle="bold"/>
-                    </TableRow>
 
-                    <!-- ROW 1 -->
-                    <TableRow>
-                        <TextView android:text="2025-12-17 10:15" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Homework" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Happy" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="3" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="did it alone" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                    </TableRow>
+                        <TextView
+                            android:text="Timestamp"
+                            android:padding="8dp"
+                            android:minWidth="120dp"
+                            android:gravity="center"
+                            android:background="@drawable/table_cell_bg"
+                            android:textStyle="bold"/>
 
-                    <!-- ROW 2 -->
-                    <TableRow>
-                        <TextView android:text="2025-12-10 10:15" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Neighborhood walk" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Sad" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="1" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                    </TableRow>
+                        <TextView
+                            android:text="Task Name"
+                            android:padding="8dp"
+                            android:minWidth="120dp"
+                            android:gravity="center"
+                            android:background="@drawable/table_cell_bg"
+                            android:textStyle="bold"/>
 
-                    <!-- ROW 3 -->
-                    <TableRow>
-                        <TextView android:text="2025-09-17 10:15" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Task" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="Happy" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="1" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
-                        <TextView android:text="" android:padding="10dp" android:background="@drawable/table_cell_bg"/>
+                        <TextView
+                            android:text="Emotion"
+                            android:padding="8dp"
+                            android:minWidth="90dp"
+                            android:gravity="center"
+                            android:background="@drawable/table_cell_bg"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:text="Intensity"
+                            android:padding="8dp"
+                            android:minWidth="90dp"
+                            android:gravity="center"
+                            android:background="@drawable/table_cell_bg"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:text="Notes"
+                            android:padding="8dp"
+                            android:minWidth="220dp"
+                            android:gravity="center"
+                            android:background="@drawable/table_cell_bg"
+                            android:textStyle="bold"/>
                     </TableRow>
 
                 </TableLayout>
@@ -124,9 +127,9 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="20dp" />
+                android:layout_height="20dp"/>
 
-            <!-- GO BACK -->
+            <!-- BACK -->
             <Button
                 android:id="@+id/btnGoBackEmotion"
                 android:layout_width="wrap_content"
@@ -138,8 +141,7 @@
                 android:backgroundTint="#C7F0CF"
                 android:textColor="#2F6A43"
                 app:cornerRadius="24dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="20dp" />
+                android:layout_gravity="center"/>
 
         </LinearLayout>
     </ScrollView>

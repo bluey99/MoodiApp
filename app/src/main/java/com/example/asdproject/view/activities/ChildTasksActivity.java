@@ -22,7 +22,7 @@ import com.example.asdproject.model.Task;
 public class ChildTasksActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTasks;
-    private  TaskAdapters taskAdapter;
+    private TaskAdapters taskAdapter;
     private final List<Task> taskList = new ArrayList<>();
 
     private CollectionReference tasksRef;
@@ -31,7 +31,7 @@ public class ChildTasksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_child_tasks);   // make sure this is the right layout name
+        setContentView(R.layout.activity_child_tasks);
 
         recyclerTasks = findViewById(R.id.recyclerTasks);
         recyclerTasks.setLayoutManager(new LinearLayoutManager(this));
@@ -47,7 +47,7 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         if (childId == null || childId.isEmpty()) {
             Toast.makeText(this, "Child id is missing – cannot load tasks", Toast.LENGTH_SHORT).show();
-            finish();   // leave instead of crashing
+            finish();
             return;
         }
 
@@ -65,11 +65,8 @@ public class ChildTasksActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
                         Task task = doc.toObject(Task.class);
 
-                        // if your Task model doesn't match 1:1, you can instead do:
-                        // Task task = new Task();
-                        // task.setTaskName(doc.getString("taskName"));
-                        // task.setDisplayWhen(doc.getString("displayWhen"));
-                        // task.setDiscussionPrompts(doc.getString("discussionPrompts"));
+                        // ✅ IMPORTANT: store Firestore doc id into Task.id
+                        task.setId(doc.getId());
 
                         taskList.add(task);
                     }
