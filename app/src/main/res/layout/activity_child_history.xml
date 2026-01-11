@@ -11,17 +11,93 @@
         layout="@layout/view_child_history_header" />
 
     <!-- LOG COUNT -->
-    <TextView
-        android:id="@+id/txtLogCount"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/filterPill"
         android:layout_height="wrap_content"
-        android:text="Saved feelings: 0"
-        android:textSize="18sp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_gravity="center"
-        android:textColor="#085F63"
-        android:padding="8dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/pill_button_selector" />
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
+        android:layout_width="wrap_content"
+        android:minHeight="56dp"
+        android:elevation="3dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+
+        android:background="@drawable/pill_button_selector">
+
+        <!-- LEFT: filters -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:alpha="0.85">
+
+
+        <ImageView
+                android:id="@+id/imgPillEmotion"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"/>
+
+            <FrameLayout
+                android:id="@+id/miniGlass"
+                android:layout_width="16dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="10dp"
+                android:visibility="gone"
+                android:background="@drawable/intensity_glass_background"
+                android:clipToOutline="true">
+
+                <View
+                    android:id="@+id/miniGlassFill"
+                    android:layout_width="match_parent"
+                    android:layout_height="6dp"
+                    android:layout_gravity="bottom"/>
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/txtPillTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#5F8C8C"
+                android:visibility="gone"/>
+        </LinearLayout>
+
+        <!-- DIVIDER SPACE -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="1dp"/>
+
+        <!-- DIVIDER : -->
+        <TextView
+            android:id="@+id/txtPillDivider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=":"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#5F8C8C"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="4dp"/>
+
+
+        <!-- RIGHT: count -->
+        <TextView
+            android:id="@+id/txtPillCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#085F63"/>
+
+    </LinearLayout>
+
+
 
     <!-- LOADING (INCLUDED) -->
     <include

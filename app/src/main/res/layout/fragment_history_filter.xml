@@ -210,12 +210,41 @@
         android:textColor="#4C5257"
         android:layout_marginBottom="6dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupTime"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="(time options coming next)"
-        android:textColor="#7A7A7A"
-        android:layout_marginBottom="24dp"/>
+        app:singleSelection="true"
+        app:selectionRequired="false"
+        app:chipSpacingHorizontal="8dp"
+        android:layout_marginBottom="24dp">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAllTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="All time"
+            android:tag="ALL"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipLast7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last 7 days"
+            android:tag="LAST_7_DAYS"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipLast30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Last 30 days"
+            android:tag="LAST_30_DAYS"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
 
     <!-- Apply -->
     <Button

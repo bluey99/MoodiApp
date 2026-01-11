@@ -2,6 +2,7 @@ package com.example.asdproject.view.activities;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,6 @@ import com.example.asdproject.view.adapters.HistoryAdapter;
 import com.example.asdproject.view.fragments.HistoryFilterBottomSheetFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +42,14 @@ public class ChildHistoryActivity extends AppCompatActivity {
     private RecyclerView recyclerHistory;
     private HistoryAdapter historyAdapter;
 
-    private TextView txtLogCount;
+    private View filterPill;
+    private TextView txtPillLabel;
+    private TextView txtPillCount;
+    private TextView txtPillTime;
+    private ImageView imgPillEmotion;
+    private View miniGlass;
+    private View miniGlassFill;
+
     private TextView txtLoading;
 
     private View emptyContainer;
@@ -99,7 +106,13 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
     private void setupViews() {
         recyclerHistory = findViewById(R.id.recyclerHistory);
-        txtLogCount = findViewById(R.id.txtLogCount);
+        filterPill = findViewById(R.id.filterPill);
+        txtPillCount = findViewById(R.id.txtPillCount);
+        txtPillTime = findViewById(R.id.txtPillTime);
+        imgPillEmotion = findViewById(R.id.imgPillEmotion);
+        miniGlass = findViewById(R.id.miniGlass);
+        miniGlassFill = findViewById(R.id.miniGlassFill);
+
         emptyContainer = findViewById(R.id.emptyContainer);
         loadingContainer = findViewById(R.id.loadingContainer);
         txtLoading = findViewById(R.id.txtLoading);
@@ -222,43 +235,17 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         hideLoadingState();
 
-        boolean filtersActive =
-                selectedEmotion != null ||
-                        selectedIntensity != -1 ||
-                        selectedTime != TimeFilter.ALL;
+        updateFilterPill(logs.size());
 
-        // --- EMPTY RESULT CASE ---
         if (logs.isEmpty()) {
-
-            txtLogCount.setVisibility(View.VISIBLE);
-
-            if (filtersActive) {
-                txtLogCount.setText(
-                        "Filtered feelings" + buildFilterSuffix() + ": 0"
-                );
-            } else {
-                txtLogCount.setText("Saved feelings: 0");
-            }
-
             recyclerHistory.setVisibility(View.GONE);
             emptyContainer.setVisibility(View.VISIBLE);
-
             historyAdapter.updateData(new ArrayList<>());
             return;
         }
 
-        // --- NON-EMPTY CASE ---
         emptyContainer.setVisibility(View.GONE);
         recyclerHistory.setVisibility(View.VISIBLE);
-        txtLogCount.setVisibility(View.VISIBLE);
-
-        if (filtersActive) {
-            txtLogCount.setText(
-                    "Filtered feelings" + buildFilterSuffix() + ": " + logs.size()
-            );
-        } else {
-            txtLogCount.setText("Saved feelings: " + logs.size());
-        }
 
         // --- GROUP LOGS ---
         List<Object> grouped = new ArrayList<>();
@@ -291,45 +278,19 @@ public class ChildHistoryActivity extends AppCompatActivity {
         historyAdapter.updateData(grouped);
     }
 
-    /* ===================== FILTER SUMMARY ===================== */
-
-    /**
-     * Builds a short filter description for the log count pill.
-     * Example: " (Surprised, Last 7 days)"
-     */
-    private String buildFilterSuffix() {
-
-        List<String> parts = new ArrayList<>();
-
-        if (selectedEmotion != null) {
-            parts.add(capitalize(selectedEmotion.toLowerCase()));
-        }
-
-        if (selectedTime == TimeFilter.LAST_7_DAYS) {
-            parts.add("Last 7 days");
-        } else if (selectedTime == TimeFilter.LAST_30_DAYS) {
-            parts.add("Last 30 days");
-        }
-
-        if (parts.isEmpty()) return "";
-
-        return " (" + String.join(", ", parts) + ")";
-    }
-
     /* ===================== UI STATES ===================== */
 
     private void showLoadingState() {
         loadingContainer.setVisibility(View.VISIBLE);
         recyclerHistory.setVisibility(View.INVISIBLE);
         emptyContainer.setVisibility(View.GONE);
-        txtLogCount.setVisibility(View.GONE);
     }
 
     private void hideLoadingState() {
         loadingContainer.setVisibility(View.GONE);
         recyclerHistory.setVisibility(View.VISIBLE);
-        txtLogCount.setVisibility(View.VISIBLE);
     }
+
 
     private void showEmptyState() {
         loadingContainer.setVisibility(View.GONE);
@@ -347,4 +308,106 @@ public class ChildHistoryActivity extends AppCompatActivity {
         if (text == null || text.isEmpty()) return text;
         return text.substring(0, 1).toUpperCase() + text.substring(1);
     }
+    private int emotionToDrawable(String emotion) {
+        if (emotion == null) return 0;
+
+        switch (emotion) {
+            case "HAPPY":
+                return R.drawable.emoji_happy;
+            case "SAD":
+                return R.drawable.emoji_sad;
+            case "ANGRY":
+                return R.drawable.emoji_angry;
+            case "AFRAID":
+                return R.drawable.emoji_afraid;
+            case "SURPRISED":
+                return R.drawable.emoji_surprised;
+            default:
+                return 0;
+        }
+    }
+    private void updateFilterPill(int count) {
+
+        boolean filtersActive =
+                selectedEmotion != null ||
+                        selectedIntensity != -1 ||
+                        selectedTime != TimeFilter.ALL;
+
+        if (!filtersActive) {
+            filterPill.setVisibility(View.GONE);
+            return;
+        }
+
+        filterPill.setVisibility(View.VISIBLE);
+
+        txtPillCount.setText(String.valueOf(count));
+
+        if (selectedEmotion != null) {
+            imgPillEmotion.setVisibility(View.VISIBLE);
+            imgPillEmotion.setImageResource(emotionToDrawable(selectedEmotion));
+        } else {
+            imgPillEmotion.setVisibility(View.GONE);
+        }
+
+        if (selectedIntensity != -1) {
+            miniGlass.setVisibility(View.VISIBLE);
+            updateMiniGlass(selectedIntensity);
+        } else {
+            miniGlass.setVisibility(View.GONE);
+        }
+
+        if (selectedTime == TimeFilter.LAST_7_DAYS) {
+            txtPillTime.setVisibility(View.VISIBLE);
+            txtPillTime.setText("7d");
+        } else if (selectedTime == TimeFilter.LAST_30_DAYS) {
+            txtPillTime.setVisibility(View.VISIBLE);
+            txtPillTime.setText("30d");
+        } else {
+            txtPillTime.setVisibility(View.GONE);
+        }
+    }
+
+    private void updateMiniGlass(int intensity) {
+
+        // miniGlass is 36dp tall → get actual pixel height
+        int glassHeightPx = miniGlass.getHeight();
+
+        if (glassHeightPx == 0) {
+            // Layout not measured yet → retry after layout pass
+            miniGlass.post(() -> updateMiniGlass(intensity));
+            return;
+        }
+
+        float percent;
+
+        switch (intensity) {
+            case 1: percent = 0.2f; break;
+            case 2: percent = 0.4f; break;
+            case 3: percent = 0.6f; break;
+            case 4: percent = 0.8f; break;
+            default: percent = 1.0f; break; // level 5 = FULL
+        }
+
+        int fillHeight = Math.round(glassHeightPx * percent);
+
+        ViewGroup.LayoutParams params = miniGlassFill.getLayoutParams();
+        params.height = fillHeight;
+        miniGlassFill.setLayoutParams(params);
+
+        // Keep your existing color logic
+        int bgRes;
+        switch (intensity) {
+            case 1: bgRes = R.drawable.intensity_fill_level1; break;
+            case 2: bgRes = R.drawable.intensity_fill_level2; break;
+            case 3: bgRes = R.drawable.intensity_fill_level3; break;
+            case 4: bgRes = R.drawable.intensity_fill_level4; break;
+            default: bgRes = R.drawable.intensity_fill_level5; break;
+        }
+
+        miniGlassFill.setBackgroundResource(bgRes);
+    }
+
+
+
+
 }

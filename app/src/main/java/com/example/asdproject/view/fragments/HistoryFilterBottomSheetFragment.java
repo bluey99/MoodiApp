@@ -58,6 +58,10 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
      */
     private int selectedIntensity = -1;
 
+    //Selected time filter
+    private String selectedTime = "ALL";
+
+
     public void setListener(Listener listener) {
         this.listener = listener;
     }
@@ -101,6 +105,25 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
 
             selectedEmotion = chip.getTag().toString().trim().toUpperCase();
         });
+        /* ===================== TIME FILTER ===================== */
+
+        ChipGroup chipGroupTime = view.findViewById(R.id.chipGroupTime);
+        selectedTime = "ALL";
+
+        if (chipGroupTime != null) {
+            chipGroupTime.setOnCheckedStateChangeListener((group, checkedIds) -> {
+                if (checkedIds == null || checkedIds.isEmpty()) {
+                    selectedTime = "ALL";
+                    return;
+                }
+
+                Chip chip = group.findViewById(checkedIds.get(0));
+                selectedTime = (chip != null && chip.getTag() != null)
+                        ? chip.getTag().toString()
+                        : "ALL";
+            });
+        }
+
 
         /* ===================== INTENSITY (GLASS SELECTOR) ===================== */
 
@@ -138,8 +161,9 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
                 listener.onFiltersApplied(
                         selectedEmotion,
                         selectedIntensity,
-                        "ALL"
+                        selectedTime
                 );
+
             }
             dismiss();
         });
@@ -147,10 +171,21 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
         // Clear all filters and reset state
         btnClear.setOnClickListener(v -> {
             chipGroupEmotions.clearCheck();
+            chipGroupTime.clearCheck();
+
             selectedEmotion = null;
             selectedIntensity = -1;
+            selectedTime = "ALL";
 
             txtIntensityLabel.setText("Any intensity");
+
+            // 🔹 RESET GLASS VISUALLY (IMPORTANT)
+            ViewGroup.LayoutParams params = fillView.getLayoutParams();
+            params.height = (int) (
+                    40 * fillView.getResources().getDisplayMetrics().density
+            );
+            fillView.setLayoutParams(params);
+            fillView.setBackgroundResource(R.drawable.intensity_fill_level1);
 
             if (listener != null) {
                 listener.onFiltersApplied(
@@ -161,6 +196,7 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             }
             dismiss();
         });
+
 
         return view;
     }
