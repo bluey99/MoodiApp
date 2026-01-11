@@ -1,83 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E2F6F7">
+    android:background="#E3F4F4">
 
-    <!-- Back button -->
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@android:color/transparent"
-        android:padding="8dp"
-        app:srcCompat="@drawable/ic_arrow_back"
-        android:contentDescription="back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp" />
+    <!-- HEADER (shared with history) -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_history_header" />
 
-    <!-- Title -->
+    <!-- TASK COUNT PILL -->
     <TextView
-        android:id="@+id/txtTitleMyTasks"
+        android:id="@+id/txtTaskCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="My Tasks"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#005A5B"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp" />
+        android:text="Tasks waiting: 0"
+        android:textSize="18sp"
+        android:textColor="#085F63"
+        android:layout_gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/pill_button_selector" />
 
-    <!-- RecyclerView with dynamic cream cards -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerTasks"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp"
-        app:layout_constraintTop_toBottomOf="@id/txtTitleMyTasks"
-        app:layout_constraintBottom_toTopOf="@id/encouragementCard"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp" />
+    <!-- LOADING STATE -->
+    <include
+        android:id="@+id/loadingContainer"
+        layout="@layout/view_loading_state" />
 
-    <!-- Bottom encouragement card -->
+    <!-- EMPTY STATE -->
     <LinearLayout
-        android:id="@+id/encouragementCard"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/role_card_bg"
+        android:id="@+id/emptyContainer"
+        android:visibility="gone"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp">
-
-        <ImageView
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:srcCompat="@drawable/ic_heart"
-            app:tint="#68C4C5"
-            android:layout_marginBottom="8dp" />
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="You don’t have to finish them all\njust doing your best is amazing"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:textColor="#006B6C" />
+            android:text="No tasks right now"
+            android:textSize="16sp"
+            android:textColor="#4F8F90"
+            android:padding="8dp" />
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- TASK LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerTasks"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp"
+        android:clipToPadding="false" />
+
+</LinearLayout>

@@ -19,12 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ASDProject"
         tools:targetApi="31">
+
+        <!-- ✅ Step 6 (use the REAL class name) -->
         <activity
             android:name=".view.activities.Step6ForTasksActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.activities.Step6ForTasks"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+
         <activity
             android:name=".view.activities.ChildLogsHistoryActivity"
             android:exported="false" />
@@ -54,37 +55,43 @@
             android:exported="false" />
         <activity
             android:name=".view.activities.ParentLoginActivity"
-            android:exported="false" /> <!-- Google API key -->
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${GOOGLE_MAPS_API_KEY}" /> <!-- Launch screen -->
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+
         <activity
             android:name=".view.activities.RoleSelectionActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Child login -->
+        </activity>
+
         <activity
             android:name=".view.activities.LoginActivity"
-            android:exported="false" /> <!-- Child home -->
+            android:exported="false" />
         <activity
             android:name=".view.activities.ChildHomeActivity"
-            android:exported="false" /> <!-- Emotion logging flow -->
+            android:exported="false" />
         <activity
             android:name=".view.activities.EmotionLogActivity"
-            android:exported="false" /> <!-- History list -->
+            android:exported="false" />
         <activity
             android:name=".view.activities.ChildHistoryActivity"
-            android:exported="false" /> <!-- History detail -->
+            android:exported="false" />
         <activity
             android:name=".view.activities.EmotionDetailActivity"
             android:exported="false" />
         <activity
             android:name=".view.activities.SelectionHistoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.activities.ChildCalmingToolsActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

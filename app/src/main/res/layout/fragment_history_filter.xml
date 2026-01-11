@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!-- Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Filter History"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#085F63"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- Emotion section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Emotion"
+        android:textStyle="bold"
+        android:textColor="#4C5257"
+        android:layout_marginBottom="8dp"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupEmotions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:singleSelection="true"
+        app:selectionRequired="false"
+        app:chipSpacingHorizontal="8dp"
+        app:chipSpacingVertical="8dp">
+
+        <!-- Happy -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipHappy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="96dp"
+            android:minHeight="72dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:text="Happy"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="HAPPY"
+            android:contentDescription="Happy"
+            app:chipIcon="@drawable/emoji_happy"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:iconStartPadding="8dp"
+            app:textStartPadding="8dp"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Sad -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipSad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="96dp"
+            android:minHeight="72dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:text="Sad"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="SAD"
+            android:contentDescription="Sad"
+            app:chipIcon="@drawable/emoji_sad"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:iconStartPadding="8dp"
+            app:textStartPadding="8dp"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Angry -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAngry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="96dp"
+            android:minHeight="72dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:text="Angry"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="ANGRY"
+            android:contentDescription="Angry"
+            app:chipIcon="@drawable/emoji_angry"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:iconStartPadding="8dp"
+            app:textStartPadding="8dp"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Afraid -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipAfraid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="96dp"
+            android:minHeight="72dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:text="Afraid"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="AFRAID"
+            android:contentDescription="Afraid"
+            app:chipIcon="@drawable/emoji_afraid"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:iconStartPadding="8dp"
+            app:textStartPadding="8dp"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Surprised -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipSurprised"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="110dp"
+            android:minHeight="72dp"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="10dp"
+            android:text="Surprised"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="SURPRISED"
+            android:contentDescription="Surprised"
+            app:chipIcon="@drawable/emoji_surprised"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:iconStartPadding="8dp"
+            app:textStartPadding="8dp"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <!-- Intensity placeholder -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Intensity"
+        android:textStyle="bold"
+        android:textColor="#4C5257"
+        android:layout_marginBottom="6dp"/>
+
+    <FrameLayout
+        android:id="@+id/glassContainer"
+        android:layout_width="100dp"
+        android:layout_height="220dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/intensity_glass_background"
+        android:padding="8dp"
+        android:clipToOutline="true">
+
+        <FrameLayout
+            android:id="@+id/fillContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="bottom"
+            android:clipToOutline="true">
+
+            <View
+                android:id="@+id/fillView"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/intensity_fill_level1" />
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/txtIntensityLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tap to set intensity"
+        android:textColor="#7A7A7A"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp"/>
+
+
+    <!-- Time placeholder -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:textStyle="bold"
+        android:textColor="#4C5257"
+        android:layout_marginBottom="6dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(time options coming next)"
+        android:textColor="#7A7A7A"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Apply -->
+    <Button
+        android:id="@+id/btnApplyFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Apply Filters"/>
+
+    <!-- Clear -->
+    <Button
+        android:id="@+id/btnClearFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear Filters"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

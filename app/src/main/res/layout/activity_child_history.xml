@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-    <!-- REUSABLE HEADER -->
+    <!-- HEADER -->
     <include
         android:id="@+id/header"
-        layout="@layout/view_child_header" />
+        layout="@layout/view_child_history_header" />
 
     <!-- LOG COUNT -->
     <TextView
@@ -23,6 +23,11 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/pill_button_selector" />
 
+    <!-- LOADING (INCLUDED) -->
+    <include
+        android:id="@+id/loadingContainer"
+        layout="@layout/view_loading_state" />
+
     <!-- EMPTY STATE -->
     <LinearLayout
         android:id="@+id/emptyContainer"
@@ -32,20 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp">
-
-        <ImageView
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:src="@drawable/ic_child" />
-
-        <TextView
-            android:id="@+id/txtEmpty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No feelings logged yet"
-            android:textSize="18sp"
-            android:textColor="#51787C"
-            android:layout_marginTop="12dp"/>
+        ...
     </LinearLayout>
 
     <!-- LIST -->
