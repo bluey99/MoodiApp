@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.example.asdproject.util.HashUtil;
 
 import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
@@ -48,43 +49,51 @@ public class LoginActivity extends AppCompatActivity {
      * Validates input and queries Firestore to authenticate the child.
      */
     private void logInChild() {
-        String name = editName.getText().toString().trim();
+
+        String username = editName.getText().toString().trim();
         String pin = editPin.getText().toString().trim();
 
-        // Basic format validation for login credentials
-        if (name.isEmpty() || pin.length() != 4) {
-            Toast.makeText(this, "Enter name and 4-digit PIN", Toast.LENGTH_SHORT).show();
+        if (username.isEmpty() || pin.length() != 4) {
+            Toast.makeText(this, "Enter username and 4-digit PIN", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String pinHash = HashUtil.sha256(pin);
+        if (pinHash == null) {
+            Toast.makeText(this, "Login error", Toast.LENGTH_SHORT).show();
             return;
         }
 
         FirebaseFirestore db = FirebaseManager.getDb();
 
-        // Look for a child document matching the provided name and PIN
         db.collection("children")
-                .whereEqualTo("name", name)
-                .whereEqualTo("pin", pin)
+                .whereEqualTo("username", username)
                 .get()
                 .addOnSuccessListener(query -> {
-                    if (!query.isEmpty()) {
 
-                        // A matching child document was found; retrieve its data
-                        DocumentSnapshot doc = query.getDocuments().get(0);
+                    if (query.isEmpty()) {
+                        Toast.makeText(this, "Invalid username or PIN", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-                        String childName = doc.getString("name");
-                        String childId = doc.getId(); // Firestore document ID
+                    DocumentSnapshot doc = query.getDocuments().get(0);
 
-                        // Navigate to the child's home dashboard with identifying data
-                        Intent intent = new Intent(LoginActivity.this, ChildHomeActivity.class);
-                        intent.putExtra("childName", childName);
-                        intent.putExtra("childId", childId);
+                    String storedPinHash = doc.getString("pinHash");
+
+                    if (storedPinHash != null && storedPinHash.equals(pinHash)) {
+
+                        Intent intent = new Intent(this, ChildHomeActivity.class);
+                        intent.putExtra("childId", doc.getId());
+                        intent.putExtra("childName", doc.getString("name")); // display only
                         startActivity(intent);
-
                         finish();
+
                     } else {
-                        Toast.makeText(this, "Invalid name or PIN", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Invalid username or PIN", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
 }
