@@ -66,4 +66,8 @@ dependencies {
 
     // Optional for coroutines / async (if you’ll use them)
     implementation 'androidx.room:room-ktx:2.6.1'
+
+    //Firebase Messaging dependency
+    implementation 'com.google.firebase:firebase-messaging:23.4.1'
+
 }

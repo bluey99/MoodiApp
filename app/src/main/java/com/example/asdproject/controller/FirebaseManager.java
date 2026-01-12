@@ -2,6 +2,7 @@ package com.example.asdproject.controller;
 
 import android.content.Context;
 import android.util.Log;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,6 +54,23 @@ public class FirebaseManager {
                     "✅ Already authenticated: " + auth.getCurrentUser().getUid()
             );
         }
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(token -> {
+                    Log.d("FCM", "📱 FCM Token: " + token);
+
+                    if (auth.getCurrentUser() != null) {
+                        String uid = auth.getCurrentUser().getUid();
+
+                        db.collection("users")
+                                .document(uid)
+                                .set(
+                                        new java.util.HashMap<String, Object>() {{
+                                            put("fcmToken", token);
+                                        }},
+                                        com.google.firebase.firestore.SetOptions.merge()
+                                );
+                    }
+                });
 
         initialized = true;
     }

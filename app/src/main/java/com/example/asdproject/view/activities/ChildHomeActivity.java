@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
 import com.example.asdproject.model.EmotionLog;
+import com.example.asdproject.notifications.ChildFirebaseMessagingService;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
@@ -53,6 +54,8 @@ public class ChildHomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_home);
+
+        ChildFirebaseMessagingService.testLocalNotification(this);
 
         //Bind header UI elements
         btnNotifications = findViewById(R.id.btnNotifications);

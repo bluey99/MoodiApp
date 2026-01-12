@@ -2,6 +2,7 @@ package com.example.asdproject.view.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -13,6 +14,7 @@ import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 /**
  * Handles child authentication using name and a 4-digit PIN.
@@ -85,6 +87,18 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(this, ChildHomeActivity.class);
                         intent.putExtra("childId", doc.getId());
                         intent.putExtra("childName", doc.getString("name")); // display only
+                        // save this emulator/device FCM token under the logged-in child document
+                        FirebaseMessaging.getInstance().getToken()
+                                .addOnSuccessListener(token -> {
+                                    FirebaseManager.getDb()
+                                            .collection("children")
+                                            .document(doc.getId()) // THIS is the Firestore child document ID
+                                            .update("fcmToken", token)
+                                            .addOnSuccessListener(aVoid -> Log.d("FCM_TEST", "Saved token to child doc"))
+                                            .addOnFailureListener(e -> Log.e("FCM_TEST", "Failed to save token", e));
+                                })
+                                .addOnFailureListener(e -> Log.e("FCM_TEST", "Failed to get token", e));
+
                         startActivity(intent);
                         finish();
 
