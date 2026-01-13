@@ -18,8 +18,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ChildTasksActivity extends AppCompatActivity {
 
@@ -31,8 +34,6 @@ public class ChildTasksActivity extends AppCompatActivity {
     private TextView txtTasksWaiting;
     private int lastTaskCount = 0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,21 +42,17 @@ public class ChildTasksActivity extends AppCompatActivity {
         View header = findViewById(R.id.header);
         TextView headerTitle = header.findViewById(R.id.txtHeaderTitle);
         headerTitle.setText("My Tasks");
+
         txtTasksWaiting = findViewById(R.id.txtTaskCount);
 
-
-        // Recycler
         recyclerTasks = findViewById(R.id.recyclerTasks);
         recyclerTasks.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapters(taskList);
         recyclerTasks.setAdapter(taskAdapter);
 
-        // Back button (ImageView, NOT ImageButton)
         ImageView btnBack = header.findViewById(R.id.btnBack);
-
         btnBack.setOnClickListener(v -> finish());
 
-        // Child id
         childId = getIntent().getStringExtra("childId");
 
         if (childId == null || childId.isEmpty()) {
@@ -67,62 +64,43 @@ public class ChildTasksActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         tasksRef = db.collection("tasks");
 
-
         loadTasksForChild(childId);
     }
 
+    // ==============================
+    // TASK LOADING WITH TIME FILTER
+    // ==============================
     private void loadTasksForChild(String childId) {
 
         Log.d("TASK_DEBUG", "Loading tasks for childId = " + childId);
+        Log.d("TASK_TIME", "Now = " + LocalDateTime.now());
 
         taskList.clear();
         taskAdapter.notifyDataSetChanged();
 
-        // 1) Try new field name: "childID"
+        // -------- QUERY 1: childID --------
         tasksRef.whereEqualTo("childID", childId)
                 .whereEqualTo("status", "ASSIGNED")
                 .get()
-                .addOnSuccessListener(snap1 -> {
+                .addOnSuccessListener(snapshot -> {
 
-                    for (QueryDocumentSnapshot doc : snap1) {
-                        Log.d("TASK_DEBUG", "MATCH childID: " + doc.getId() + " -> " + doc.getData());
-                        Task task = doc.toObject(Task.class);
-                        task.setId(doc.getId());
-                        taskList.add(task);
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        handleTaskDocument(doc);
                     }
 
-                    // 2) Also try old field name: "childId"
+                    // -------- QUERY 2: childId --------
                     tasksRef.whereEqualTo("childId", childId)
                             .whereEqualTo("status", "ASSIGNED")
                             .get()
-                            .addOnSuccessListener(snap2 -> {
+                            .addOnSuccessListener(snapshot2 -> {
 
-                                for (QueryDocumentSnapshot doc : snap2) {
-                                    Log.d("TASK_DEBUG", "MATCH childId: " + doc.getId() + " -> " + doc.getData());
-
-                                    // avoid duplicates if same task appears
-                                    boolean exists = false;
-                                    for (Task t : taskList) {
-                                        if (t.getId() != null && t.getId().equals(doc.getId())) {
-                                            exists = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!exists) {
-                                        Task task = doc.toObject(Task.class);
-                                        task.setId(doc.getId());
-                                        taskList.add(task);
+                                for (QueryDocumentSnapshot doc : snapshot2) {
+                                    if (!containsTask(doc.getId())) {
+                                        handleTaskDocument(doc);
                                     }
                                 }
 
-                                taskAdapter.notifyDataSetChanged();
-
-                                int newCount = taskList.size();
-                                txtTasksWaiting.setText("Tasks waiting: " + newCount);
-                                if (newCount > lastTaskCount) animateTaskPill(txtTasksWaiting);
-                                lastTaskCount = newCount;
-
-                                Log.d("TASK_DEBUG", "FINAL COUNT = " + newCount);
+                                finalizeTaskList();
                             })
                             .addOnFailureListener(e ->
                                     Toast.makeText(this, "Failed (childId): " + e.getMessage(), Toast.LENGTH_SHORT).show()
@@ -133,6 +111,64 @@ public class ChildTasksActivity extends AppCompatActivity {
                 );
     }
 
+    // ==============================
+    // HANDLE SINGLE TASK DOCUMENT
+    // ==============================
+    private void handleTaskDocument(QueryDocumentSnapshot doc) {
+        Task task = doc.toObject(Task.class);
+        task.setId(doc.getId());
+
+        if (isTaskReadyToDisplay(task.getDisplayWhen())) {
+            taskList.add(task);
+            Log.d("TASK_TIME", "VISIBLE: " + task.getTaskName());
+        } else {
+            Log.d("TASK_TIME", "HIDDEN (future): " + task.getDisplayWhen());
+        }
+    }
+
+    // ==============================
+    // TIME CHECK LOGIC
+    // ==============================
+    private boolean isTaskReadyToDisplay(String displayWhen) {
+        try {
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("d/M/yyyy, h:mma", Locale.ENGLISH);
+
+            LocalDateTime taskTime =
+                    LocalDateTime.parse(displayWhen.toUpperCase(), formatter);
+
+            return !taskTime.isAfter(LocalDateTime.now());
+        } catch (Exception e) {
+            Log.e("TASK_TIME", "Invalid displayWhen format: " + displayWhen, e);
+            return false;
+        }
+    }
+
+    // ==============================
+    // UTILITIES
+    // ==============================
+    private boolean containsTask(String taskId) {
+        for (Task t : taskList) {
+            if (t.getId() != null && t.getId().equals(taskId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void finalizeTaskList() {
+        taskAdapter.notifyDataSetChanged();
+
+        int newCount = taskList.size();
+        txtTasksWaiting.setText("Tasks waiting: " + newCount);
+
+        if (newCount > lastTaskCount) {
+            animateTaskPill(txtTasksWaiting);
+        }
+
+        lastTaskCount = newCount;
+        Log.d("TASK_DEBUG", "FINAL COUNT = " + newCount);
+    }
 
     private void animateTaskPill(View pill) {
         pill.animate()
@@ -145,6 +181,4 @@ public class ChildTasksActivity extends AppCompatActivity {
                                 .start()
                 ).start();
     }
-
-
 }
