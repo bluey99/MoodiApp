@@ -33,7 +33,7 @@ public class NewTaskActivity extends AppCompatActivity {
 
     // 👇 from ParentHomeActivity
     private String parentId;
-    private String childId;
+    private String childId;   // this is the FIELD "childID" value (e.g. "214578903")
     private String childName;
 
     @Override
@@ -43,7 +43,7 @@ public class NewTaskActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // get IDs from intent
+        // ✅ get IDs from intent (NO childDoc here)
         parentId = getIntent().getStringExtra("PARENT_ID");
         childId  = getIntent().getStringExtra("CHILD_ID");
         childName = getIntent().getStringExtra("CHILD_NAME");
@@ -88,6 +88,7 @@ public class NewTaskActivity extends AppCompatActivity {
             return;
         }
 
+        // ✅ if this happens, it means ParentHomeActivity didn't send CHILD_ID
         if (childId == null || childId.isEmpty()) {
             Toast.makeText(this, "Please select a child in the parent home screen first", Toast.LENGTH_SHORT).show();
             return;
@@ -111,10 +112,11 @@ public class NewTaskActivity extends AppCompatActivity {
         task.put("taskName", taskName);
         task.put("displayWhen", displayWhen);
         task.put("discussionPrompts", discussionPrompts);
-        task.put("childId", childId);
 
+        // ✅ store the field ID (not doc id)
+        // If you want to match the children field name exactly, use "childID"
+        task.put("childID", childId);
 
-        // ✅ NEW (minimal fields you asked for)
         task.put("creatorType", "PARENT");
         task.put("creatorId", parentId);
         task.put("status", "ASSIGNED");

@@ -188,7 +188,7 @@ public class ParentHomeActivity extends AppCompatActivity {
         int index = 0;
 
         for (DocumentSnapshot doc : qs.getDocuments()) {
-            String childId = doc.getId();
+            String childId = doc.getString("childID");
             String childName = doc.getString("name");
             if (childName == null || childName.trim().isEmpty()) {
                 childName = "Child";

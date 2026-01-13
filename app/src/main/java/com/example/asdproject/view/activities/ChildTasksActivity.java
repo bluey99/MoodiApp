@@ -73,51 +73,66 @@ public class ChildTasksActivity extends AppCompatActivity {
 
     private void loadTasksForChild(String childId) {
 
-        // Show loading state
-        // (optional but recommended if you added loadingContainer)
-        // loadingContainer.setVisibility(View.VISIBLE);
+        Log.d("TASK_DEBUG", "Loading tasks for childId = " + childId);
 
-        tasksRef
-                .whereEqualTo("childId", childId)
+        taskList.clear();
+        taskAdapter.notifyDataSetChanged();
+
+        // 1) Try new field name: "childID"
+        tasksRef.whereEqualTo("childID", childId)
                 .whereEqualTo("status", "ASSIGNED")
                 .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
+                .addOnSuccessListener(snap1 -> {
 
-                    Log.d("TASK_DEBUG", "Loading tasks for childId = " + childId);
-
-                    taskList.clear();
-
-                    for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
-                        Log.d("TASK_DEBUG", "DOC " + doc.getId() + " → " + doc.getData());
-
+                    for (QueryDocumentSnapshot doc : snap1) {
+                        Log.d("TASK_DEBUG", "MATCH childID: " + doc.getId() + " -> " + doc.getData());
                         Task task = doc.toObject(Task.class);
                         task.setId(doc.getId());
                         taskList.add(task);
                     }
 
-                    taskAdapter.notifyDataSetChanged();
+                    // 2) Also try old field name: "childId"
+                    tasksRef.whereEqualTo("childId", childId)
+                            .whereEqualTo("status", "ASSIGNED")
+                            .get()
+                            .addOnSuccessListener(snap2 -> {
 
-                    int newCount = taskList.size();
-                    txtTasksWaiting.setText("Tasks waiting: " + newCount);
+                                for (QueryDocumentSnapshot doc : snap2) {
+                                    Log.d("TASK_DEBUG", "MATCH childId: " + doc.getId() + " -> " + doc.getData());
 
-                    if (newCount > lastTaskCount) {
-                        animateTaskPill(txtTasksWaiting);
-                    }
+                                    // avoid duplicates if same task appears
+                                    boolean exists = false;
+                                    for (Task t : taskList) {
+                                        if (t.getId() != null && t.getId().equals(doc.getId())) {
+                                            exists = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!exists) {
+                                        Task task = doc.toObject(Task.class);
+                                        task.setId(doc.getId());
+                                        taskList.add(task);
+                                    }
+                                }
 
-                    lastTaskCount = newCount;
+                                taskAdapter.notifyDataSetChanged();
 
+                                int newCount = taskList.size();
+                                txtTasksWaiting.setText("Tasks waiting: " + newCount);
+                                if (newCount > lastTaskCount) animateTaskPill(txtTasksWaiting);
+                                lastTaskCount = newCount;
 
-                    // Hide loading / show empty if needed
-                    // updateTaskCountUI(newCount);  // if you added this helper
+                                Log.d("TASK_DEBUG", "FINAL COUNT = " + newCount);
+                            })
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Failed (childId): " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(
-                                ChildTasksActivity.this,
-                                "Failed to load tasks: " + e.getMessage(),
-                                Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this, "Failed (childID): " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
     }
+
 
     private void animateTaskPill(View pill) {
         pill.animate()
