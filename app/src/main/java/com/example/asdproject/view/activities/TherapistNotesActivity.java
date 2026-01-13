@@ -1,30 +1,37 @@
 package com.example.asdproject.view.activities;
 
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.asdproject.R;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class TherapistNotesActivity extends AppCompatActivity {
 
@@ -35,8 +42,14 @@ public class TherapistNotesActivity extends AppCompatActivity {
     private NotesAdapter adapter;
     private final List<NoteItem> notes = new ArrayList<>();
 
+    private final List<NoteItem> allNotes = new ArrayList<>();
+
     private FirebaseFirestore db;
     private ListenerRegistration reg;
+
+    private enum SortMode { NONE, TS_ASC, TS_DESC }
+    private SortMode sortMode = SortMode.NONE;
+    private String titleQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +81,7 @@ public class TherapistNotesActivity extends AppCompatActivity {
         btnFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg;
-                if (childName != null && !childName.isEmpty()) {
-                    msg = "Filter options for " + childName + " will be added later.";
-                } else {
-                    msg = "Filter options will be added later.";
-                }
-                Toast.makeText(TherapistNotesActivity.this,
-                        msg,
-                        Toast.LENGTH_SHORT).show();
+                showFilterDialog();
             }
         });
 
@@ -90,6 +95,90 @@ public class TherapistNotesActivity extends AppCompatActivity {
         listenForNotes();
     }
 
+    private void showFilterDialog() {
+        String[] items = new String[] {
+                "Timestamp: Newest -> Oldest",
+                "Timestamp: Oldest -> Newest",
+                "Title: Search",
+                "Clear filters"
+        };
+
+        new AlertDialog.Builder(this)
+                .setTitle("Filter By")
+                .setItems(items, (dialog, which) -> {
+                    if (which == 0) {
+                        sortMode = SortMode.TS_DESC;
+                        applyFilters();
+                    } else if (which == 1) {
+                        sortMode = SortMode.TS_ASC;
+                        applyFilters();
+                    } else if (which == 2) {
+                        showTitleSearchDialog();
+                    } else {
+                        sortMode = SortMode.NONE;
+                        titleQuery = "";
+                        applyFilters();
+                    }
+                })
+                .show();
+    }
+
+    private void showTitleSearchDialog() {
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setHint("Type any word...");
+        input.setText(titleQuery == null ? "" : titleQuery);
+        input.setSelection(input.getText().length());
+
+        int pad = dp(16);
+        input.setPadding(pad, pad, pad, pad);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Search in Title")
+                .setView(input)
+                .setPositiveButton("Apply", (d, w) -> {
+                    titleQuery = input.getText() == null ? "" : input.getText().toString();
+                    applyFilters();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void applyFilters() {
+        notes.clear();
+
+        String q = (titleQuery == null) ? "" : titleQuery.trim().toLowerCase(Locale.getDefault());
+
+        for (NoteItem n : allNotes) {
+            if (q.isEmpty()) {
+                notes.add(n);
+            } else {
+                String t = (n.title == null) ? "" : n.title.toLowerCase(Locale.getDefault());
+                if (t.contains(q)) {
+                    notes.add(n);
+                }
+            }
+        }
+
+        if (sortMode == SortMode.TS_ASC) {
+            Collections.sort(notes, new Comparator<NoteItem>() {
+                @Override
+                public int compare(NoteItem a, NoteItem b) {
+                    return Long.compare(a.tsMillis, b.tsMillis);
+                }
+            });
+        } else if (sortMode == SortMode.TS_DESC) {
+            Collections.sort(notes, new Comparator<NoteItem>() {
+                @Override
+                public int compare(NoteItem a, NoteItem b) {
+                    return Long.compare(b.tsMillis, a.tsMillis);
+                }
+            });
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
     private void listenForNotes() {
         Query q = db.collection("feedbacks")
                 .whereEqualTo("childID", childId);
@@ -101,7 +190,7 @@ public class TherapistNotesActivity extends AppCompatActivity {
             }
             if (snap == null) return;
 
-            notes.clear();
+            allNotes.clear();
 
             for (DocumentSnapshot d : snap.getDocuments()) {
                 String title = d.getString("title");
@@ -114,10 +203,13 @@ public class TherapistNotesActivity extends AppCompatActivity {
                 if (date == null) date = "";
                 if (time == null) time = "";
 
-                notes.add(new NoteItem(title, desc, date, time));
+                Timestamp createdAt = d.getTimestamp("createdAt");
+                long tsMillis = (createdAt == null) ? 0L : createdAt.toDate().getTime();
+
+                allNotes.add(new NoteItem(title, desc, date, time, tsMillis));
             }
 
-            adapter.notifyDataSetChanged();
+            applyFilters();
         });
     }
 
@@ -132,12 +224,14 @@ public class TherapistNotesActivity extends AppCompatActivity {
         final String description;
         final String date;
         final String time;
+        final long tsMillis;
 
-        NoteItem(String title, String description, String date, String time) {
+        NoteItem(String title, String description, String date, String time, long tsMillis) {
             this.title = title;
             this.description = description;
             this.date = date;
             this.time = time;
+            this.tsMillis = tsMillis;
         }
     }
 

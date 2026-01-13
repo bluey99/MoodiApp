@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.view.Gravity;
 import android.widget.*;
-import org.json.JSONObject;
-import org.json.JSONArray;
+
 import com.example.asdproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -16,7 +15,6 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ReportsHistoryActivity extends AppCompatActivity {
@@ -30,8 +28,7 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     private static final int COL_TIMESTAMP = 1;
     private static final int COL_LOCATION = 2;
 
-    // 🔹 NEW: which child system are we inside?
-    private String childId;   // comes from Intent extra "CHILD_ID"
+    private String childId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +37,6 @@ public class ReportsHistoryActivity extends AppCompatActivity {
 
         table = findViewById(R.id.tableReportsHistory);
 
-        // 🔹 get childId from Intent (may be null if opened "global")
         childId = getIntent().getStringExtra("CHILD_ID");
 
         findViewById(R.id.btnGoBackReports).setOnClickListener(v -> finish());
@@ -55,15 +51,11 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         loadTable();
     }
 
-    // ---------- helper: key per parent ----------
-
     private String getReportsKeyForCurrentParent() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         String uid = (user != null) ? user.getUid() : "guest";
         return KEY_REPORTS_PREFIX + uid;
     }
-
-    // ---------- TABLE ----------
 
     private void loadTable() {
         if (table.getChildCount() > 1)
@@ -80,13 +72,8 @@ public class ReportsHistoryActivity extends AppCompatActivity {
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject o = arr.getJSONObject(i);
 
-                // 🔹 NEW: per-child filter
-                // If we are inside a specific child system (childId != null),
-                // show ONLY reports whose stored "childId" matches this child.
                 if (childId != null && !childId.isEmpty()) {
                     String reportChildId = o.optString("childId", null);
-
-                    // If this report is missing childId OR belongs to another child → skip it
                     if (reportChildId == null || !childId.equals(reportChildId)) {
                         continue;
                     }
@@ -136,8 +123,6 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         return (int) (d * getResources().getDisplayMetrics().density);
     }
 
-    // ---------- DELETE ----------
-
     private void deleteReport(int index) {
         String key = getReportsKeyForCurrentParent();
         try {
@@ -159,8 +144,6 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         } catch (Exception ignored) {
         }
     }
-
-    // ---------- EDIT (all fields) ----------
 
     private void openEditDialog(int index) {
         String key = getReportsKeyForCurrentParent();
@@ -229,10 +212,7 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         return e;
     }
 
-    // ---------- FILTERS ----------
-
     private void showFilterDialog() {
-        // 0,1,2 = real filters | 3 = reset
         String[] opts = {"Situation Name", "Location", "Timestamp", "Clear filters"};
 
         new AlertDialog.Builder(this)
@@ -268,11 +248,10 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     }
 
     private void sortTableByTimestamp(boolean newestFirst) {
-        final int TIMESTAMP_COL_INDEX = 0; // first column
+        final int TIMESTAMP_COL_INDEX = 0;
 
         java.util.List<android.widget.TableRow> rows = new java.util.ArrayList<>();
 
-        // collect data rows (skip header)
         for (int i = 1; i < table.getChildCount(); i++) {
             android.view.View v = table.getChildAt(i);
             if (v instanceof android.widget.TableRow) {
@@ -280,7 +259,6 @@ public class ReportsHistoryActivity extends AppCompatActivity {
             }
         }
 
-        // sort rows by timestamp text
         rows.sort((r1, r2) -> {
             android.view.View v1 = r1.getChildAt(TIMESTAMP_COL_INDEX);
             android.view.View v2 = r2.getChildAt(TIMESTAMP_COL_INDEX);
@@ -295,10 +273,8 @@ public class ReportsHistoryActivity extends AppCompatActivity {
             return newestFirst ? -cmp : cmp;
         });
 
-        // remove old rows (keep header)
         table.removeViews(1, table.getChildCount() - 1);
 
-        // add sorted rows back
         for (android.widget.TableRow row : rows) {
             table.addView(row);
         }

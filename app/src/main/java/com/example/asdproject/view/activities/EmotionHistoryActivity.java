@@ -4,6 +4,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -93,13 +95,11 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                             continue; // skip child self logs
                         }
 
-                        // Must match Firestore fields saved by EmotionRepository
                         String emotion = safe(doc.getString("feeling"));
                         Long intensityLong = doc.getLong("intensity");
                         int intensity = (intensityLong == null) ? 0 : intensityLong.intValue();
                         String note = safe(doc.getString("note"));
 
-                        // Task name: try field, else derive from "Task: ..."
                         String taskName = safe(doc.getString("taskName"));
                         if (taskName.isEmpty()) {
                             taskName = deriveTaskNameFromSituation(situation);
@@ -136,14 +136,27 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         dataRows.clear();
     }
 
-    private void addRow(String timestamp, String taskName, String emotion, String intensity, String note, long tsMillis) {
+    // ==========================================================
+    // ✅ FIX: baselineAligned(false) + cells MATCH_PARENT height
+    // ==========================================================
+    private void addRow(String timestamp, String taskName, String emotion,
+                        String intensity, String note, long tsMillis) {
+
         TableRow row = new TableRow(this);
 
-        row.addView(makeCell(timestamp));
-        row.addView(makeCell(taskName));
-        row.addView(makeCell(emotion));
-        row.addView(makeCell(intensity));
-        row.addView(makeCell(note));
+        // 🔴 CRITICAL: allow cells to stretch to row height
+        row.setBaselineAligned(false);
+
+        row.setLayoutParams(new TableLayout.LayoutParams(
+                TableLayout.LayoutParams.WRAP_CONTENT,
+                TableLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        row.addView(makeCell(timestamp, 1.3f, false));
+        row.addView(makeCell(taskName, 1.3f, false));
+        row.addView(makeCell(emotion,  0.9f, false));
+        row.addView(makeCell(intensity,0.7f, false));
+        row.addView(makeCell(note,     2.6f, true)); // notes controls height
 
         row.setTag(tsMillis);
 
@@ -151,11 +164,36 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         dataRows.add(row);
     }
 
-    private TextView makeCell(String text) {
+    // ==========================================================
+    // ✅ FIXED CELL: MATCH_PARENT height so boxes fill row
+    // ==========================================================
+    private TextView makeCell(String text, float weight, boolean isNotes) {
         TextView tv = new TextView(this);
         tv.setText(text == null ? "" : text);
-        tv.setPadding(10, 10, 10, 10);
+
+        TableRow.LayoutParams lp =
+                new TableRow.LayoutParams(
+                        0,
+                        TableRow.LayoutParams.MATCH_PARENT, // 🔴 fill row height
+                        weight
+                );
+        tv.setLayoutParams(lp);
+
+        tv.setPadding(12, 12, 12, 12);
         tv.setBackgroundResource(R.drawable.table_cell_bg);
+
+        tv.setGravity(Gravity.CENTER_VERTICAL);
+        tv.setSingleLine(false);
+        tv.setHorizontallyScrolling(false);
+
+        if (isNotes) {
+            tv.setMaxLines(Integer.MAX_VALUE); // allow full wrap
+            tv.setEllipsize(null);
+        } else {
+            tv.setMaxLines(3);
+            tv.setEllipsize(TextUtils.TruncateAt.END);
+        }
+
         return tv;
     }
 
