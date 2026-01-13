@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.asdproject.view.fragments.ChildTaskFilterBottomSheetFragment;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +34,13 @@ public class ChildTasksActivity extends AppCompatActivity {
     private String childId;
     private TextView txtTasksWaiting;
     private int lastTaskCount = 0;
+    // FILTER STATE
+    private String selectedCreatorType = null;
+// null = ALL, "PARENT", "THERAPIST"
+
+    // Keep a master list (important)
+    private final List<Task> allTasks = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,8 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         View header = findViewById(R.id.header);
         TextView headerTitle = header.findViewById(R.id.txtHeaderTitle);
+        ImageView btnFilter = header.findViewById(R.id.btnFilter);
+
         headerTitle.setText("My Tasks");
 
         txtTasksWaiting = findViewById(R.id.txtTaskCount);
@@ -52,6 +62,20 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         ImageView btnBack = header.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
+
+        btnFilter.setOnClickListener(v -> {
+            ChildTaskFilterBottomSheetFragment sheet =
+                    new ChildTaskFilterBottomSheetFragment(type -> {
+
+                        selectedCreatorType = type;
+                        applyFilter();
+                        updateTaskCountPill();
+                        animateTaskPill(txtTasksWaiting);
+                    });
+
+            sheet.show(getSupportFragmentManager(), "TASK_FILTER");
+        });
+
 
         childId = getIntent().getStringExtra("childId");
 
@@ -76,6 +100,7 @@ public class ChildTasksActivity extends AppCompatActivity {
         Log.d("TASK_TIME", "Now = " + LocalDateTime.now());
 
         taskList.clear();
+        allTasks.clear();
         taskAdapter.notifyDataSetChanged();
 
         // -------- QUERY 1: childID --------
@@ -119,7 +144,7 @@ public class ChildTasksActivity extends AppCompatActivity {
         task.setId(doc.getId());
 
         if (isTaskReadyToDisplay(task.getDisplayWhen())) {
-            taskList.add(task);
+            allTasks.add(task);
             Log.d("TASK_TIME", "VISIBLE: " + task.getTaskName());
         } else {
             Log.d("TASK_TIME", "HIDDEN (future): " + task.getDisplayWhen());
@@ -148,7 +173,7 @@ public class ChildTasksActivity extends AppCompatActivity {
     // UTILITIES
     // ==============================
     private boolean containsTask(String taskId) {
-        for (Task t : taskList) {
+        for (Task t : allTasks) {
             if (t.getId() != null && t.getId().equals(taskId)) {
                 return true;
             }
@@ -156,11 +181,12 @@ public class ChildTasksActivity extends AppCompatActivity {
         return false;
     }
 
+
     private void finalizeTaskList() {
-        taskAdapter.notifyDataSetChanged();
+        applyFilter();
+        updateTaskCountPill();
 
         int newCount = taskList.size();
-        txtTasksWaiting.setText("Tasks waiting: " + newCount);
 
         if (newCount > lastTaskCount) {
             animateTaskPill(txtTasksWaiting);
@@ -169,6 +195,38 @@ public class ChildTasksActivity extends AppCompatActivity {
         lastTaskCount = newCount;
         Log.d("TASK_DEBUG", "FINAL COUNT = " + newCount);
     }
+
+
+    private void applyFilter() {
+        taskList.clear();
+
+        for (Task task : allTasks) {
+            if (selectedCreatorType == null ||
+                    selectedCreatorType.equals(task.getCreatorType())) {
+                taskList.add(task);
+            }
+        }
+
+        taskAdapter.notifyDataSetChanged();
+    }
+    private void updateTaskCountPill() {
+        int count = taskList.size();
+
+        if (selectedCreatorType == null) {
+            txtTasksWaiting.setText("Tasks waiting: " + count);
+        } else if ("PARENT".equals(selectedCreatorType)) {
+            txtTasksWaiting.setText("Mom tasks: " + count);
+        } else if ("THERAPIST".equals(selectedCreatorType)) {
+            txtTasksWaiting.setText("Therapist tasks: " + count);
+        }
+        if (count == 0) {
+            txtTasksWaiting.setVisibility(View.GONE);
+        } else {
+            txtTasksWaiting.setVisibility(View.VISIBLE);
+        }
+
+    }
+
 
     private void animateTaskPill(View pill) {
         pill.animate()
