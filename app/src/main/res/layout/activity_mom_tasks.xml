@@ -1,160 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E2F6F7">
+    android:background="#E3F4F4">
 
-    <!-- Back arrow -->
 
-    <ImageButton
-        android:id="@+id/btnBack"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="40dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="back"
-        android:padding="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_back" />
+    <!-- HEADER (same one you already use) -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_history_header" />
 
-    <TextView
-        android:id="@+id/txtTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New Task From Mom"
-        android:textColor="#21434F"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp"/>
-
-    <!-- Mom avatar -->
-    <ImageView
-        android:id="@+id/imgMomAvatar"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:src="@drawable/ic_parent"
-        android:padding="1dp"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="10dp"/>
-
-    <!-- Mom label -->
-    <TextView
-        android:id="@+id/txtMomName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:textColor="#21434F"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgMomAvatar" />
-
-    <!-- Cream panel (wrap content, not full screen) -->
+    <!-- SENDER SECTION -->
     <LinearLayout
-        android:id="@+id/panelTask"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@drawable/role_card_bg"
-        android:padding="24dp"
-        app:layout_constraintTop_toBottomOf="@id/txtMomName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="24dp">
+        android:gravity="center"
+        android:layout_marginTop="24dp">
 
-        <!-- Row: star + task name -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imgMomAvatar"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@drawable/ic_parent"
+            android:contentDescription="Task sender avatar" />
+
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:text=""
+            android:textSize="18sp"
+            android:textColor="#085F63"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp" />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="6dp"
-                android:src="@drawable/ic_star" />
-
-            <TextView
-                android:id="@+id/txtTaskName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Neighborhood Walk"
-                android:textColor="#21434F"
-                android:textSize="16sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
-
-        <!-- White inner card -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txtMomName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/rounded_white"
-            android:padding="16dp"
-            android:layout_marginTop="20dp">
-
-            <!-- When -->
-            <TextView
-                android:id="@+id/txtWhen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="When: 9/12/2025"
-                android:textSize="14sp"
-                android:textColor="#21434F"/>
-
-            <!-- Chat bubble + prompt -->
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <ImageView
-                    android:id="@+id/imgChatBubble"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/chat_bub_icon"
-                    android:adjustViewBounds="true"/>
-
-                <TextView
-                    android:id="@+id/txtPrompt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="39dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="50dp"
-                    android:text="How you felt in this situation?"
-                    android:textColor="#21434F"
-                    android:textSize="14sp" />
-            </FrameLayout>
-        </LinearLayout>
-
-        <!-- Log Now button INSIDE cream box -->
-        <Button
-            android:id="@+id/btnLogNow"
-            style="@style/Widget.AppCompat.Button"
-            android:layout_width="172dp"
-            android:layout_height="48dp"
-            android:layout_marginTop="24dp"
-
-            android:background="@drawable/btn_login_rounded"
-            android:text="Log Now"
-            android:textAllCaps="false"
-            android:textColor="@color/LogNow"
-            android:textSize="15sp"
-            app:backgroundTint="@null" />
+            android:text=""
+            android:textSize="14sp"
+            android:textColor="#4F8F90"
+            android:layout_marginTop="2dp" />
 
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- TASK CARD -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:orientation="vertical"
+        android:background="@drawable/role_card_bg"
+        android:padding="20dp">
+
+        <!-- Task name -->
+        <TextView
+            android:id="@+id/txtTaskName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#006B6C" />
+
+        <!-- When -->
+        <TextView
+            android:id="@+id/txtWhen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When:"
+            android:textSize="14sp"
+            android:textColor="#4F8F90"
+            android:layout_marginTop="8dp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="#D6ECEC" />
+
+        <!-- Prompt -->
+        <TextView
+            android:id="@+id/txtPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Prompt text goes here"
+            android:textSize="15sp"
+            android:textColor="#085F63"
+            android:lineSpacingExtra="4dp" />
+    </LinearLayout>
+
+    <!-- ACTION BUTTON -->
+    <Button
+        android:id="@+id/btnLogNow"
+        android:layout_width="200dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp"
+        android:text="Log Now"
+        android:textAllCaps="false"
+        android:textSize="16sp"
+        android:textColor="@color/LogNow"
+        android:background="@drawable/pill_button_selector"
+        app:backgroundTint="@null" />
+
+
+</LinearLayout>

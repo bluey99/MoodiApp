@@ -1,5 +1,7 @@
 package com.example.asdproject.view.activities;
 
+
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -50,6 +52,7 @@ public class ChildHomeActivity extends AppCompatActivity {
     // Firestore document ID representing the logged-in child
     private String childId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +79,8 @@ public class ChildHomeActivity extends AppCompatActivity {
         // Retrieve child information passed from LoginActivity
         String childName = getIntent().getStringExtra("childName");
         childId = getIntent().getStringExtra("childId");
+
+
 
         // Bind navigation UI elements
         txtGreeting = findViewById(R.id.txtGreeting);
@@ -105,7 +110,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         //Navigate to Task screen
         btnTasks.setOnClickListener(v -> {
             Intent intent = new Intent(ChildHomeActivity.this, ChildTasksActivity.class);
-            intent.putExtra("childId", childId);     // can be null, ChildTasksActivity will handle
+            intent.putExtra("childId", childId);// can be null, ChildTasksActivity will handle
             intent.putExtra("childName", childName);
             startActivity(intent);
         });
@@ -132,45 +137,67 @@ public class ChildHomeActivity extends AppCompatActivity {
      */
     private void loadCheckInStreak() {
 
-        if (childId == null) {
+        if (childId == null || childId.isEmpty()) {
             layoutStreak.setVisibility(LinearLayout.GONE);
             return;
         }
 
         FirebaseFirestore db = FirebaseManager.getDb();
 
+        // 1) Resolve the Firestore document id by searching using the REAL childID
         db.collection("children")
-                .document(childId)
-                .collection("history")
+                .whereEqualTo("childID", childId)
+                .limit(1)
                 .get()
-                .addOnSuccessListener(snapshot -> {
+                .addOnSuccessListener(query -> {
 
-                    if (snapshot.isEmpty()) {
+                    if (query.isEmpty()) {
                         layoutStreak.setVisibility(LinearLayout.GONE);
                         return;
                     }
 
-                    // Track unique calendar days with at least one log
-                    Set<String> loggedDays = new HashSet<>();
-                    Calendar cal = Calendar.getInstance();
+                    String resolvedDocId = query.getDocuments().get(0).getId();
 
-                    snapshot.forEach(doc -> {
-                        EmotionLog log = doc.toObject(EmotionLog.class);
-                        if (log.getTimestamp() == null) return;
+                    // 2) Use the resolved doc id to reach the history subcollection
+                    db.collection("children")
+                            .document(resolvedDocId)
+                            .collection("history")
+                            .get()
+                            .addOnSuccessListener(snapshot -> {
 
-                        cal.setTime(log.getTimestamp().toDate());
+                                if (snapshot.isEmpty()) {
+                                    layoutStreak.setVisibility(LinearLayout.GONE);
+                                    return;
+                                }
 
-                        String dayKey =
-                                cal.get(Calendar.YEAR) + "-" +
-                                        cal.get(Calendar.DAY_OF_YEAR);
+                                Set<String> loggedDays = new HashSet<>();
+                                Calendar cal = Calendar.getInstance();
 
-                        loggedDays.add(dayKey);
-                    });
+                                snapshot.forEach(doc -> {
+                                    EmotionLog log = doc.toObject(EmotionLog.class);
+                                    if (log.getTimestamp() == null) return;
 
-                    int consecutiveDays = calculateConsecutiveDays(loggedDays);
-                    applyGentleStreakMessage(consecutiveDays);
-                });
+                                    cal.setTime(log.getTimestamp().toDate());
+
+                                    String dayKey =
+                                            cal.get(Calendar.YEAR) + "-" +
+                                                    cal.get(Calendar.DAY_OF_YEAR);
+
+                                    loggedDays.add(dayKey);
+                                });
+
+                                int consecutiveDays = calculateConsecutiveDays(loggedDays);
+                                applyGentleStreakMessage(consecutiveDays);
+                            })
+                            .addOnFailureListener(e ->
+                                    layoutStreak.setVisibility(LinearLayout.GONE)
+                            );
+                })
+                .addOnFailureListener(e ->
+                        layoutStreak.setVisibility(LinearLayout.GONE)
+                );
     }
+
 
     /**
      * Calculates the number of consecutive calendar days,

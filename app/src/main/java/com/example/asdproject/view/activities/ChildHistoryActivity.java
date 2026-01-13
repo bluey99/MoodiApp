@@ -169,24 +169,42 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseManager.getDb();
 
+// 1) Resolve Firestore document ID using REAL childID
         db.collection("children")
-                .document(childId)
-                .collection("history")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
+                .whereEqualTo("childID", childId)
+                .limit(1)
                 .get()
-                .addOnSuccessListener(snapshot -> {
+                .addOnSuccessListener(query -> {
 
-                    cachedLogs.clear();
+                    if (query.isEmpty()) {
+                        showEmptyState();
+                        return;
+                    }
 
-                    snapshot.forEach(doc -> {
-                        EmotionLog log = doc.toObject(EmotionLog.class);
-                        log.setId(doc.getId());
-                        cachedLogs.add(log);
-                    });
+                    String resolvedDocId = query.getDocuments().get(0).getId();
 
-                    applyFiltersAndUpdateUI();
+                    // 2) Load history using resolved document ID
+                    db.collection("children")
+                            .document(resolvedDocId)
+                            .collection("history")
+                            .orderBy("timestamp", Query.Direction.DESCENDING)
+                            .get()
+                            .addOnSuccessListener(snapshot -> {
+
+                                cachedLogs.clear();
+
+                                snapshot.forEach(doc -> {
+                                    EmotionLog log = doc.toObject(EmotionLog.class);
+                                    log.setId(doc.getId());
+                                    cachedLogs.add(log);
+                                });
+
+                                applyFiltersAndUpdateUI();
+                            })
+                            .addOnFailureListener(e -> showEmptyState());
                 })
                 .addOnFailureListener(e -> showEmptyState());
+
     }
 
     /* ===================== FILTERING ===================== */

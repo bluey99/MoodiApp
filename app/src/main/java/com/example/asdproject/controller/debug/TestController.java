@@ -46,10 +46,14 @@ public class TestController {
         draft.photoUri = null;
         draft.note = "I felt very good today.";
 
-        // Convert draft → final log
+        // IMPORTANT: this is the REAL childID value (field childID in Firestore)
         EmotionLog log = new EmotionLog("child001", draft);
 
-        // Save
-        repo.addEmotionLog(log);
+        // Save using the new signature
+        repo.addEmotionLog(
+                log,
+                () -> Log.d("TEST", "Emotion log saved successfully"),
+                () -> Log.e("TEST", "Failed to save emotion log")
+        );
     }
 }

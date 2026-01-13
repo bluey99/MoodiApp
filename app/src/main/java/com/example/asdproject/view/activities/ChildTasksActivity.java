@@ -1,6 +1,7 @@
 package com.example.asdproject.view.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -50,7 +51,8 @@ public class ChildTasksActivity extends AppCompatActivity {
         recyclerTasks.setAdapter(taskAdapter);
 
         // Back button (ImageView, NOT ImageButton)
-        ImageView btnBack = findViewById(R.id.btnBack);
+        ImageView btnBack = header.findViewById(R.id.btnBack);
+
         btnBack.setOnClickListener(v -> finish());
 
         // Child id
@@ -65,20 +67,31 @@ public class ChildTasksActivity extends AppCompatActivity {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         tasksRef = db.collection("tasks");
 
+
         loadTasksForChild(childId);
     }
 
     private void loadTasksForChild(String childId) {
-        tasksRef.whereEqualTo("childId", childId)
+
+        // Show loading state
+        // (optional but recommended if you added loadingContainer)
+        // loadingContainer.setVisibility(View.VISIBLE);
+
+        tasksRef
+                .whereEqualTo("childId", childId)
+                .whereEqualTo("status", "ASSIGNED")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+
+                    Log.d("TASK_DEBUG", "Loading tasks for childId = " + childId);
+
                     taskList.clear();
 
                     for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                        Log.d("TASK_DEBUG", "DOC " + doc.getId() + " → " + doc.getData());
+
                         Task task = doc.toObject(Task.class);
                         task.setId(doc.getId());
-
-
                         taskList.add(task);
                     }
 
@@ -87,15 +100,16 @@ public class ChildTasksActivity extends AppCompatActivity {
                     int newCount = taskList.size();
                     txtTasksWaiting.setText("Tasks waiting: " + newCount);
 
-                    // Animate only if NEW task arrived
                     if (newCount > lastTaskCount) {
                         animateTaskPill(txtTasksWaiting);
                     }
 
                     lastTaskCount = newCount;
+
+
+                    // Hide loading / show empty if needed
+                    // updateTaskCountUI(newCount);  // if you added this helper
                 })
-
-
                 .addOnFailureListener(e ->
                         Toast.makeText(
                                 ChildTasksActivity.this,
@@ -104,6 +118,7 @@ public class ChildTasksActivity extends AppCompatActivity {
                         ).show()
                 );
     }
+
     private void animateTaskPill(View pill) {
         pill.animate()
                 .rotation(5f)

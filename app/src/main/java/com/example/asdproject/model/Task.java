@@ -4,43 +4,41 @@ public class Task {
 
     private String id;                 // Firestore document ID
     private String taskName;           // "Neighborhood Walk"
-    private String parentId;           // id of the mom who created it
-    private String childId;            // id of the child (Firestore doc id)
-    private String displayWhen;        // "9/12/2025, 8:00PM"
-    private String discussionPrompts;  // question text
+
+    private String childId;            // "507293184"
+
+    private String creatorId;          // "parent2" or therapist id
+    private String creatorType;        // "PARENT" or "THERAPIST"
+
+    private String displayWhen;        // "31/1/2026, 10:29AM"
+    private String discussionPrompts;  // "How are u?"
+
+    private String status;             // "ASSIGNED" or "COMPLETED"
 
     // Empty constructor required by Firestore
     public Task() { }
 
-    public Task(String id,
-                String taskName,
-                String parentId,
-                String childId,
-                String displayWhen,
-                String discussionPrompts,
-                long createdAt) {
-        this.id = id;
-        this.taskName = taskName;
-        this.parentId = parentId;
-        this.childId = childId;
-        this.displayWhen = displayWhen;
-        this.discussionPrompts = discussionPrompts;
-        //this.createdAt = createdAt;
-    }
-
     public String getId() { return id; }
     public String getTaskName() { return taskName; }
-    public String getParentId() { return parentId; }
     public String getChildId() { return childId; }
+
+    public String getCreatorId() { return creatorId; }
+    public String getCreatorType() { return creatorType; }
+
     public String getDisplayWhen() { return displayWhen; }
     public String getDiscussionPrompts() { return discussionPrompts; }
- //   public long getCreatedAt() { return createdAt; }
+
+    public String getStatus() { return status; }
 
     public void setId(String id) { this.id = id; }
     public void setTaskName(String taskName) { this.taskName = taskName; }
-    public void setParentId(String parentId) { this.parentId = parentId; }
     public void setChildId(String childId) { this.childId = childId; }
+
+    public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
+    public void setCreatorType(String creatorType) { this.creatorType = creatorType; }
+
     public void setDisplayWhen(String displayWhen) { this.displayWhen = displayWhen; }
     public void setDiscussionPrompts(String discussionPrompts) { this.discussionPrompts = discussionPrompts; }
-  //  public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+
+    public void setStatus(String status) { this.status = status; }
 }

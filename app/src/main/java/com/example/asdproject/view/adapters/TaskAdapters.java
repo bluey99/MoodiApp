@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.asdproject.R;
 import com.example.asdproject.model.Task;
-import com.example.asdproject.view.activities.MomTasksActivity;
+import com.example.asdproject.view.activities.ChildTaskDetailsActivity;
 
 import java.util.List;
 
@@ -40,17 +40,23 @@ public class TaskAdapters extends RecyclerView.Adapter<TaskAdapters.TaskViewHold
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
         Task task = taskList.get(position);
 
-        holder.txtTaskTitle.setText("New Task from Mom");
+        String creatorType = task.getCreatorType();
+
+        if ("THERAPIST".equals(creatorType)) {
+            holder.txtTaskTitle.setText("Task by Therapist");
+        } else {
+            holder.txtTaskTitle.setText("Task by Mom");
+        }
+
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), MomTasksActivity.class);
+            Intent intent = new Intent(v.getContext(), ChildTaskDetailsActivity.class);
 
             intent.putExtra("taskId", task.getId());
             intent.putExtra("taskName", task.getTaskName());
             intent.putExtra("displayWhen", task.getDisplayWhen());
             intent.putExtra("discussionPrompts", task.getDiscussionPrompts());
-
-            // ✅ MAIN FIX: pass childId forward
+            intent.putExtra("creatorType", task.getCreatorType());
             intent.putExtra("childId", task.getChildId());
 
             v.getContext().startActivity(intent);

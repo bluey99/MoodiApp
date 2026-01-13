@@ -85,7 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (storedPinHash != null && storedPinHash.equals(pinHash)) {
 
                         Intent intent = new Intent(this, ChildHomeActivity.class);
-                        intent.putExtra("childId", doc.getId());
+                        intent.putExtra("childId", doc.getString("childID"));
                         intent.putExtra("childName", doc.getString("name")); // display only
                         // save this emulator/device FCM token under the logged-in child document
                         FirebaseMessaging.getInstance().getToken()

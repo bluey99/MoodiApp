@@ -276,14 +276,27 @@ public class EmotionLogActivity extends AppCompatActivity
         EmotionLog finalLog = new EmotionLog(childId, draft);
 
         Toast.makeText(this, "Saving your feeling...", Toast.LENGTH_SHORT).show();
-        emotionRepository.addEmotionLog(finalLog);
+        emotionRepository.addEmotionLog(
+                finalLog,
 
-        // If this is task logging, mark task completed + create notification
-        if ("TASK".equals(logType) && taskId != null && !taskId.trim().isEmpty()) {
-            markTaskCompletedAndNotify();
-        }
+                // SUCCESS: history saved
+                () -> {
+                    if ("TASK".equals(logType) && taskId != null && !taskId.trim().isEmpty()) {
+                        markTaskCompletedAndNotify();
+                    }
+                    finish();
+                },
 
-        finish();
+                // FAILURE: history NOT saved
+                () -> {
+                    Toast.makeText(
+                            this,
+                            "Failed to save your feeling. Task not completed.",
+                            Toast.LENGTH_LONG
+                    ).show();
+                }
+        );
+
     }
 
     // -------------------------------------------------------------
