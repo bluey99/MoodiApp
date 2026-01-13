@@ -21,9 +21,12 @@ import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
 import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
-
 import com.example.asdproject.view.fragments.Step6NoteFragment;
 import com.example.asdproject.view.fragments.Step7ReviewFragment;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Hosts the multi-step emotion logging flow for the child.
@@ -69,35 +72,38 @@ public class EmotionLogActivity extends AppCompatActivity
     private static final int TOTAL_STEPS = 7;
     private View headerView;
 
-    // ✅ controls whether we start from step 1 or step 3
     private int startStep = 1;
     private String logType = "SELF"; // default
 
-    // ✅ discussion prompts (only for TASK)
     private String discussionPrompts;
 
+    // needed for task completion notification
+    private String taskId;
+    private String taskTitle;
+
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emotion_log);
 
+        db = FirebaseFirestore.getInstance();
+
         childId = getIntent().getStringExtra("childId");
 
-        // ✅ Determine mode (SELF default)
         logType = getIntent().getStringExtra("LOG_TYPE");
         if (logType == null) logType = "SELF";
 
-        // ✅ Get prompts from task screen (may be null for SELF)
         discussionPrompts = getIntent().getStringExtra("discussionPrompts");
 
-        // ✅ If TASK → start directly at Feeling page (Step 3)
+        // task extras (only for TASK)
+        taskId = getIntent().getStringExtra("taskId");
+        taskTitle = getIntent().getStringExtra("taskTitle");
+
         startStep = "TASK".equals(logType) ? 2 : 1;
 
-        // ✅ (Optional) prefill for TASK so review isn't empty
         if ("TASK".equals(logType)) {
-            String taskTitle = getIntent().getStringExtra("taskTitle");
-
             draft.situation = (taskTitle != null && !taskTitle.trim().isEmpty())
                     ? ("Task: " + taskTitle)
                     : "Task";
@@ -106,32 +112,23 @@ public class EmotionLogActivity extends AppCompatActivity
 
         initViews();
         setupBackButton();
-
         showStep(startStep);
     }
 
-    /** Binds shared views */
     private void initViews() {
-
-        // Header include
         headerView = findViewById(R.id.header);
 
-        // Header views
         btnBack = headerView.findViewById(R.id.btnBack);
         TextView txtHeaderTitle = headerView.findViewById(R.id.txtHeaderTitle);
         txtHeaderTitle.setText("Log My Feelings");
 
-        // Step UI
         txtStepIndicator = findViewById(R.id.txtStepIndicator);
         stepProgressFill = findViewById(R.id.stepProgressFill);
     }
 
-
-    /** Handles back navigation */
     private void setupBackButton() {
         btnBack.setOnClickListener(v -> {
 
-            // ✅ If we started at step 3 (task logging), back exits
             if (currentStep == startStep) {
                 finish();
                 return;
@@ -145,12 +142,10 @@ public class EmotionLogActivity extends AppCompatActivity
         });
     }
 
-    /** Updates step label */
     private void updateStepIndicator() {
         txtStepIndicator.setText("Step " + currentStep + " of " + TOTAL_STEPS);
     }
 
-    /** Updates progress bar width */
     private void updateProgressBar() {
         float fraction = (float) currentStep / TOTAL_STEPS;
 
@@ -164,7 +159,6 @@ public class EmotionLogActivity extends AppCompatActivity
         });
     }
 
-    /** Central navigation method */
     public void showStep(int step) {
         currentStep = step;
         updateStepIndicator();
@@ -177,7 +171,6 @@ public class EmotionLogActivity extends AppCompatActivity
             case 4: replaceFragment(new Step4IntensityFragment()); break;
             case 5: replaceFragment(Step5PhotoFragment.newInstance(childId)); break;
 
-            // ✅ Step 6: if TASK use Step6ForTasks, else normal Step6NoteFragment
             case 6:
                 if ("TASK".equals(logType)) {
                     replaceFragment(Step6ForTasksActivity.newInstance(discussionPrompts));
@@ -190,7 +183,6 @@ public class EmotionLogActivity extends AppCompatActivity
         }
     }
 
-    /** Fragment replacement helper */
     private void replaceFragment(androidx.fragment.app.Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -211,10 +203,7 @@ public class EmotionLogActivity extends AppCompatActivity
     @Override
     public void onRequestCustomSituation() {
         CustomSituationBottomSheet sheet = new CustomSituationBottomSheet();
-        sheet.show(
-                getSupportFragmentManager(),
-                "CustomSituationBottomSheet"
-        );
+        sheet.show(getSupportFragmentManager(), "CustomSituationBottomSheet");
     }
 
     @Override
@@ -259,17 +248,15 @@ public class EmotionLogActivity extends AppCompatActivity
         showStep(6);
     }
 
-    // SELF Step 6 callback
     @Override
     public void onNoteEntered(String note) {
         draft.note = note;
         showStep(7);
     }
 
-    // ✅ TASK Step 6 callback (answers for prompts)
     @Override
     public void onTaskAnswerEntered(String answer) {
-        draft.note = answer; // store answers inside note to keep everything else unchanged
+        draft.note = answer;
         showStep(7);
     }
 
@@ -278,7 +265,6 @@ public class EmotionLogActivity extends AppCompatActivity
         saveFinalEmotionLog();
     }
 
-    /** Converts draft → EmotionLog and saves it */
     private void saveFinalEmotionLog() {
 
         if (childId == null || childId.trim().isEmpty()) {
@@ -292,6 +278,78 @@ public class EmotionLogActivity extends AppCompatActivity
         Toast.makeText(this, "Saving your feeling...", Toast.LENGTH_SHORT).show();
         emotionRepository.addEmotionLog(finalLog);
 
+        // If this is task logging, mark task completed + create notification
+        if ("TASK".equals(logType) && taskId != null && !taskId.trim().isEmpty()) {
+            markTaskCompletedAndNotify();
+        }
+
         finish();
+    }
+
+    // -------------------------------------------------------------
+    // Mark task completed + create notification (FIXED: final variables)
+    // -------------------------------------------------------------
+    private void markTaskCompletedAndNotify() {
+
+        db.collection("tasks")
+                .document(taskId)
+                .get()
+                .addOnSuccessListener(taskDoc -> {
+
+                    if (taskDoc == null || !taskDoc.exists()) return;
+
+                    // who created it
+                    String creatorTypeTmp = taskDoc.getString("creatorType");
+                    String creatorIdTmp = taskDoc.getString("creatorId");
+
+                    // fallback for old tasks (only parentId exists)
+                    if (creatorTypeTmp == null || creatorTypeTmp.trim().isEmpty()) creatorTypeTmp = "PARENT";
+                    if (creatorIdTmp == null || creatorIdTmp.trim().isEmpty()) creatorIdTmp = taskDoc.getString("parentId");
+
+                    // task name
+                    String taskNameTmp = taskDoc.getString("taskName");
+                    if (taskNameTmp == null || taskNameTmp.trim().isEmpty()) {
+                        taskNameTmp = (taskTitle != null && !taskTitle.trim().isEmpty()) ? taskTitle : "Task";
+                    }
+
+                    // ✅ Must be final for inner lambda
+                    final String creatorType = creatorTypeTmp;
+                    final String creatorId = creatorIdTmp;
+                    final String taskName = taskNameTmp;
+
+                    // 1) update status -> COMPLETED
+                    Map<String, Object> update = new HashMap<>();
+                    update.put("status", "COMPLETED");
+                    db.collection("tasks").document(taskId).update(update);
+
+                    // 2) read child name then create notification
+                    db.collection("children")
+                            .document(childId)
+                            .get()
+                            .addOnSuccessListener(childDoc -> {
+
+                                String childName = "Child";
+                                if (childDoc != null && childDoc.exists()) {
+                                    String n = childDoc.getString("name");
+                                    if (n != null && !n.trim().isEmpty()) childName = n;
+                                }
+
+                                // 3) write notification document
+                                Map<String, Object> notif = new HashMap<>();
+                                notif.put("receiverType", creatorType);
+                                notif.put("receiverId", creatorId);
+                                notif.put("read", false);
+                                notif.put("message", childName + " finished the task: " + taskName);
+
+                                // for ordering (optional but useful)
+                                notif.put("createdAt", System.currentTimeMillis());
+
+                                db.collection("notifications").add(notif);
+                            });
+
+                })
+                .addOnFailureListener(e -> {
+                    // don't crash if notification fails
+                });
     }
 }

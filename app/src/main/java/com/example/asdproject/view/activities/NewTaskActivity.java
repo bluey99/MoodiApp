@@ -26,7 +26,6 @@ public class NewTaskActivity extends AppCompatActivity {
 
     private final Calendar selectedDateTime = Calendar.getInstance();
 
-    // Example: "9/12/2025, 4:30PM"
     private final SimpleDateFormat format =
             new SimpleDateFormat("d/M/yyyy, h:mma", Locale.getDefault());
 
@@ -61,7 +60,6 @@ public class NewTaskActivity extends AppCompatActivity {
         btnSaveTask = findViewById(R.id.btnSaveTask);
         btnGoBack = findViewById(R.id.btnGoBack);
 
-        // date & time picker instead of typing
         edtDisplayWhen.setFocusable(false);
         edtDisplayWhen.setClickable(true);
         edtDisplayWhen.setOnClickListener(v -> openDatePicker());
@@ -71,9 +69,6 @@ public class NewTaskActivity extends AppCompatActivity {
         btnSaveTask.setOnClickListener(v -> validateAndSendTask());
     }
 
-    // ----------------------------------------------------
-    // Validate input and send task to THIS child only
-    // ----------------------------------------------------
     private void validateAndSendTask() {
 
         String taskName = edtTaskName.getText().toString().trim();
@@ -98,19 +93,14 @@ public class NewTaskActivity extends AppCompatActivity {
             return;
         }
 
-        // block past date/time (extra protection)
         if (selectedDateTime.getTimeInMillis() < System.currentTimeMillis()) {
             Toast.makeText(this, "Please choose a future date/time", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // directly save to Firestore with this childId
         saveTaskToFirestore(taskName, displayWhen, discussionPrompts, parentId, childId);
     }
 
-    // ----------------------------------------------------
-    // Save task (child-specific)
-    // ----------------------------------------------------
     private void saveTaskToFirestore(String taskName,
                                      String displayWhen,
                                      String discussionPrompts,
@@ -122,11 +112,12 @@ public class NewTaskActivity extends AppCompatActivity {
         task.put("displayWhen", displayWhen);
         task.put("discussionPrompts", discussionPrompts);
         task.put("childId", childId);
-        task.put("parentId", parentId);
-        task.put("createdAt", System.currentTimeMillis());
 
-        // keep this if your old DB already has the field
-        task.put("displayWhere", "");
+
+        // ✅ NEW (minimal fields you asked for)
+        task.put("creatorType", "PARENT");
+        task.put("creatorId", parentId);
+        task.put("status", "ASSIGNED");
 
         db.collection("tasks")
                 .add(task)
@@ -139,9 +130,6 @@ public class NewTaskActivity extends AppCompatActivity {
                 );
     }
 
-    // -------------------------------------------
-    // DATE PICKER (no past dates)
-    // -------------------------------------------
     private void openDatePicker() {
         Calendar now = Calendar.getInstance();
 
@@ -162,9 +150,6 @@ public class NewTaskActivity extends AppCompatActivity {
         dp.show();
     }
 
-    // ----------------------------------------------------
-    // TIME PICKER (no past time if same day)
-    // ----------------------------------------------------
     private void openTimePicker() {
         Calendar now = Calendar.getInstance();
 
@@ -178,7 +163,6 @@ public class NewTaskActivity extends AppCompatActivity {
                     candidate.set(Calendar.SECOND, 0);
                     candidate.set(Calendar.MILLISECOND, 0);
 
-                    // If chosen date is today, block past times
                     Calendar today = Calendar.getInstance();
                     boolean sameDay =
                             candidate.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
@@ -186,7 +170,6 @@ public class NewTaskActivity extends AppCompatActivity {
 
                     if (sameDay && candidate.getTimeInMillis() < System.currentTimeMillis()) {
                         Toast.makeText(this, "Choose a future time", Toast.LENGTH_SHORT).show();
-                        // reopen time picker
                         openTimePicker();
                         return;
                     }

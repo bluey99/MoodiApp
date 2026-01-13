@@ -8,7 +8,6 @@ public class Task {
     private String childId;            // id of the child (Firestore doc id)
     private String displayWhen;        // "9/12/2025, 8:00PM"
     private String discussionPrompts;  // question text
-    private long createdAt;            // timestamp
 
     // Empty constructor required by Firestore
     public Task() { }
@@ -26,7 +25,7 @@ public class Task {
         this.childId = childId;
         this.displayWhen = displayWhen;
         this.discussionPrompts = discussionPrompts;
-        this.createdAt = createdAt;
+        //this.createdAt = createdAt;
     }
 
     public String getId() { return id; }
@@ -35,7 +34,7 @@ public class Task {
     public String getChildId() { return childId; }
     public String getDisplayWhen() { return displayWhen; }
     public String getDiscussionPrompts() { return discussionPrompts; }
-    public long getCreatedAt() { return createdAt; }
+ //   public long getCreatedAt() { return createdAt; }
 
     public void setId(String id) { this.id = id; }
     public void setTaskName(String taskName) { this.taskName = taskName; }
@@ -43,5 +42,5 @@ public class Task {
     public void setChildId(String childId) { this.childId = childId; }
     public void setDisplayWhen(String displayWhen) { this.displayWhen = displayWhen; }
     public void setDiscussionPrompts(String discussionPrompts) { this.discussionPrompts = discussionPrompts; }
-    public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
+  //  public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }
 }

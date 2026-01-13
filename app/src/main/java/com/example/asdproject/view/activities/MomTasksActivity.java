@@ -34,11 +34,12 @@ public class MomTasksActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         // --------- data from clicked task ----------
+        String taskId            = getIntent().getStringExtra("taskId");
         String taskName          = getIntent().getStringExtra("taskName");
         String displayWhen       = getIntent().getStringExtra("displayWhen");
         String discussionPrompts = getIntent().getStringExtra("discussionPrompts");
 
-        // ✅ IMPORTANT: pass childId to EmotionLogActivity (needed to save)
+        // pass childId to EmotionLogActivity
         String childId = getIntent().getStringExtra("childId");
 
         if (taskName != null) {
@@ -46,7 +47,6 @@ public class MomTasksActivity extends AppCompatActivity {
         }
 
         if (displayWhen != null) {
-            // Example value: "9/12/2025, 8:00" → show only "9/12/2025"
             String datePart = displayWhen.split(",")[0].trim();
             txtWhen.setText("When: " + datePart);
         }
@@ -58,16 +58,17 @@ public class MomTasksActivity extends AppCompatActivity {
         btnLogNow.setOnClickListener(v -> {
             Intent i = new Intent(MomTasksActivity.this, EmotionLogActivity.class);
 
-            // ✅ Tell the flow: this is task logging
+            // tell the flow: this is task logging
             i.putExtra("LOG_TYPE", "TASK");
 
-            // ✅ Needed for saving
+            // needed for saving
             i.putExtra("childId", childId);
 
-            // ✅ Nice for the review text
+            // needed for completion + notification
+            i.putExtra("taskId", taskId);          // here must change the status feild!!!
             i.putExtra("taskTitle", taskName);
 
-            // ✅ THIS WAS MISSING (this is why Step 6 is empty)
+            // discussion prompts for step 6
             i.putExtra("discussionPrompts", discussionPrompts);
 
             startActivity(i);

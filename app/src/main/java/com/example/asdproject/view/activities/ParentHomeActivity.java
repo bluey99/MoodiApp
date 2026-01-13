@@ -1,5 +1,6 @@
 package com.example.asdproject.view.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,12 +17,13 @@ import android.widget.Toast;
 import com.example.asdproject.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class ParentHomeActivity extends AppCompatActivity {
 
     private String parentId;
-
     private FirebaseFirestore db;
 
     // child bar views
@@ -34,12 +36,24 @@ public class ParentHomeActivity extends AppCompatActivity {
     private String selectedChildName = null;
     private View selectedChildView = null;
 
+    // keep your existing TextView (won't be used as main notification UI)
+    private TextView txtTaskNotification;
+
+    // ✅ NEW: bell + red dot (from your XML)
+    private ImageView btnBell;
+    private View notifDot;
+
+    private ListenerRegistration notifReg;
+
+    // latest unread notification
+    private String latestNotifId = null;
+    private String latestNotifMessage = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parent_home);
 
-        // get parent id from login
         Intent intent = getIntent();
         parentId = intent.getStringExtra("PARENT_ID");
 
@@ -49,6 +63,21 @@ public class ParentHomeActivity extends AppCompatActivity {
         childScroll = findViewById(R.id.childScroll);
         childContainer = findViewById(R.id.childContainer);
         txtCurrentChild = findViewById(R.id.txtCurrentChild);
+
+        // existing message TextView (leave it as-is)
+        txtTaskNotification = findViewById(R.id.txtTaskNotification);
+        if (txtTaskNotification != null) {
+            txtTaskNotification.setVisibility(View.GONE);
+        }
+
+        // ✅ Bell + Red dot
+        btnBell = findViewById(R.id.btnBell);
+        notifDot = findViewById(R.id.notifDot);
+        if (notifDot != null) notifDot.setVisibility(View.GONE);
+
+        if (btnBell != null) {
+            btnBell.setOnClickListener(v -> openNotificationPopup());
+        }
 
         // default state
         childScroll.setVisibility(View.GONE);
@@ -63,7 +92,6 @@ public class ParentHomeActivity extends AppCompatActivity {
         Button btnTherapistNotes = findViewById(R.id.btnTherapistNotes);
         Button btnLogout = findViewById(R.id.btnLogout);
 
-        // 👉 All these screens will work for the CURRENT selected child
         btnViewHistory.setOnClickListener(v -> {
             Intent i = new Intent(ParentHomeActivity.this, SelectionHistoryActivity.class);
             putChildExtras(i);
@@ -91,11 +119,21 @@ public class ParentHomeActivity extends AppCompatActivity {
 
         btnLogout.setOnClickListener(v -> finish());
 
-        // Load children for this parent
         loadChildrenForParent();
+
+        // ✅ This is what makes the dot appear
+        listenForUnreadNotifications();
     }
 
-    // helper: attach selected child info to any Intent
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (notifReg != null) {
+            notifReg.remove();
+            notifReg = null;
+        }
+    }
+
     private void putChildExtras(Intent i) {
         if (selectedChildId != null) {
             i.putExtra("CHILD_ID", selectedChildId);
@@ -156,7 +194,6 @@ public class ParentHomeActivity extends AppCompatActivity {
                 childName = "Child";
             }
 
-            // Outer vertical layout for one child
             LinearLayout childItem = new LinearLayout(this);
             childItem.setOrientation(LinearLayout.VERTICAL);
             childItem.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -167,14 +204,12 @@ public class ParentHomeActivity extends AppCompatActivity {
             itemParams.setMargins(marginH, 0, marginH, 0);
             childItem.setLayoutParams(itemParams);
 
-            // Icon
             ImageView icon = new ImageView(this);
             LinearLayout.LayoutParams iconParams =
                     new LinearLayout.LayoutParams(iconSize, iconSize);
             icon.setLayoutParams(iconParams);
             icon.setImageResource(R.drawable.ic_child);
 
-            // Name
             TextView nameView = new TextView(this);
             nameView.setText(childName);
             nameView.setTextSize(14);
@@ -182,23 +217,16 @@ public class ParentHomeActivity extends AppCompatActivity {
             nameView.setTextColor(getResources().getColor(R.color.black));
             nameView.setPadding(0, padding, 0, 0);
 
-            // Add views
             childItem.addView(icon);
             childItem.addView(nameView);
 
             final String finalChildId = childId;
             final String finalChildName = childName;
 
-            // ONLY change the current child context, do NOT open any screen
-            childItem.setOnClickListener(v -> {
-                setSelectedChild(finalChildId, finalChildName, childItem);
-                // no startActivity here – home stays open, but now focused on this child
-            });
+            childItem.setOnClickListener(v -> setSelectedChild(finalChildId, finalChildName, childItem));
 
-            // Add this child item to the container
             childContainer.addView(childItem);
 
-            // Auto-select the first child (no navigation)
             if (index == 0) {
                 setSelectedChild(finalChildId, finalChildName, childItem);
             }
@@ -206,7 +234,6 @@ public class ParentHomeActivity extends AppCompatActivity {
         }
     }
 
-    // highlight selected child + store id/name + update label
     private void setSelectedChild(String childId, String childName, View childView) {
         selectedChildId = childId;
         selectedChildName = childName;
@@ -222,10 +249,71 @@ public class ParentHomeActivity extends AppCompatActivity {
             txtCurrentChild.setText("Now viewing: " + selectedChildName);
         }
 
-        Toast.makeText(
-                this,
-                "Viewing: " + selectedChildName,
-                Toast.LENGTH_SHORT
-        ).show();
+        Toast.makeText(this, "Viewing: " + selectedChildName, Toast.LENGTH_SHORT).show();
+    }
+
+    // ==========================================================
+    // ✅ NOTIFICATIONS (red dot + popup)
+    // ==========================================================
+
+    private void listenForUnreadNotifications() {
+        if (parentId == null || parentId.trim().isEmpty()) return;
+
+        Query q = db.collection("notifications")
+                .whereEqualTo("receiverType", "PARENT")
+                .whereEqualTo("receiverId", parentId)
+                .whereEqualTo("read", false)
+                .limit(1);
+
+        notifReg = q.addSnapshotListener((snap, err) -> {
+
+            // ✅ show errors instead of silent fail
+            if (err != null) {
+                Toast.makeText(this, "Notif error: " + err.getMessage(), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (snap == null || snap.isEmpty()) {
+                latestNotifId = null;
+                latestNotifMessage = null;
+                if (notifDot != null) notifDot.setVisibility(View.GONE);
+                return;
+            }
+
+            DocumentSnapshot d = snap.getDocuments().get(0);
+            latestNotifId = d.getId();
+
+            String msg = d.getString("message");
+            if (msg == null || msg.trim().isEmpty()) msg = "Child has finished the task.";
+            latestNotifMessage = msg;
+
+            if (notifDot != null) notifDot.setVisibility(View.VISIBLE);
+        });
+    }
+
+    private void openNotificationPopup() {
+        // ✅ ALWAYS show something when clicking bell
+        String messageToShow = (latestNotifMessage == null)
+                ? "No new notifications"
+                : latestNotifMessage;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Notification")
+                .setMessage(messageToShow)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    // mark as read only if we have a real notification
+                    if (latestNotifId != null) {
+                        db.collection("notifications")
+                                .document(latestNotifId)
+                                .update("read", true)
+                                .addOnSuccessListener(v -> {
+                                    latestNotifId = null;
+                                    latestNotifMessage = null;
+                                    if (notifDot != null) notifDot.setVisibility(View.GONE);
+                                });
+                    }
+                    dialog.dismiss();
+                })
+                .show();
     }
 }

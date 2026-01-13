@@ -13,13 +13,16 @@ import android.widget.Toast;
 import com.example.asdproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class NewReportActivity extends AppCompatActivity {
 
@@ -38,10 +41,14 @@ public class NewReportActivity extends AppCompatActivity {
     private String childId;
     private String childName;
 
+    private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_report);
+
+        db = FirebaseFirestore.getInstance();
 
         // get child context from parent home (may be null if not sent)
         Intent intent = getIntent();
@@ -241,5 +248,50 @@ public class NewReportActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (childId == null || childId.trim().isEmpty()) {
+            return;
+        }
+
+        db.collection("children")
+                .document(childId)
+                .get()
+                .addOnSuccessListener(childDoc -> {
+                    if (childDoc == null || !childDoc.exists()) return;
+
+                    String therapistId = childDoc.getString("therapistID");
+                    if (therapistId == null || therapistId.trim().isEmpty()) return;
+
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String parentUid = (user != null) ? user.getUid() : "guest";
+
+                    Map<String, Object> report = new HashMap<>();
+                    report.put("childId", childId);
+                    report.put("childName", childName);
+                    report.put("therapistId", therapistId);
+                    report.put("parentUid", parentUid);
+                    report.put("situation", situation);
+                    report.put("timestamp", timestamp);
+                    report.put("location", location);
+                    report.put("childReaction", childReaction);
+                    report.put("howHandled", howHandled);
+                    report.put("questions", questions);
+
+                    db.collection("reports")
+                            .add(report)
+                            .addOnSuccessListener(docRef -> {
+                                Map<String, Object> notif = new HashMap<>();
+                                notif.put("receiverType", "THERAPIST");
+                                notif.put("receiverId", therapistId);
+                                notif.put("read", false);
+
+                                String cn = (childName == null || childName.trim().isEmpty()) ? "Child" : childName.trim();
+                                notif.put("message", cn + " has a new report from parent.");
+
+                                notif.put("createdAt", System.currentTimeMillis());
+
+                                db.collection("notifications").add(notif);
+                            });
+                });
     }
 }
