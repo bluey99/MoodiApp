@@ -275,6 +275,12 @@ public class EmotionLogActivity extends AppCompatActivity
 
         EmotionLog finalLog = new EmotionLog(childId, draft);
 
+// bayan added here - mark emotion log as task-based if created from a task
+        if ("TASK".equals(logType)) {
+            finalLog.setId("TASK");
+        }
+
+
         Toast.makeText(this, "Saving your feeling...", Toast.LENGTH_SHORT).show();
         emotionRepository.addEmotionLog(
                 finalLog,
