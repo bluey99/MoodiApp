@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -43,6 +44,8 @@ public class ChildHomeActivity extends AppCompatActivity {
     private LinearLayout btnCalmingTools;
     private ImageView btnNotifications;
     private ImageView btnSettings;
+    private View viewNotificationDot;
+
 
 
     // Gentle check-in indicator (streak-style feedback)
@@ -58,17 +61,25 @@ public class ChildHomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_home);
 
-        ChildFirebaseMessagingService.testLocalNotification(this);
+        //ChildFirebaseMessagingService.testLocalNotification(this);//This creates/triggers a system-level notification.we couldnt implement it becuase of firebase plan limitations so we are keeping it off.
 
         //Bind header UI elements
         btnNotifications = findViewById(R.id.btnNotifications);
+        viewNotificationDot = findViewById(R.id.viewNotificationDot);
+
         btnSettings = findViewById(R.id.btnSettings);
 
         findViewById(R.id.btnNotifications).setOnClickListener(v -> {
             NotificationsBottomSheetFragment sheet =
-                    new NotificationsBottomSheetFragment();
+                    NotificationsBottomSheetFragment.newInstance(childId);
+
+            sheet.setOnNotificationsDismissed(() -> {
+                checkForNewTasks(); // refresh red dot after notifications are seen
+            });
+
             sheet.show(getSupportFragmentManager(), "NotificationsBottomSheet");
         });
+
 
 
 
@@ -270,7 +281,9 @@ public class ChildHomeActivity extends AppCompatActivity {
         super.onResume();
         txtGreeting.setText(getTimeBasedGreeting() + ", " + getIntent().getStringExtra("childName") + "!");
         loadCheckInStreak();
+        checkForNewTasks(); //  update notification dot
     }
+
 
     /**
      * Returns a greeting message based on the current time of day.
@@ -293,6 +306,55 @@ public class ChildHomeActivity extends AppCompatActivity {
             return "Hello";
         }
     }
+    private void checkForNewTasks() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("tasks")
+                .whereEqualTo("childId", childId)
+                .whereEqualTo("status", "ASSIGNED")
+                .get()
+                .addOnSuccessListener(snapshot1 -> {
+
+                    boolean hasUnseen = false;
+
+                    for (var doc : snapshot1.getDocuments()) {
+                        // unseen = seenByChild != true (false OR missing)
+                        if (!Boolean.TRUE.equals(doc.getBoolean("seenByChild"))) {
+                            hasUnseen = true;
+                            break;
+                        }
+                    }
+
+                    if (hasUnseen) {
+                        viewNotificationDot.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    // ---------- fallback for childID ----------
+                    db.collection("tasks")
+                            .whereEqualTo("childID", childId)
+                            .whereEqualTo("status", "ASSIGNED")
+                            .get()
+                            .addOnSuccessListener(snapshot2 -> {
+
+                                boolean hasUnseenFallback = false;
+
+                                for (var doc : snapshot2.getDocuments()) {
+                                    if (!Boolean.TRUE.equals(doc.getBoolean("seenByChild"))) {
+                                        hasUnseenFallback = true;
+                                        break;
+                                    }
+                                }
+
+                                viewNotificationDot.setVisibility(
+                                        hasUnseenFallback ? View.VISIBLE : View.GONE
+                                );
+                            });
+                });
+    }
+
+
+
 
 
 

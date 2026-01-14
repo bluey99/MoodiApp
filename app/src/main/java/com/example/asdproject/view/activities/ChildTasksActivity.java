@@ -40,6 +40,8 @@ public class ChildTasksActivity extends AppCompatActivity {
 
     // Keep a master list (important)
     private final List<Task> allTasks = new ArrayList<>();
+    private static final String TASK_DBG = "TASK_DBG";
+
 
 
     @Override
@@ -89,6 +91,7 @@ public class ChildTasksActivity extends AppCompatActivity {
         tasksRef = db.collection("tasks");
 
         loadTasksForChild(childId);
+
     }
 
     // ==============================
@@ -96,31 +99,38 @@ public class ChildTasksActivity extends AppCompatActivity {
     // ==============================
     private void loadTasksForChild(String childId) {
 
-        Log.d("TASK_DEBUG", "Loading tasks for childId = " + childId);
-        Log.d("TASK_TIME", "Now = " + LocalDateTime.now());
+        Log.d(TASK_DBG, "==== loadTasksForChild START ====");
+        Log.d(TASK_DBG, "childId passed = " + childId);
+        Log.d(TASK_DBG, "Local time now = " + LocalDateTime.now());
 
         taskList.clear();
         allTasks.clear();
         taskAdapter.notifyDataSetChanged();
 
-        // -------- QUERY 1: childID --------
-        tasksRef.whereEqualTo("childID", childId)
+        // ---------- QUERY 1: childId ----------
+        tasksRef.whereEqualTo("childId", childId)
                 .whereEqualTo("status", "ASSIGNED")
                 .get()
                 .addOnSuccessListener(snapshot -> {
 
+                    Log.d(TASK_DBG, "[Q1 childId] docs = " + snapshot.size());
+
                     for (QueryDocumentSnapshot doc : snapshot) {
+                        Log.d(TASK_DBG, "[Q1 RAW] " + doc.getId() + " -> " + doc.getData());
                         handleTaskDocument(doc);
                     }
 
-                    // -------- QUERY 2: childId --------
-                    tasksRef.whereEqualTo("childId", childId)
+                    // ---------- QUERY 2: childID (fallback) ----------
+                    tasksRef.whereEqualTo("childID", childId)
                             .whereEqualTo("status", "ASSIGNED")
                             .get()
                             .addOnSuccessListener(snapshot2 -> {
 
+                                Log.d(TASK_DBG, "[Q2 childID] docs = " + snapshot2.size());
+
                                 for (QueryDocumentSnapshot doc : snapshot2) {
                                     if (!containsTask(doc.getId())) {
+                                        Log.d(TASK_DBG, "[Q2 RAW] " + doc.getId() + " -> " + doc.getData());
                                         handleTaskDocument(doc);
                                     }
                                 }
@@ -128,28 +138,42 @@ public class ChildTasksActivity extends AppCompatActivity {
                                 finalizeTaskList();
                             })
                             .addOnFailureListener(e ->
-                                    Toast.makeText(this, "Failed (childId): " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                    Log.e(TASK_DBG, "[Q2 ERROR]", e)
                             );
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed (childID): " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Log.e(TASK_DBG, "[Q1 ERROR]", e)
                 );
     }
+
 
     // ==============================
     // HANDLE SINGLE TASK DOCUMENT
     // ==============================
     private void handleTaskDocument(QueryDocumentSnapshot doc) {
+
         Task task = doc.toObject(Task.class);
         task.setId(doc.getId());
 
-        if (isTaskReadyToDisplay(task.getDisplayWhen())) {
+        Log.d(TASK_DBG, "---- TASK ----");
+        Log.d(TASK_DBG, "id = " + task.getId());
+        Log.d(TASK_DBG, "taskName = " + task.getTaskName());
+        Log.d(TASK_DBG, "displayWhen = " + task.getDisplayWhen());
+        Log.d(TASK_DBG, "creatorType = " + task.getCreatorType());
+        Log.d(TASK_DBG, "seenByChild = " + task.isSeenByChild());
+
+        boolean visible = isTaskReadyToDisplay(task.getDisplayWhen());
+
+        Log.d(TASK_DBG, "timeVisible = " + visible);
+
+        if (visible) {
             allTasks.add(task);
-            Log.d("TASK_TIME", "VISIBLE: " + task.getTaskName());
+            Log.d(TASK_DBG, "✔ ADDED to allTasks");
         } else {
-            Log.d("TASK_TIME", "HIDDEN (future): " + task.getDisplayWhen());
+            Log.d(TASK_DBG, "✘ FILTERED OUT (future)");
         }
     }
+
 
     // ==============================
     // TIME CHECK LOGIC
@@ -183,19 +207,21 @@ public class ChildTasksActivity extends AppCompatActivity {
 
 
     private void finalizeTaskList() {
+
+        Log.d(TASK_DBG, "==== finalizeTaskList ====");
+        Log.d(TASK_DBG, "allTasks size = " + allTasks.size());
+        Log.d(TASK_DBG, "selectedCreatorType = " + selectedCreatorType);
+
         applyFilter();
+
+        Log.d(TASK_DBG, "taskList after filter = " + taskList.size());
+
         updateTaskCountPill();
 
-        int newCount = taskList.size();
-
-        if (newCount > lastTaskCount) {
-            animateTaskPill(txtTasksWaiting);
+        if (taskList.isEmpty()) {
+            Log.w(TASK_DBG, "⚠ NO TASKS DISPLAYED IN UI");
         }
-
-        lastTaskCount = newCount;
-        Log.d("TASK_DEBUG", "FINAL COUNT = " + newCount);
     }
-
 
     private void applyFilter() {
         taskList.clear();

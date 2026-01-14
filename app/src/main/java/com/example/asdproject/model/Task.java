@@ -14,6 +14,9 @@ public class Task {
     private String discussionPrompts;  // "How are u?"
 
     private String status;             // "ASSIGNED" or "COMPLETED"
+    private boolean seenByChild; // false by default
+
+
 
     // Empty constructor required by Firestore
     public Task() { }
@@ -41,4 +44,12 @@ public class Task {
     public void setDiscussionPrompts(String discussionPrompts) { this.discussionPrompts = discussionPrompts; }
 
     public void setStatus(String status) { this.status = status; }
+    public boolean isSeenByChild() {
+        return seenByChild;
+    }
+
+    public void setSeenByChild(boolean seenByChild) {
+        this.seenByChild = seenByChild;
+    }
+
 }
