@@ -114,7 +114,7 @@
                             android:textStyle="bold"/>
 
                         <TextView
-                            android:text="Notes"
+                            android:text="Discussion Prompts"
                             android:padding="8dp"
                             android:minWidth="220dp"
                             android:gravity="center"

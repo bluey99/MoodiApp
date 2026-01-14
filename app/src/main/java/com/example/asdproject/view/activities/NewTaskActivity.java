@@ -115,7 +115,7 @@ public class NewTaskActivity extends AppCompatActivity {
 
         // ✅ store the field ID (not doc id)
         // If you want to match the children field name exactly, use "childID"
-        task.put("childID", childId);
+        task.put("childId", childId);
 
         task.put("creatorType", "PARENT");
         task.put("creatorId", parentId);

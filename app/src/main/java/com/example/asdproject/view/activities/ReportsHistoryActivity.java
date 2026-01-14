@@ -1,3 +1,10 @@
+// ===============================
+// ReportsHistoryActivity.java (FIELD-ID ONLY)
+// ✅ CHILD_ID passed in Intent is childID FIELD
+// ✅ filters local reports by "childID" (capital D)
+// ✅ fixes timestamp sort column index bug (was 0, should be 1)
+// ===============================
+
 package com.example.asdproject.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,9 +33,10 @@ public class ReportsHistoryActivity extends AppCompatActivity {
 
     private static final int COL_SITUATION = 0;
     private static final int COL_TIMESTAMP = 1;
-    private static final int COL_LOCATION = 2;
+    private static final int COL_LOCATION  = 2;
 
-    private String childId;
+    // ✅ this is FIELD childID (not doc id)
+    private String childIdField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +45,9 @@ public class ReportsHistoryActivity extends AppCompatActivity {
 
         table = findViewById(R.id.tableReportsHistory);
 
-        childId = getIntent().getStringExtra("CHILD_ID");
+        childIdField = getIntent().getStringExtra("CHILD_ID");
+        if (childIdField == null) childIdField = getIntent().getStringExtra("childID");
+        if (childIdField == null) childIdField = getIntent().getStringExtra("childId");
 
         findViewById(R.id.btnGoBackReports).setOnClickListener(v -> finish());
         findViewById(R.id.btnFilterReports).setOnClickListener(v -> showFilterDialog());
@@ -72,9 +82,10 @@ public class ReportsHistoryActivity extends AppCompatActivity {
             for (int i = 0; i < arr.length(); i++) {
                 JSONObject o = arr.getJSONObject(i);
 
-                if (childId != null && !childId.isEmpty()) {
-                    String reportChildId = o.optString("childId", null);
-                    if (reportChildId == null || !childId.equals(reportChildId)) {
+                // ✅ filter by FIELD childID
+                if (childIdField != null && !childIdField.isEmpty()) {
+                    String reportChildId = o.optString("childID", "");
+                    if (!childIdField.equals(reportChildId)) {
                         continue;
                     }
                 }
@@ -186,6 +197,12 @@ public class ReportsHistoryActivity extends AppCompatActivity {
                             o.put("childReaction", r.getText().toString().trim());
                             o.put("howHandled", h.getText().toString().trim());
                             o.put("questions", q.getText().toString().trim());
+
+                            // ✅ ensure childID stays present
+                            if (!o.has("childID") && childIdField != null) {
+                                o.put("childID", childIdField);
+                            }
+
                             arr.put(index, o);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -224,7 +241,7 @@ public class ReportsHistoryActivity extends AppCompatActivity {
                         textFilter(COL_LOCATION, "Location");
                     } else if (which == 2) {
                         showTimestampFilterDialog();
-                    } else if (which == 3) {
+                    } else {
                         clearFilters();
                     }
                 })
@@ -248,36 +265,32 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     }
 
     private void sortTableByTimestamp(boolean newestFirst) {
-        final int TIMESTAMP_COL_INDEX = 0;
+        // ✅ FIX: timestamp is column 1, not 0
+        final int TIMESTAMP_COL_INDEX = COL_TIMESTAMP;
 
-        java.util.List<android.widget.TableRow> rows = new java.util.ArrayList<>();
-
+        List<TableRow> rows = new ArrayList<>();
         for (int i = 1; i < table.getChildCount(); i++) {
             android.view.View v = table.getChildAt(i);
-            if (v instanceof android.widget.TableRow) {
-                rows.add((android.widget.TableRow) v);
-            }
+            if (v instanceof TableRow) rows.add((TableRow) v);
         }
 
         rows.sort((r1, r2) -> {
             android.view.View v1 = r1.getChildAt(TIMESTAMP_COL_INDEX);
             android.view.View v2 = r2.getChildAt(TIMESTAMP_COL_INDEX);
 
-            if (!(v1 instanceof android.widget.TextView) || !(v2 instanceof android.widget.TextView))
-                return 0;
+            if (!(v1 instanceof TextView) || !(v2 instanceof TextView)) return 0;
 
-            String t1 = ((android.widget.TextView) v1).getText().toString();
-            String t2 = ((android.widget.TextView) v2).getText().toString();
+            String t1 = ((TextView) v1).getText().toString();
+            String t2 = ((TextView) v2).getText().toString();
 
             int cmp = t1.compareTo(t2);
             return newestFirst ? -cmp : cmp;
         });
 
-        table.removeViews(1, table.getChildCount() - 1);
-
-        for (android.widget.TableRow row : rows) {
-            table.addView(row);
+        if (table.getChildCount() > 1) {
+            table.removeViews(1, table.getChildCount() - 1);
         }
+        for (TableRow row : rows) table.addView(row);
     }
 
     private void textFilter(int col, String title) {

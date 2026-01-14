@@ -41,7 +41,6 @@ public class TherapistNotesActivity extends AppCompatActivity {
     private RecyclerView recycler;
     private NotesAdapter adapter;
     private final List<NoteItem> notes = new ArrayList<>();
-
     private final List<NoteItem> allNotes = new ArrayList<>();
 
     private FirebaseFirestore db;
@@ -71,19 +70,8 @@ public class TherapistNotesActivity extends AppCompatActivity {
         Button btnBack = findViewById(R.id.btnBackFromNotes);
         Button btnFilter = findViewById(R.id.btnFilterNotes);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        btnFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showFilterDialog();
-            }
-        });
+        btnBack.setOnClickListener(v -> finish());
+        btnFilter.setOnClickListener(v -> showFilterDialog());
 
         db = FirebaseFirestore.getInstance();
 
@@ -161,56 +149,94 @@ public class TherapistNotesActivity extends AppCompatActivity {
         }
 
         if (sortMode == SortMode.TS_ASC) {
-            Collections.sort(notes, new Comparator<NoteItem>() {
-                @Override
-                public int compare(NoteItem a, NoteItem b) {
-                    return Long.compare(a.tsMillis, b.tsMillis);
-                }
-            });
+            Collections.sort(notes, (a, b) -> Long.compare(a.tsMillis, b.tsMillis));
         } else if (sortMode == SortMode.TS_DESC) {
-            Collections.sort(notes, new Comparator<NoteItem>() {
-                @Override
-                public int compare(NoteItem a, NoteItem b) {
-                    return Long.compare(b.tsMillis, a.tsMillis);
-                }
-            });
+            Collections.sort(notes, (a, b) -> Long.compare(b.tsMillis, a.tsMillis));
         }
 
         adapter.notifyDataSetChanged();
     }
 
+    // ==========================================================
+    // ✅ FIXED: feedbacks store childID sometimes as CHILD DOC ID
+    // so we try:
+    // 1) childID == passed childId
+    // 2) if empty -> resolve children doc id by (children where childID == passed childId)
+    //    then query feedbacks where childID == that doc id
+    // ==========================================================
     private void listenForNotes() {
-        Query q = db.collection("feedbacks")
+
+        // stop old listener
+        if (reg != null) {
+            reg.remove();
+            reg = null;
+        }
+
+        // 1) Try direct match first
+        Query q1 = db.collection("feedbacks")
                 .whereEqualTo("childID", childId);
 
-        reg = q.addSnapshotListener((snap, e) -> {
+        reg = q1.addSnapshotListener((snap, e) -> {
             if (e != null) {
                 Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 return;
             }
             if (snap == null) return;
 
-            allNotes.clear();
-
-            for (DocumentSnapshot d : snap.getDocuments()) {
-                String title = d.getString("title");
-                String desc = d.getString("description");
-                String date = d.getString("date");
-                String time = d.getString("time");
-
-                if (title == null) title = "";
-                if (desc == null) desc = "";
-                if (date == null) date = "";
-                if (time == null) time = "";
-
-                Timestamp createdAt = d.getTimestamp("createdAt");
-                long tsMillis = (createdAt == null) ? 0L : createdAt.toDate().getTime();
-
-                allNotes.add(new NoteItem(title, desc, date, time, tsMillis));
+            // If we found notes, show them
+            if (!snap.isEmpty()) {
+                fillFromSnapshot(snap.getDocuments());
+                return;
             }
 
-            applyFilters();
+            // 2) Otherwise: resolve Firestore child DOCUMENT ID using numeric childID field
+            db.collection("children")
+                    .whereEqualTo("childID", childId)
+                    .limit(1)
+                    .get()
+                    .addOnSuccessListener(childSnap -> {
+                        if (childSnap == null || childSnap.isEmpty()) {
+                            // nothing we can do
+                            allNotes.clear();
+                            applyFilters();
+                            return;
+                        }
+
+                        String childDocId = childSnap.getDocuments().get(0).getId();
+
+                        // 3) query feedbacks again using childDocId
+                        db.collection("feedbacks")
+                                .whereEqualTo("childID", childDocId)
+                                .get()
+                                .addOnSuccessListener(fbSnap2 -> {
+                                    if (fbSnap2 == null) return;
+                                    fillFromSnapshot(fbSnap2.getDocuments());
+                                });
+                    });
         });
+    }
+
+    private void fillFromSnapshot(List<DocumentSnapshot> docs) {
+        allNotes.clear();
+
+        for (DocumentSnapshot d : docs) {
+            String title = d.getString("title");
+            String desc = d.getString("description");
+            String date = d.getString("date");
+            String time = d.getString("time");
+
+            if (title == null) title = "";
+            if (desc == null) desc = "";
+            if (date == null) date = "";
+            if (time == null) time = "";
+
+            Timestamp createdAt = d.getTimestamp("createdAt");
+            long tsMillis = (createdAt == null) ? 0L : createdAt.toDate().getTime();
+
+            allNotes.add(new NoteItem(title, desc, date, time, tsMillis));
+        }
+
+        applyFilters();
     }
 
     @Override

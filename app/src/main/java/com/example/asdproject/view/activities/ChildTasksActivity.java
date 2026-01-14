@@ -31,8 +31,6 @@ public class ChildTasksActivity extends AppCompatActivity {
     private TextView txtTasksWaiting;
     private int lastTaskCount = 0;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,20 +41,24 @@ public class ChildTasksActivity extends AppCompatActivity {
         headerTitle.setText("My Tasks");
         txtTasksWaiting = findViewById(R.id.txtTaskCount);
 
-
         // Recycler
         recyclerTasks = findViewById(R.id.recyclerTasks);
         recyclerTasks.setLayoutManager(new LinearLayoutManager(this));
         taskAdapter = new TaskAdapters(taskList);
         recyclerTasks.setAdapter(taskAdapter);
 
-        // Back button (ImageView, NOT ImageButton)
+        // Back button
         ImageView btnBack = header.findViewById(R.id.btnBack);
-
         btnBack.setOnClickListener(v -> finish());
 
-        // Child id
+        // Child id (you might receive different keys in different screens)
         childId = getIntent().getStringExtra("childId");
+        if (childId == null || childId.trim().isEmpty()) {
+            childId = getIntent().getStringExtra("childID");
+        }
+        if (childId == null || childId.trim().isEmpty()) {
+            childId = getIntent().getStringExtra("CHILD_ID");
+        }
 
         if (childId == null || childId.isEmpty()) {
             Toast.makeText(this, "Child id is missing – cannot load tasks", Toast.LENGTH_SHORT).show();
@@ -66,7 +68,6 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         tasksRef = db.collection("tasks");
-
 
         loadTasksForChild(childId);
     }
@@ -86,8 +87,16 @@ public class ChildTasksActivity extends AppCompatActivity {
 
                     for (QueryDocumentSnapshot doc : snap1) {
                         Log.d("TASK_DEBUG", "MATCH childID: " + doc.getId() + " -> " + doc.getData());
+
                         Task task = doc.toObject(Task.class);
                         task.setId(doc.getId());
+
+                        // ✅ IMPORTANT: tasks may store childId OR childID -> map it manually
+                        String cid = doc.getString("childId"); // old
+                        if (cid == null || cid.trim().isEmpty()) cid = doc.getString("childID"); // new
+                        if (cid == null || cid.trim().isEmpty()) cid = childId; // fallback
+                        task.setChildId(cid);
+
                         taskList.add(task);
                     }
 
@@ -111,6 +120,13 @@ public class ChildTasksActivity extends AppCompatActivity {
                                     if (!exists) {
                                         Task task = doc.toObject(Task.class);
                                         task.setId(doc.getId());
+
+                                        // ✅ IMPORTANT: tasks may store childId OR childID -> map it manually
+                                        String cid = doc.getString("childId"); // old
+                                        if (cid == null || cid.trim().isEmpty()) cid = doc.getString("childID"); // new
+                                        if (cid == null || cid.trim().isEmpty()) cid = childId; // fallback
+                                        task.setChildId(cid);
+
                                         taskList.add(task);
                                     }
                                 }
@@ -133,7 +149,6 @@ public class ChildTasksActivity extends AppCompatActivity {
                 );
     }
 
-
     private void animateTaskPill(View pill) {
         pill.animate()
                 .rotation(5f)
@@ -145,6 +160,4 @@ public class ChildTasksActivity extends AppCompatActivity {
                                 .start()
                 ).start();
     }
-
-
 }

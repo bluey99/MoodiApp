@@ -1,3 +1,12 @@
+// ===============================
+// NewReportActivity.java (FIELD-ID ONLY) ✅
+// ✅ childId is treated as childID FIELD (e.g., "214578903") always
+// ✅ fetch child doc by: whereEqualTo("childID", childIdField)
+// ✅ save locally using "childID" (capital D) so history filter matches
+// ✅ still sends report to Firestore reports + therapist notification
+// ✅ FIX: use finalTherapistId / finalChildName inside callbacks (no "effectively final" errors)
+// ===============================
+
 package com.example.asdproject.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +20,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.asdproject.R;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,7 +45,8 @@ public class NewReportActivity extends AppCompatActivity {
     private final SimpleDateFormat dateTimeFormat =
             new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
-    private String childId;
+    // ✅ this is the FIELD childID (not doc id)
+    private String childIdField;
     private String childName;
 
     private FirebaseFirestore db;
@@ -50,8 +59,18 @@ public class NewReportActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         Intent intent = getIntent();
-        childId = intent.getStringExtra("CHILD_ID");
-        childName = intent.getStringExtra("CHILD_NAME");
+
+        // accept multiple keys, but treat value as FIELD childID always
+        childIdField = firstNonEmpty(
+                intent.getStringExtra("CHILD_ID"),
+                intent.getStringExtra("childID"),
+                intent.getStringExtra("childId")
+        );
+
+        childName = firstNonEmpty(
+                intent.getStringExtra("CHILD_NAME"),
+                intent.getStringExtra("childName")
+        );
 
         edtSituation          = findViewById(R.id.edtSituation);
         edtDateTime           = findViewById(R.id.edtDateTime);
@@ -71,15 +90,14 @@ public class NewReportActivity extends AppCompatActivity {
 
         btnViewHistory.setOnClickListener(v -> {
             Intent i = new Intent(NewReportActivity.this, ReportsHistoryActivity.class);
-            if (childId != null) {
-                i.putExtra("CHILD_ID", childId);
+            if (!isEmpty(childIdField)) {
+                i.putExtra("CHILD_ID", childIdField);   // ✅ pass FIELD id
                 i.putExtra("CHILD_NAME", childName);
             }
             startActivity(i);
         });
 
         btnSendReport.setOnClickListener(v -> sendReport());
-
         btnGoBackReport.setOnClickListener(v -> finish());
     }
 
@@ -104,7 +122,6 @@ public class NewReportActivity extends AppCompatActivity {
                     today.set(Calendar.SECOND, 0);
                     today.set(Calendar.MILLISECOND, 0);
 
-                    // Block future days
                     if (chosen.after(today)) {
                         Toast.makeText(this,
                                 "You cannot choose a future date!",
@@ -121,9 +138,7 @@ public class NewReportActivity extends AppCompatActivity {
                 year, month, day
         );
 
-        // User cannot scroll after today
         dp.getDatePicker().setMaxDate(System.currentTimeMillis());
-
         dp.show();
     }
 
@@ -143,7 +158,6 @@ public class NewReportActivity extends AppCompatActivity {
 
                     Calendar now = Calendar.getInstance();
 
-                    // If date is today -> block future time
                     Calendar today = Calendar.getInstance();
                     if (chosen.get(Calendar.YEAR)  == today.get(Calendar.YEAR) &&
                             chosen.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
@@ -195,15 +209,93 @@ public class NewReportActivity extends AppCompatActivity {
             return;
         }
 
-        saveFullReport(situation, timestamp, location,
-                childReaction, howHandled, questions);
+        if (isEmpty(childIdField)) {
+            Toast.makeText(this, "Missing childID", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Toast.makeText(this, "Report sent", Toast.LENGTH_SHORT).show();
-        finish();
+        // ✅ Always fetch by FIELD childID
+        db.collection("children")
+                .whereEqualTo("childID", childIdField)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    if (qs == null || qs.isEmpty()) {
+                        Toast.makeText(this, "Child not found (childID).", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // Avoid "var" to prevent Java version issues
+                    com.google.firebase.firestore.DocumentSnapshot childDoc =
+                            qs.getDocuments().get(0);
+
+                    String therapistId = childDoc.getString("therapistID"); // children doc uses therapistID
+                    if (therapistId == null) therapistId = "";
+                    therapistId = therapistId.trim();
+
+                    String parentIdField = childDoc.getString("parentID");
+                    if (parentIdField == null) parentIdField = "";
+                    parentIdField = parentIdField.trim();
+
+                    // ✅ Save locally (field id only)
+                    saveFullReportLocal(situation, timestamp, location, childReaction, howHandled, questions);
+
+                    // ✅ Send to Firestore reports (for therapist history)
+                    if (!therapistId.isEmpty()) {
+
+                        // ✅ FIX: make them final for async callbacks
+                        final String finalTherapistId = therapistId;
+                        final String finalChildName = childName;
+
+                        Map<String, Object> report = new HashMap<>();
+                        report.put("childName", finalChildName);
+                        report.put("therapistId", finalTherapistId); // reports collection uses therapistId
+                        report.put("situation", situation);
+                        report.put("timestamp", timestamp);          // string time (when it happened)
+                        report.put("location", location);
+                        report.put("childReaction", childReaction);
+                        report.put("howHandled", howHandled);
+                        report.put("questions", questions);
+
+                        report.put("parentID", parentIdField);
+                        report.put("childID", childIdField);         // ✅ field id
+
+                        db.collection("reports")
+                                .add(report)
+                                .addOnSuccessListener(docRef -> {
+
+                                    Map<String, Object> notif = new HashMap<>();
+                                    notif.put("receiverType", "THERAPIST");
+                                    notif.put("receiverId", finalTherapistId);
+                                    notif.put("read", false);
+
+                                    String cn = (finalChildName == null || finalChildName.trim().isEmpty())
+                                            ? "Child" : finalChildName.trim();
+                                    notif.put("message", cn + " has a new report from parent.");
+
+                                    notif.put("createdAt", System.currentTimeMillis());
+                                    db.collection("notifications").add(notif);
+
+                                    Toast.makeText(this, "Report sent", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                );
+
+                    } else {
+                        Toast.makeText(this, "Report saved (no therapist linked).", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
     }
 
-    private void saveFullReport(String situation, String timestamp, String location,
-                                String childReaction, String howHandled, String questions) {
+    // ✅ Local save uses "childID" (capital D) for consistent filtering
+    private void saveFullReportLocal(String situation, String timestamp, String location,
+                                     String childReaction, String howHandled, String questions) {
 
         String key = getReportsKeyForCurrentParent();
 
@@ -221,7 +313,8 @@ public class NewReportActivity extends AppCompatActivity {
             obj.put("howHandled",    howHandled);
             obj.put("questions",     questions);
 
-            obj.put("childId",   childId);
+            // ✅ store FIELD id (capital D)
+            obj.put("childID",   childIdField);
             obj.put("childName", childName);
 
             arr.put(obj);
@@ -234,55 +327,17 @@ public class NewReportActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
-        if (childId == null || childId.trim().isEmpty()) {
-            return;
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private String firstNonEmpty(String... vals) {
+        if (vals == null) return null;
+        for (String v : vals) {
+            if (!isEmpty(v)) return v.trim();
         }
-
-        db.collection("children")
-                .document(childId)
-                .get()
-                .addOnSuccessListener(childDoc -> {
-                    if (childDoc == null || !childDoc.exists()) return;
-
-                    String therapistId = childDoc.getString("therapistID");
-                    if (therapistId == null || therapistId.trim().isEmpty()) return;
-
-                    String childIdField = childDoc.getString("childID");
-                    if (childIdField == null) childIdField = "";
-
-                    String parentIdField = childDoc.getString("parentID");
-                    if (parentIdField == null) parentIdField = "";
-
-                    Map<String, Object> report = new HashMap<>();
-                    report.put("childName", childName);
-                    report.put("therapistId", therapistId);
-
-                    report.put("situation", situation);
-                    report.put("timestamp", timestamp);
-                    report.put("location", location);
-                    report.put("childReaction", childReaction);
-                    report.put("howHandled", howHandled);
-                    report.put("questions", questions);
-
-                    report.put("parentID", parentIdField);
-                    report.put("childID", childIdField);
-
-                    db.collection("reports")
-                            .add(report)
-                            .addOnSuccessListener(docRef -> {
-                                Map<String, Object> notif = new HashMap<>();
-                                notif.put("receiverType", "THERAPIST");
-                                notif.put("receiverId", therapistId);
-                                notif.put("read", false);
-
-                                String cn = (childName == null || childName.trim().isEmpty()) ? "Child" : childName.trim();
-                                notif.put("message", cn + " has a new report from parent.");
-
-                                notif.put("createdAt", System.currentTimeMillis());
-
-                                db.collection("notifications").add(notif);
-                            });
-                });
+        return null;
     }
 }

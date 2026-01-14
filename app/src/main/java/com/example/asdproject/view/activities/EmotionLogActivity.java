@@ -23,6 +23,7 @@ import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
 import com.example.asdproject.view.fragments.Step6NoteFragment;
 import com.example.asdproject.view.fragments.Step7ReviewFragment;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 /**
  * Hosts the multi-step emotion logging flow for the child.
- Each step is implemented as a fragment and collects one part of the log:
+ * Steps:
  *  1 → Situation
  *  2 → Location
  *  3 → Feeling
@@ -38,8 +39,6 @@ import java.util.Map;
  *  5 → Photo (optional)
  *  6 → Notes (optional) / Discussion Prompts (for tasks)
  *  7 → Review + Save
- * All inputs are stored in an EmotionLogDraft object until the flow is complete.
- * Only when the child confirms in Step 7 do we create an EmotionLog and save it.
  */
 public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
@@ -59,7 +58,7 @@ public class EmotionLogActivity extends AppCompatActivity
     /** Repository responsible for Firestore writes */
     private final EmotionRepository emotionRepository = new EmotionRepository();
 
-    /** Firestore child document ID */
+    /** childID FIELD value (not necessarily Firestore doc id) */
     private String childId;
 
     /** Current step index (1–7) */
@@ -90,6 +89,7 @@ public class EmotionLogActivity extends AppCompatActivity
 
         db = FirebaseFirestore.getInstance();
 
+        // childId comes from intent (your flow currently uses "childId")
         childId = getIntent().getStringExtra("childId");
 
         logType = getIntent().getStringExtra("LOG_TYPE");
@@ -279,7 +279,7 @@ public class EmotionLogActivity extends AppCompatActivity
         emotionRepository.addEmotionLog(
                 finalLog,
 
-                // SUCCESS: history saved
+                // SUCCESS
                 () -> {
                     if ("TASK".equals(logType) && taskId != null && !taskId.trim().isEmpty()) {
                         markTaskCompletedAndNotify();
@@ -287,20 +287,18 @@ public class EmotionLogActivity extends AppCompatActivity
                     finish();
                 },
 
-                // FAILURE: history NOT saved
-                () -> {
-                    Toast.makeText(
-                            this,
-                            "Failed to save your feeling. Task not completed.",
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
+                // FAILURE
+                () -> Toast.makeText(
+                        this,
+                        "Failed to save your feeling. Task not completed.",
+                        Toast.LENGTH_LONG
+                ).show()
         );
-
     }
 
     // -------------------------------------------------------------
-    // Mark task completed + create notification (FIXED: final variables)
+    // Mark task completed + create notification
+    // ✅ FIXED: message uses REAL child name (Ali), not "Child"
     // -------------------------------------------------------------
     private void markTaskCompletedAndNotify() {
 
@@ -315,7 +313,7 @@ public class EmotionLogActivity extends AppCompatActivity
                     String creatorTypeTmp = taskDoc.getString("creatorType");
                     String creatorIdTmp = taskDoc.getString("creatorId");
 
-                    // fallback for old tasks (only parentId exists)
+                    // fallback for old tasks
                     if (creatorTypeTmp == null || creatorTypeTmp.trim().isEmpty()) creatorTypeTmp = "PARENT";
                     if (creatorIdTmp == null || creatorIdTmp.trim().isEmpty()) creatorIdTmp = taskDoc.getString("parentId");
 
@@ -325,7 +323,6 @@ public class EmotionLogActivity extends AppCompatActivity
                         taskNameTmp = (taskTitle != null && !taskTitle.trim().isEmpty()) ? taskTitle : "Task";
                     }
 
-                    // ✅ Must be final for inner lambda
                     final String creatorType = creatorTypeTmp;
                     final String creatorId = creatorIdTmp;
                     final String taskName = taskNameTmp;
@@ -335,16 +332,25 @@ public class EmotionLogActivity extends AppCompatActivity
                     update.put("status", "COMPLETED");
                     db.collection("tasks").document(taskId).update(update);
 
-                    // 2) read child name then create notification
+                    // 2) ✅ FIX: get child name by FIELD childID (not document(childId))
                     db.collection("children")
-                            .document(childId)
+                            .whereEqualTo("childID", childId)
+                            .limit(1)
                             .get()
-                            .addOnSuccessListener(childDoc -> {
+                            .addOnSuccessListener(qs -> {
 
                                 String childName = "Child";
-                                if (childDoc != null && childDoc.exists()) {
+
+                                if (qs != null && !qs.isEmpty()) {
+                                    DocumentSnapshot childDoc = qs.getDocuments().get(0);
+
                                     String n = childDoc.getString("name");
-                                    if (n != null && !n.trim().isEmpty()) childName = n;
+                                    if (n == null || n.trim().isEmpty()) {
+                                        n = childDoc.getString("childName"); // fallback if your DB uses childName
+                                    }
+                                    if (n != null && !n.trim().isEmpty()) {
+                                        childName = n.trim();
+                                    }
                                 }
 
                                 // 3) write notification document
@@ -353,8 +359,6 @@ public class EmotionLogActivity extends AppCompatActivity
                                 notif.put("receiverId", creatorId);
                                 notif.put("read", false);
                                 notif.put("message", childName + " finished the task: " + taskName);
-
-                                // for ordering (optional but useful)
                                 notif.put("createdAt", System.currentTimeMillis());
 
                                 db.collection("notifications").add(notif);

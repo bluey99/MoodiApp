@@ -1,3 +1,8 @@
+// ===============================
+// EmotionHistoryActivity.java
+// (TASK logs only: situation starts with "task:")
+// ===============================
+
 package com.example.asdproject.view.activities;
 
 import androidx.appcompat.app.AlertDialog;
@@ -32,7 +37,11 @@ public class EmotionHistoryActivity extends AppCompatActivity {
     private TableLayout table;
     private Button btnGoBack, btnFilterBy;
 
-    private String childId;
+    // Can be Firestore docId OR the childID field value (e.g. "214578903")
+    private String childIdOrField;
+    // Always the real Firestore document id after resolving
+    private String childDocId;
+
     private String childName;
 
     private ListenerRegistration historyReg;
@@ -47,10 +56,19 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_emotion_history);
 
-        childId = getIntent().getStringExtra("CHILD_ID");
-        childName = getIntent().getStringExtra("CHILD_NAME");
+        // ✅ robust: accept multiple keys after refactor
+        childIdOrField = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_ID"),
+                getIntent().getStringExtra("childId"),
+                getIntent().getStringExtra("focusId")
+        );
 
-        if (childName != null && !childName.isEmpty()) {
+        childName = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_NAME"),
+                getIntent().getStringExtra("childName")
+        );
+
+        if (!isEmpty(childName)) {
             setTitle("Tasks History – " + childName);
         }
 
@@ -61,20 +79,94 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         btnGoBack.setOnClickListener(v -> finish());
         btnFilterBy.setOnClickListener(v -> showFilterDialog());
 
-        if (childId == null || childId.trim().isEmpty()) {
+        if (isEmpty(childIdOrField)) {
             Toast.makeText(this, "Missing child id", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
 
         FirebaseManager.init(this);
-        listenToHistoryLive();
+
+        // ✅ critical fix: resolve the actual Firestore child document id
+        resolveChildDocIdAndListen();
     }
 
+    // ==========================================================
+    // ✅ Resolve: handle BOTH cases:
+    // 1) childIdOrField is already the document id
+    // 2) childIdOrField is the stored field "childID" (capital D!)
+    // ==========================================================
+    private void resolveChildDocIdAndListen() {
+        FirebaseFirestore db = FirebaseManager.getDb();
+
+        // 1) Try assuming it's already the document id
+        db.collection("children")
+                .document(childIdOrField)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        childDocId = doc.getId();
+                        listenToHistoryLive();
+                    } else {
+                        // 2) Otherwise search by FIELD id (Firestore shows: childID)
+                        findChildDocIdByField(db);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
+    private void findChildDocIdByField(FirebaseFirestore db) {
+        // Try field name as shown in your Firestore: childID (capital D)
+        db.collection("children")
+                .whereEqualTo("childID", childIdOrField)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    if (qs != null && !qs.isEmpty()) {
+                        childDocId = qs.getDocuments().get(0).getId();
+                        listenToHistoryLive();
+                    } else {
+                        // fallback if some docs use childId instead
+                        db.collection("children")
+                                .whereEqualTo("childId", childIdOrField)
+                                .limit(1)
+                                .get()
+                                .addOnSuccessListener(qs2 -> {
+                                    if (qs2 != null && !qs2.isEmpty()) {
+                                        childDocId = qs2.getDocuments().get(0).getId();
+                                        listenToHistoryLive();
+                                    } else {
+                                        Toast.makeText(this,
+                                                "Child not found (docId or childID field).",
+                                                Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
+    // ==========================================================
+    // ✅ LIVE LISTENER
+    // ==========================================================
     private void listenToHistoryLive() {
         FirebaseFirestore db = FirebaseManager.getDb();
 
+        if (historyReg != null) historyReg.remove();
+
         historyReg = db.collection("children")
-                .document(childId)
+                .document(childDocId) // ✅ use resolved doc id
                 .collection("history")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snap, e) -> {
@@ -91,9 +183,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
 
                         // ✅ FILTER: show ONLY TASK logs
                         String situation = safe(doc.getString("situation"));
-                        if (!isTaskLog(situation)) {
-                            continue; // skip child self logs
-                        }
+                        if (!isTaskLog(situation)) continue;
 
                         String emotion = safe(doc.getString("feeling"));
                         Long intensityLong = doc.getLong("intensity");
@@ -101,9 +191,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                         String note = safe(doc.getString("note"));
 
                         String taskName = safe(doc.getString("taskName"));
-                        if (taskName.isEmpty()) {
-                            taskName = deriveTaskNameFromSituation(situation);
-                        }
+                        if (taskName.isEmpty()) taskName = deriveTaskNameFromSituation(situation);
                         if (taskName.isEmpty()) taskName = "—";
 
                         Timestamp ts = doc.getTimestamp("timestamp");
@@ -123,7 +211,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         if (situation == null) return "";
         String s = situation.trim();
         if (s.toLowerCase().startsWith("task:")) {
-            return s.substring(5).trim(); // remove "Task:"
+            return s.substring(5).trim(); // remove "task:"
         }
         return "";
     }
@@ -137,14 +225,14 @@ public class EmotionHistoryActivity extends AppCompatActivity {
     }
 
     // ==========================================================
-    // ✅ FIX: baselineAligned(false) + cells MATCH_PARENT height
+    // ✅ TABLE ROW + CELLS (your style kept)
     // ==========================================================
     private void addRow(String timestamp, String taskName, String emotion,
                         String intensity, String note, long tsMillis) {
 
         TableRow row = new TableRow(this);
 
-        // 🔴 CRITICAL: allow cells to stretch to row height
+        // allow cells to stretch to row height
         row.setBaselineAligned(false);
 
         row.setLayoutParams(new TableLayout.LayoutParams(
@@ -156,7 +244,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         row.addView(makeCell(taskName, 1.3f, false));
         row.addView(makeCell(emotion,  0.9f, false));
         row.addView(makeCell(intensity,0.7f, false));
-        row.addView(makeCell(note,     2.6f, true)); // notes controls height
+        row.addView(makeCell(note,     2.6f, true));
 
         row.setTag(tsMillis);
 
@@ -164,9 +252,6 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         dataRows.add(row);
     }
 
-    // ==========================================================
-    // ✅ FIXED CELL: MATCH_PARENT height so boxes fill row
-    // ==========================================================
     private TextView makeCell(String text, float weight, boolean isNotes) {
         TextView tv = new TextView(this);
         tv.setText(text == null ? "" : text);
@@ -174,7 +259,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         TableRow.LayoutParams lp =
                 new TableRow.LayoutParams(
                         0,
-                        TableRow.LayoutParams.MATCH_PARENT, // 🔴 fill row height
+                        TableRow.LayoutParams.MATCH_PARENT,
                         weight
                 );
         tv.setLayoutParams(lp);
@@ -187,7 +272,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         tv.setHorizontallyScrolling(false);
 
         if (isNotes) {
-            tv.setMaxLines(Integer.MAX_VALUE); // allow full wrap
+            tv.setMaxLines(Integer.MAX_VALUE);
             tv.setEllipsize(null);
         } else {
             tv.setMaxLines(3);
@@ -201,15 +286,22 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         return (s == null) ? "" : s.trim();
     }
 
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private String firstNonEmpty(String... vals) {
+        if (vals == null) return null;
+        for (String v : vals) {
+            if (!isEmpty(v)) return v.trim();
+        }
+        return null;
+    }
+
     // ---------------- FILTER UI ----------------
 
     private void showFilterDialog() {
-        String[] options = {
-                "Emotion",
-                "Task Name",
-                "Timestamp",
-                "Clear filters"
-        };
+        String[] options = {"Emotion", "Task Name", "Timestamp", "Clear filters"};
 
         new AlertDialog.Builder(this)
                 .setTitle("Filter by:")
@@ -223,9 +315,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
     }
 
     private void showAllRows() {
-        for (TableRow r : dataRows) {
-            r.setVisibility(View.VISIBLE);
-        }
+        for (TableRow r : dataRows) r.setVisibility(View.VISIBLE);
     }
 
     private void showEmotionFilterDialog() {
@@ -235,11 +325,8 @@ public class EmotionHistoryActivity extends AppCompatActivity {
                 .setTitle("Choose emotion")
                 .setItems(emotions, (dialog, which) -> {
                     String chosen = emotions[which];
-                    if (chosen.equals("Other...")) {
-                        showOtherEmotionInput();
-                    } else {
-                        filterTableByEmotion(chosen);
-                    }
+                    if (chosen.equals("Other...")) showOtherEmotionInput();
+                    else filterTableByEmotion(chosen);
                 })
                 .show();
     }
@@ -280,10 +367,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setTitle("Search by Task Name")
                 .setView(input)
-                .setPositiveButton("Search", (d, w) -> {
-                    String q = input.getText().toString();
-                    filterTableByTaskName(q);
-                })
+                .setPositiveButton("Search", (d, w) -> filterTableByTaskName(input.getText().toString()))
                 .setNegativeButton("Cancel", null)
                 .show();
     }
@@ -296,12 +380,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
         for (TableRow row : dataRows) {
             TextView cell = (TextView) row.getChildAt(TASK_COL_INDEX);
             String taskText = cell.getText().toString().trim().toLowerCase();
-
-            if (q.isEmpty() || taskText.contains(q)) {
-                row.setVisibility(View.VISIBLE);
-            } else {
-                row.setVisibility(View.GONE);
-            }
+            row.setVisibility(q.isEmpty() || taskText.contains(q) ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -310,10 +389,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
 
         new AlertDialog.Builder(this)
                 .setTitle("Sort by time")
-                .setItems(options, (dialog, which) -> {
-                    boolean newestFirst = (which == 0);
-                    sortTableByTimestamp(newestFirst);
-                })
+                .setItems(options, (dialog, which) -> sortTableByTimestamp(which == 0))
                 .show();
     }
 
@@ -326,10 +402,7 @@ public class EmotionHistoryActivity extends AppCompatActivity {
 
         int count = table.getChildCount();
         if (count > 1) table.removeViews(1, count - 1);
-
-        for (TableRow row : dataRows) {
-            table.addView(row);
-        }
+        for (TableRow row : dataRows) table.addView(row);
     }
 
     @Override

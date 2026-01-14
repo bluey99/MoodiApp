@@ -1,3 +1,8 @@
+// ===============================
+// ChildLogsHistoryActivity.java
+// (SELF logs only: skips situation that starts with "task:")
+// ===============================
+
 package com.example.asdproject.view.activities;
 
 import android.app.AlertDialog;
@@ -16,6 +21,7 @@ import com.example.asdproject.controller.FirebaseManager;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
@@ -29,8 +35,14 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
     private TableLayout table;
     private Button btnGoBack, btnFilterBy;
 
-    private String childId;
+    // Can be Firestore docId OR the childID field value
+    private String childIdOrField;
+    // Always the real Firestore document id after resolving
+    private String childDocId;
+
     private String childName;
+
+    private ListenerRegistration historyReg;
 
     private final SimpleDateFormat sdf =
             new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
@@ -42,10 +54,19 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_logs_history);
 
-        childId = getIntent().getStringExtra("CHILD_ID");
-        childName = getIntent().getStringExtra("CHILD_NAME");
+        // ✅ robust: accept multiple keys after refactor
+        childIdOrField = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_ID"),
+                getIntent().getStringExtra("childId"),
+                getIntent().getStringExtra("focusId")
+        );
 
-        if (childName != null && !childName.trim().isEmpty()) {
+        childName = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_NAME"),
+                getIntent().getStringExtra("childName")
+        );
+
+        if (!isEmpty(childName)) {
             setTitle("Child Logs – " + childName);
         } else {
             setTitle("Child Logs History");
@@ -58,20 +79,92 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
         btnGoBack.setOnClickListener(v -> finish());
         btnFilterBy.setOnClickListener(v -> showFilterDialog());
 
-        if (childId == null || childId.trim().isEmpty()) {
+        if (isEmpty(childIdOrField)) {
             Toast.makeText(this, "Missing child id", Toast.LENGTH_SHORT).show();
+            finish();
             return;
         }
 
         FirebaseManager.init(this);
-        listenToChildLogsLive();
+        resolveChildDocIdAndListen();
     }
 
+    // ==========================================================
+    // ✅ Resolve: handle BOTH cases:
+    // 1) childIdOrField is already the document id
+    // 2) childIdOrField is the stored field "childID" (capital D!)
+    // ==========================================================
+    private void resolveChildDocIdAndListen() {
+        FirebaseFirestore db = FirebaseManager.getDb();
+
+        // 1) Try assuming it's already the document id
+        db.collection("children")
+                .document(childIdOrField)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        childDocId = doc.getId();
+                        listenToChildLogsLive();
+                    } else {
+                        // 2) Otherwise search by FIELD id (Firestore shows: childID)
+                        findChildDocIdByField(db);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
+    private void findChildDocIdByField(FirebaseFirestore db) {
+        // Try field name as shown in your Firestore: childID (capital D)
+        db.collection("children")
+                .whereEqualTo("childID", childIdOrField)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    if (qs != null && !qs.isEmpty()) {
+                        childDocId = qs.getDocuments().get(0).getId();
+                        listenToChildLogsLive();
+                    } else {
+                        // fallback if some docs use childId instead
+                        db.collection("children")
+                                .whereEqualTo("childId", childIdOrField)
+                                .limit(1)
+                                .get()
+                                .addOnSuccessListener(qs2 -> {
+                                    if (qs2 != null && !qs2.isEmpty()) {
+                                        childDocId = qs2.getDocuments().get(0).getId();
+                                        listenToChildLogsLive();
+                                    } else {
+                                        Toast.makeText(this,
+                                                "Child not found (docId or childID field).",
+                                                Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                });
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
+    // ==========================================================
+    // ✅ LIVE LISTENER
+    // ==========================================================
     private void listenToChildLogsLive() {
         FirebaseFirestore db = FirebaseManager.getDb();
 
-        db.collection("children")
-                .document(childId)
+        if (historyReg != null) historyReg.remove();
+
+        historyReg = db.collection("children")
+                .document(childDocId) // ✅ use resolved doc id
                 .collection("history")
                 .orderBy("timestamp", Query.Direction.DESCENDING)
                 .addSnapshotListener((snap, e) -> {
@@ -88,9 +181,7 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
                         String situation = safe(doc.getString("situation"));
 
                         // ✅ FILTER: show ONLY SELF logs (skip task logs)
-                        if (isTaskLog(situation)) {
-                            continue;
-                        }
+                        if (isTaskLog(situation)) continue;
 
                         String location  = safe(doc.getString("location"));
                         String emotion   = safe(doc.getString("feeling"));
@@ -159,6 +250,18 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
 
     private String safe(String s) {
         return (s == null) ? "" : s.trim();
+    }
+
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private String firstNonEmpty(String... vals) {
+        if (vals == null) return null;
+        for (String v : vals) {
+            if (!isEmpty(v)) return v.trim();
+        }
+        return null;
     }
 
     // ---------------- FILTER UI ----------------
@@ -295,5 +398,11 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
         for (TableRow row : dataRows) {
             table.addView(row);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (historyReg != null) historyReg.remove();
     }
 }
