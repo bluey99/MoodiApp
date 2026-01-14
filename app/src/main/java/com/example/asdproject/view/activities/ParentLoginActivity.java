@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.asdproject.view.activities.ParentHomeActivity;
 import com.example.asdproject.R;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +23,9 @@ public class ParentLoginActivity extends AppCompatActivity {
     private EditText etPassword;
     private Button btnLogin;
     private TextView txtCancel;
+
+    // ✅ ADDED
+    private TextView txtGoToSignUp;
 
     private FirebaseFirestore db;
     private static final String TAG = "ParentLoginFirestore";
@@ -43,8 +45,17 @@ public class ParentLoginActivity extends AppCompatActivity {
         btnLogin   = findViewById(R.id.btnLogin);
         txtCancel  = findViewById(R.id.txtCancel);
 
+        // ✅ ADDED
+        txtGoToSignUp = findViewById(R.id.txtGoToSignUp);
+
         btnLogin.setOnClickListener(v -> loginParent());
         txtCancel.setOnClickListener(v -> finish());
+
+        // ✅ ADDED: open signup screen
+        txtGoToSignUp.setOnClickListener(v -> {
+            Intent i = new Intent(ParentLoginActivity.this, ParentSignUpActivity.class);
+            startActivity(i);
+        });
     }
 
     private void loginParent() {

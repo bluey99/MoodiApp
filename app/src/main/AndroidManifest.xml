@@ -2,13 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.asdproject">
-    <!--  REQUIRED FOR FIREBASE / FIRESTORE -->
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- Optional but recommended -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Camera for Step 5 -->
+    <!-- REQUIRED FOR FIREBASE / FIRESTORE -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Optional but recommended -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- Camera for Step 5 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- Allow install on devices without a camera -->
     <uses-feature
         android:name="android.hardware.camera"
@@ -25,13 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ASDProject"
         tools:targetApi="31">
-
+        <activity
+            android:name=".view.activities.ParentSignUpActivity"
+            android:exported="false" />
         <!-- Step 6 (use the REAL class name) -->
         <activity
             android:name=".view.activities.Step6ForTasksActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <activity
             android:name=".view.activities.ChildLogsHistoryActivity"
             android:exported="false" />
@@ -72,10 +69,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activities.LoginActivity"
             android:exported="false" />
@@ -97,6 +94,7 @@
         <activity
             android:name=".view.activities.ChildCalmingToolsActivity"
             android:exported="false" />
+
         <service
             android:name=".notifications.ChildFirebaseMessagingService"
             android:exported="false">
@@ -104,8 +102,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-
     </application>
 
 </manifest>

@@ -208,7 +208,7 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         EditText l = input("Location", item.location);
         EditText r = input("Child’s reaction", item.childReaction);
         EditText h = input("How handled", item.howHandled);
-        EditText q = input("Questions for therapist (optional)", item.questions);
+        EditText q = input("Questions for therapist ( optional )", item.questions);
 
         layout.addView(s);
         layout.addView(t);
