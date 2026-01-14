@@ -1,10 +1,3 @@
-// ===============================
-// ReportsHistoryActivity.java (FIELD-ID ONLY)
-// ✅ CHILD_ID passed in Intent is childID FIELD
-// ✅ filters local reports by "childID" (capital D)
-// ✅ fixes timestamp sort column index bug (was 0, should be 1)
-// ===============================
-
 package com.example.asdproject.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,22 +5,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.*;
 
 import com.example.asdproject.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.*;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ReportsHistoryActivity extends AppCompatActivity {
 
-    private static final String PREFS = "reports_prefs";
-    private static final String KEY_REPORTS_PREFIX = "reports_list_";
+    private static final String TAG = "ReportsHistoryActivity";
 
     private TableLayout table;
 
@@ -35,94 +29,146 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     private static final int COL_TIMESTAMP = 1;
     private static final int COL_LOCATION  = 2;
 
-    // ✅ this is FIELD childID (not doc id)
+    //  FIELD childID (not doc id)
     private String childIdField;
+    private String childName;
+
+    private FirebaseFirestore db;
+    private ListenerRegistration reg;
+
+    // Keep loaded reports in memory so we can sort/filter easily
+    private final List<ReportItem> reports = new ArrayList<>();
+
+    // Parse the timestamp you use in NewReportActivity: "dd/MM/yyyy HH:mm"
+    private final SimpleDateFormat tsFormat =
+            new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reports_history);
 
+        db = FirebaseFirestore.getInstance();
         table = findViewById(R.id.tableReportsHistory);
 
         childIdField = getIntent().getStringExtra("CHILD_ID");
         if (childIdField == null) childIdField = getIntent().getStringExtra("childID");
         if (childIdField == null) childIdField = getIntent().getStringExtra("childId");
 
+        childName = getIntent().getStringExtra("CHILD_NAME");
+        if (childName == null) childName = getIntent().getStringExtra("childName");
+
         findViewById(R.id.btnGoBackReports).setOnClickListener(v -> finish());
         findViewById(R.id.btnFilterReports).setOnClickListener(v -> showFilterDialog());
-
-        loadTable();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        loadTable();
+    protected void onStart() {
+        super.onStart();
+        startListening();
     }
 
-    private String getReportsKeyForCurrentParent() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = (user != null) ? user.getUid() : "guest";
-        return KEY_REPORTS_PREFIX + uid;
-    }
-
-    private void loadTable() {
-        if (table.getChildCount() > 1)
-            table.removeViews(1, table.getChildCount() - 1);
-
-        String key = getReportsKeyForCurrentParent();
-
-        try {
-            String json = getSharedPreferences(PREFS, MODE_PRIVATE)
-                    .getString(key, "[]");
-
-            JSONArray arr = new JSONArray(json);
-
-            for (int i = 0; i < arr.length(); i++) {
-                JSONObject o = arr.getJSONObject(i);
-
-                // ✅ filter by FIELD childID
-                if (childIdField != null && !childIdField.isEmpty()) {
-                    String reportChildId = o.optString("childID", "");
-                    if (!childIdField.equals(reportChildId)) {
-                        continue;
-                    }
-                }
-
-                addRow(
-                        i,
-                        o.optString("situation"),
-                        o.optString("timestamp"),
-                        o.optString("location")
-                );
-            }
-        } catch (Exception ignored) {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (reg != null) {
+            reg.remove();
+            reg = null;
         }
     }
 
-    private void addRow(int index, String situation, String timestamp, String location) {
+    // ---------------- FIRESTORE LISTENER ----------------
+
+    private void startListening() {
+        if (isEmpty(childIdField)) {
+            Toast.makeText(this, "Missing childID", Toast.LENGTH_SHORT).show();
+            clearTableRows();
+            return;
+        }
+
+        // Optional parent filter:
+        // If you want each parent to only see their own reports, keep this.
+        // If you want all reports for the child regardless of parent account, remove parent filter part.
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String uid = (user != null) ? user.getUid() : null;
+
+        Query q = db.collection("reports")
+                .whereEqualTo("childID", childIdField);
+
+        // If your reports have "parentID" field that equals child doc parentID (not auth uid),
+        // then filtering by auth uid won't work.
+        // So we only filter by parent if YOU stored auth uid in reports (you currently do NOT).
+        // If you want strict parent filtering, store auth uid in report (e.g., report.put("parentAuthUid", uid)).
+        // Example:
+        // if (uid != null) q = q.whereEqualTo("parentAuthUid", uid);
+
+        // Live updates (both you + partner will see same)
+        reg = q.addSnapshotListener((snap, e) -> {
+            if (e != null) {
+                Log.e(TAG, "listen failed", e);
+                Toast.makeText(this, "Failed to load reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            reports.clear();
+
+            if (snap != null) {
+                for (DocumentSnapshot d : snap.getDocuments()) {
+                    ReportItem item = ReportItem.fromDoc(d);
+                    // defensive: enforce childID match
+                    if (childIdField.equals(item.childID)) {
+                        reports.add(item);
+                    }
+                }
+            }
+
+            // default view: just render in current order (or sort newest first)
+            sortReportsByTimestamp(true);
+            renderTable(reports);
+        });
+    }
+
+    // ---------------- TABLE RENDER ----------------
+
+    private void clearTableRows() {
+        if (table.getChildCount() > 1) {
+            table.removeViews(1, table.getChildCount() - 1);
+        }
+    }
+
+    private void renderTable(List<ReportItem> list) {
+        clearTableRows();
+
+        for (ReportItem item : list) {
+            addRow(item);
+        }
+    }
+
+    private void addRow(ReportItem item) {
         TableRow row = new TableRow(this);
 
-        row.addView(cell(situation, 160));
-        row.addView(cell(timestamp, 150));
-        row.addView(cell(location, 120));
+        row.addView(cell(item.situation, 160));
+        row.addView(cell(item.timestamp, 150));
+        row.addView(cell(item.location, 120));
 
         TextView edit = cell("✏️", 80);
-        edit.setOnClickListener(v -> openEditDialog(index));
+        edit.setOnClickListener(v -> openEditDialog(item));
 
         TextView del = cell("🗑️", 90);
-        del.setOnClickListener(v -> deleteReport(index));
+        del.setOnClickListener(v -> deleteReport(item));
 
         row.addView(edit);
         row.addView(del);
+
+        // store doc id so filters/sorts can still work without losing association
+        row.setTag(item.docId);
 
         table.addView(row);
     }
 
     private TextView cell(String text, int widthDp) {
         TextView tv = new TextView(this);
-        tv.setText(text);
+        tv.setText(text == null ? "" : text);
         tv.setGravity(Gravity.CENTER);
         tv.setPadding(10, 10, 10, 10);
         tv.setBackgroundResource(R.drawable.table_cell_bg);
@@ -134,100 +180,82 @@ public class ReportsHistoryActivity extends AppCompatActivity {
         return (int) (d * getResources().getDisplayMetrics().density);
     }
 
-    private void deleteReport(int index) {
-        String key = getReportsKeyForCurrentParent();
-        try {
-            JSONArray arr = new JSONArray(
-                    getSharedPreferences(PREFS, MODE_PRIVATE)
-                            .getString(key, "[]")
-            );
+    // ---------------- DELETE / EDIT (FIRESTORE) ----------------
 
-            JSONArray newArr = new JSONArray();
-            for (int i = 0; i < arr.length(); i++)
-                if (i != index) newArr.put(arr.getJSONObject(i));
+    private void deleteReport(ReportItem item) {
+        if (item == null || isEmpty(item.docId)) return;
 
-            getSharedPreferences(PREFS, MODE_PRIVATE)
-                    .edit()
-                    .putString(key, newArr.toString())
-                    .apply();
-
-            loadTable();
-        } catch (Exception ignored) {
-        }
+        db.collection("reports")
+                .document(item.docId)
+                .delete()
+                .addOnSuccessListener(v ->
+                        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
     }
 
-    private void openEditDialog(int index) {
-        String key = getReportsKeyForCurrentParent();
+    private void openEditDialog(ReportItem item) {
+        if (item == null || isEmpty(item.docId)) return;
 
-        try {
-            JSONArray arr = new JSONArray(
-                    getSharedPreferences(PREFS, MODE_PRIVATE)
-                            .getString(key, "[]")
-            );
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(20, 10, 20, 10);
 
-            JSONObject o = arr.getJSONObject(index);
+        EditText s = input("Situation", item.situation);
+        EditText t = input("Timestamp", item.timestamp);
+        EditText l = input("Location", item.location);
+        EditText r = input("Child’s reaction", item.childReaction);
+        EditText h = input("How handled", item.howHandled);
+        EditText q = input("Questions for therapist (optional)", item.questions);
 
-            LinearLayout layout = new LinearLayout(this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setPadding(20, 10, 20, 10);
+        layout.addView(s);
+        layout.addView(t);
+        layout.addView(l);
+        layout.addView(r);
+        layout.addView(h);
+        layout.addView(q);
 
-            EditText s = input("Situation", o.optString("situation"));
-            EditText t = input("Timestamp", o.optString("timestamp"));
-            EditText l = input("Location", o.optString("location"));
-            EditText r = input("Child’s reaction", o.optString("childReaction"));
-            EditText h = input("How handled", o.optString("howHandled"));
-            EditText q = input("Questions for therapist (optional)", o.optString("questions"));
+        new AlertDialog.Builder(this)
+                .setTitle("Edit report")
+                .setView(layout)
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Save", (d, w) -> {
+                    Map<String, Object> updates = new HashMap<>();
+                    updates.put("situation", s.getText().toString().trim());
+                    updates.put("timestamp", t.getText().toString().trim());
+                    updates.put("location", l.getText().toString().trim());
+                    updates.put("childReaction", r.getText().toString().trim());
+                    updates.put("howHandled", h.getText().toString().trim());
+                    updates.put("questions", q.getText().toString().trim());
 
-            layout.addView(s);
-            layout.addView(t);
-            layout.addView(l);
-            layout.addView(r);
-            layout.addView(h);
-            layout.addView(q);
+                    // keep these consistent
+                    if (!isEmpty(childIdField)) updates.put("childID", childIdField);
+                    if (!isEmpty(childName)) updates.put("childName", childName);
 
-            new AlertDialog.Builder(this)
-                    .setTitle("Edit report")
-                    .setView(layout)
-                    .setNegativeButton("Cancel", null)
-                    .setPositiveButton("Save", (d, w) -> {
-                        try {
-                            o.put("situation", s.getText().toString().trim());
-                            o.put("timestamp", t.getText().toString().trim());
-                            o.put("location", l.getText().toString().trim());
-                            o.put("childReaction", r.getText().toString().trim());
-                            o.put("howHandled", h.getText().toString().trim());
-                            o.put("questions", q.getText().toString().trim());
-
-                            // ✅ ensure childID stays present
-                            if (!o.has("childID") && childIdField != null) {
-                                o.put("childID", childIdField);
-                            }
-
-                            arr.put(index, o);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        getSharedPreferences(PREFS, MODE_PRIVATE)
-                                .edit()
-                                .putString(key, arr.toString())
-                                .apply();
-
-                        loadTable();
-                    })
-                    .show();
-
-        } catch (Exception ignored) {
-        }
+                    db.collection("reports")
+                            .document(item.docId)
+                            .update(updates)
+                            .addOnSuccessListener(v ->
+                                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
+                            )
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
+                })
+                .show();
     }
 
     private EditText input(String hint, String val) {
         EditText e = new EditText(this);
         e.setHint(hint);
-        e.setText(val);
+        e.setText(val == null ? "" : val);
         e.setInputType(InputType.TYPE_CLASS_TEXT);
         return e;
     }
+
+    // ---------------- FILTERS / SORT (TABLE-BASED) ----------------
 
     private void showFilterDialog() {
         String[] opts = {"Situation Name", "Location", "Timestamp", "Clear filters"};
@@ -249,7 +277,11 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     }
 
     private void clearFilters() {
-        loadTable();
+        // show everything again
+        for (int i = 1; i < table.getChildCount(); i++) {
+            View v = table.getChildAt(i);
+            if (v instanceof TableRow) v.setVisibility(TableRow.VISIBLE);
+        }
     }
 
     private void showTimestampFilterDialog() {
@@ -259,54 +291,118 @@ public class ReportsHistoryActivity extends AppCompatActivity {
                 .setTitle("Sort by time")
                 .setItems(options, (dialog, which) -> {
                     boolean newestFirst = (which == 0);
-                    sortTableByTimestamp(newestFirst);
+                    sortReportsByTimestamp(newestFirst);
+                    renderTable(reports);
                 })
                 .show();
     }
 
-    private void sortTableByTimestamp(boolean newestFirst) {
-        // ✅ FIX: timestamp is column 1, not 0
-        final int TIMESTAMP_COL_INDEX = COL_TIMESTAMP;
+    private void sortReportsByTimestamp(boolean newestFirst) {
+        reports.sort((a, b) -> {
+            long ta = parseTimestampMillis(a.timestamp);
+            long tb = parseTimestampMillis(b.timestamp);
 
-        List<TableRow> rows = new ArrayList<>();
-        for (int i = 1; i < table.getChildCount(); i++) {
-            android.view.View v = table.getChildAt(i);
-            if (v instanceof TableRow) rows.add((TableRow) v);
-        }
+            // fallback if parsing fails
+            if (ta == Long.MIN_VALUE || tb == Long.MIN_VALUE) {
+                int cmp = safeStr(a.timestamp).compareTo(safeStr(b.timestamp));
+                return newestFirst ? -cmp : cmp;
+            }
 
-        rows.sort((r1, r2) -> {
-            android.view.View v1 = r1.getChildAt(TIMESTAMP_COL_INDEX);
-            android.view.View v2 = r2.getChildAt(TIMESTAMP_COL_INDEX);
-
-            if (!(v1 instanceof TextView) || !(v2 instanceof TextView)) return 0;
-
-            String t1 = ((TextView) v1).getText().toString();
-            String t2 = ((TextView) v2).getText().toString();
-
-            int cmp = t1.compareTo(t2);
+            int cmp = Long.compare(ta, tb);
             return newestFirst ? -cmp : cmp;
         });
+    }
 
-        if (table.getChildCount() > 1) {
-            table.removeViews(1, table.getChildCount() - 1);
+    private long parseTimestampMillis(String ts) {
+        if (isEmpty(ts)) return Long.MIN_VALUE;
+        try {
+            Date d = tsFormat.parse(ts.trim());
+            return (d == null) ? Long.MIN_VALUE : d.getTime();
+        } catch (ParseException e) {
+            return Long.MIN_VALUE;
         }
-        for (TableRow row : rows) table.addView(row);
     }
 
     private void textFilter(int col, String title) {
         EditText input = new EditText(this);
+
         new AlertDialog.Builder(this)
                 .setTitle("Search by " + title)
                 .setView(input)
                 .setPositiveButton("Search", (d, w) -> {
-                    String q = input.getText().toString().toLowerCase();
+                    String q = input.getText().toString().toLowerCase(Locale.getDefault()).trim();
+
                     for (int i = 1; i < table.getChildCount(); i++) {
-                        TableRow r = (TableRow) table.getChildAt(i);
-                        String txt = ((TextView) r.getChildAt(col)).getText().toString().toLowerCase();
+                        View v = table.getChildAt(i);
+                        if (!(v instanceof TableRow)) continue;
+
+                        TableRow r = (TableRow) v;
+                        View cellView = r.getChildAt(col);
+                        if (!(cellView instanceof TextView)) continue;
+
+                        String txt = ((TextView) cellView).getText().toString()
+                                .toLowerCase(Locale.getDefault());
+
                         r.setVisibility(txt.contains(q) ? TableRow.VISIBLE : TableRow.GONE);
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    // ---------------- UTILS ----------------
+
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
+
+    private String safeStr(String s) {
+        return s == null ? "" : s;
+    }
+
+    // ---------------- MODEL ----------------
+
+    private static class ReportItem {
+        String docId;
+
+        String childID;
+        String childName;
+
+        String situation;
+        String timestamp;
+        String location;
+
+        String childReaction;
+        String howHandled;
+        String questions;
+
+        static ReportItem fromDoc(DocumentSnapshot d) {
+            ReportItem r = new ReportItem();
+            r.docId = d.getId();
+
+            r.childID = d.getString("childID");
+            r.childName = d.getString("childName");
+
+            r.situation = d.getString("situation");
+            r.timestamp = d.getString("timestamp");
+            r.location  = d.getString("location");
+
+            r.childReaction = d.getString("childReaction");
+            r.howHandled    = d.getString("howHandled");
+            r.questions     = d.getString("questions");
+
+            // Avoid nulls in table
+            if (r.situation == null) r.situation = "";
+            if (r.timestamp == null) r.timestamp = "";
+            if (r.location  == null) r.location  = "";
+            if (r.childReaction == null) r.childReaction = "";
+            if (r.howHandled == null) r.howHandled = "";
+            if (r.questions == null) r.questions = "";
+
+            if (r.childID == null) r.childID = "";
+            if (r.childName == null) r.childName = "";
+
+            return r;
+        }
     }
 }
