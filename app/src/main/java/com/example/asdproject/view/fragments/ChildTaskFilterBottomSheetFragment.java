@@ -21,6 +21,7 @@ public class ChildTaskFilterBottomSheetFragment extends BottomSheetDialogFragmen
 
     private OnFilterSelectedListener listener;
 
+
     public ChildTaskFilterBottomSheetFragment(OnFilterSelectedListener listener) {
         this.listener = listener;
     }
