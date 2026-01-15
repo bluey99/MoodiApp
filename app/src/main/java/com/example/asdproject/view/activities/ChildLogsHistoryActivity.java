@@ -178,11 +178,12 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
 
                     for (DocumentSnapshot doc : snap.getDocuments()) {
 
+                        String logId = safe(doc.getString("id"));
+
+                        // ✅ FILTER: skip TASK logs
+                        if ("TASK".equals(logId)) continue;
+
                         String situation = safe(doc.getString("situation"));
-
-                        // ✅ FILTER: show ONLY SELF logs (skip task logs)
-                        if (isTaskLog(situation)) continue;
-
                         String location  = safe(doc.getString("location"));
                         String emotion   = safe(doc.getString("feeling"));
                         String note      = safe(doc.getString("note"));
@@ -198,14 +199,22 @@ public class ChildLogsHistoryActivity extends AppCompatActivity {
                         long tsMillis = (ts == null) ? 0L : ts.toDate().getTime();
                         String tsText = (tsMillis == 0L) ? "" : sdf.format(new Date(tsMillis));
 
-                        addRow(tsText, situation, location, emotion, String.valueOf(intensity), note, photo, tsMillis);
+                        addRow(
+                                tsText,
+                                situation,
+                                location,
+                                emotion,
+                                String.valueOf(intensity),
+                                note,
+                                photo,
+                                tsMillis
+                        );
                     }
+
                 });
     }
 
-    private boolean isTaskLog(String situation) {
-        return situation != null && situation.trim().toLowerCase().startsWith("task:");
-    }
+
 
     private void clearDataRows() {
         int count = table.getChildCount();

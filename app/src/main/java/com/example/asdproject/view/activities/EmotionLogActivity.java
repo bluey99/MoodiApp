@@ -104,9 +104,7 @@ public class EmotionLogActivity extends AppCompatActivity
         startStep = "TASK".equals(logType) ? 2 : 1;
 
         if ("TASK".equals(logType)) {
-            draft.situation = (taskTitle != null && !taskTitle.trim().isEmpty())
-                    ? ("Task: " + taskTitle)
-                    : "Task";
+            draft.situation = null; // tasks don't use situation
             draft.location = "From task";
         }
 
@@ -274,8 +272,14 @@ public class EmotionLogActivity extends AppCompatActivity
         }
 
         EmotionLog finalLog = new EmotionLog(childId, draft);
+        if ("TASK".equals(logType)) {
+            finalLog.setLogType("TASK");
+            finalLog.setTaskPrompt(discussionPrompts);
+        } else {
+            finalLog.setLogType("SELF");
+        }
 
-// bayan added here - mark emotion log as task-based if created from a task
+        //  mark emotion log as task-based if created from a task
         if ("TASK".equals(logType)) {
             finalLog.setId("TASK");
         }

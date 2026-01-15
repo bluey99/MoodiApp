@@ -75,6 +75,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         EmotionLog log = (EmotionLog) list.get(position);
         Context context = h.itemView.getContext();
 
+        if (isTaskLog(log)) {
+            h.txtTaskBadge.setVisibility(View.VISIBLE);
+
+            if (log.getTaskPrompt() != null && !log.getTaskPrompt().trim().isEmpty()) {
+                h.txtTaskPrompt.setVisibility(View.VISIBLE);
+                h.txtTaskPrompt.setText("Task: " + log.getTaskPrompt());
+            } else {
+                h.txtTaskPrompt.setVisibility(View.GONE);
+            }
+
+        } else {
+            h.txtTaskBadge.setVisibility(View.GONE);
+            h.txtTaskPrompt.setVisibility(View.GONE);
+        }
+
+
+
         // ---------------- Emotion (single source of truth) ----------------
         Feeling feeling;
         try {
@@ -169,15 +186,21 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         TextView txtIntensity;
         TextView txtNotePreview;
         TextView txtTimestamp;
+        TextView txtTaskBadge;
+        TextView txtTaskPrompt;
+
 
         public EmotionHolder(@NonNull View itemView) {
             super(itemView);
 
+            txtTaskBadge = itemView.findViewById(R.id.txtTaskBadge);
             imgEmotion = itemView.findViewById(R.id.imgEmotion);
             txtEmotion = itemView.findViewById(R.id.txtEmotionName);
             txtIntensity = itemView.findViewById(R.id.txtIntensity);
             txtNotePreview = itemView.findViewById(R.id.txtNotePreview);
             txtTimestamp = itemView.findViewById(R.id.txtTimestamp);
+            txtTaskPrompt = itemView.findViewById(R.id.txtTaskPrompt);
+
         }
     }
     /**
@@ -190,5 +213,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.list = newList;
         notifyDataSetChanged();
     }
+    private boolean isTaskLog(EmotionLog log) {
+        return "TASK".equals(log.getLogType());
+    }
+
+
 
 }
