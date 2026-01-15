@@ -340,10 +340,16 @@ public class ChildHistoryActivity extends AppCompatActivity {
                 return R.drawable.emoji_afraid;
             case "SURPRISED":
                 return R.drawable.emoji_surprised;
+            case "DISGUST":
+                return R.drawable.emoji_disgusted;
+            case "UNSURE":
+                return R.drawable.emoji_unsure;
+            case "OTHER":
             default:
                 return 0;
         }
     }
+
     private void updateFilterPill(int count) {
 
         boolean filtersActive =
@@ -361,11 +367,17 @@ public class ChildHistoryActivity extends AppCompatActivity {
         txtPillCount.setText(String.valueOf(count));
 
         if (selectedEmotion != null) {
-            imgPillEmotion.setVisibility(View.VISIBLE);
-            imgPillEmotion.setImageResource(emotionToDrawable(selectedEmotion));
+            int icon = emotionToDrawable(selectedEmotion);
+            if (icon != 0) {
+                imgPillEmotion.setVisibility(View.VISIBLE);
+                imgPillEmotion.setImageResource(icon);
+            } else {
+                imgPillEmotion.setVisibility(View.GONE); // OTHER → text only
+            }
         } else {
             imgPillEmotion.setVisibility(View.GONE);
         }
+
 
         if (selectedIntensity != -1) {
             miniGlass.setVisibility(View.VISIBLE);
