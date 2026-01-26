@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- soft calming gradient -->
+    <gradient
+        android:startColor="#7FD6D6"
+        android:endColor="#55BABA"
+        android:angle="270" />
+
+</shape>

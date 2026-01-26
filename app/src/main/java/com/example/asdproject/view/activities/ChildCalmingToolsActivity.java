@@ -42,8 +42,14 @@ public class ChildCalmingToolsActivity extends AppCompatActivity {
 
         // Tool cards (navigation only for now)
         findViewById(R.id.cardBreathing).setOnClickListener(v -> {
-            // TODO: open BreathingExerciseActivity
+            startActivity(
+                    new android.content.Intent(
+                            this,
+                            BreathingExerciseActivity.class
+                    )
+            );
         });
+
 
         findViewById(R.id.cardMusic).setOnClickListener(v -> {
             // TODO: open MusicActivity

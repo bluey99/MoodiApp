@@ -94,6 +94,10 @@
         <activity
             android:name=".view.activities.ChildCalmingToolsActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.activities.BreathingExerciseActivity"
+            android:exported="false" />
+
 
         <service
             android:name=".notifications.ChildFirebaseMessagingService"
