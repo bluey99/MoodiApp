@@ -11,4 +11,22 @@
         <item name="android:windowExitAnimation">@anim/slide_up</item>
     </style>
 
+    <!-- Visual stimming option pill -->
+    <style name="StimOption">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#085F63</item>
+
+        <item name="android:background">@drawable/pill_button_selector</item>
+    </style>
+
+
 </resources>

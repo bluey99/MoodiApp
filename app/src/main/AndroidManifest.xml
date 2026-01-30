@@ -97,6 +97,10 @@
         <activity
             android:name=".view.activities.BreathingExerciseActivity"
             android:exported="false" />
+        <activity
+            android:name=".view.activities.VisualCalmActivity"
+            android:exported="false" />
+
 
 
         <service

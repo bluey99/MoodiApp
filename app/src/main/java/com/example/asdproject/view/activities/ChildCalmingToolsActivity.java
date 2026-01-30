@@ -40,7 +40,7 @@ public class ChildCalmingToolsActivity extends AppCompatActivity {
         // Back button
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Tool cards (navigation only for now)
+        // Tool cards
         findViewById(R.id.cardBreathing).setOnClickListener(v -> {
             startActivity(
                     new android.content.Intent(
@@ -49,6 +49,16 @@ public class ChildCalmingToolsActivity extends AppCompatActivity {
                     )
             );
         });
+
+        findViewById(R.id.cardVisual).setOnClickListener(v -> {
+            startActivity(
+                    new android.content.Intent(
+                            this,
+                            VisualCalmActivity.class
+                    )
+            );
+        });
+
 
 
         findViewById(R.id.cardMusic).setOnClickListener(v -> {
