@@ -104,13 +104,12 @@ public class EmotionLog implements java.io.Serializable {
 
     public Timestamp getTimestamp() { return timestamp; }
     public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
-
     public String getLogType() { return logType; }
     public void setLogType(String logType) { this.logType = logType; }
+
     public String getTaskPrompt() {
         return taskPrompt;
     }
-
     public void setTaskPrompt(String taskPrompt) {
         this.taskPrompt = taskPrompt;
     }

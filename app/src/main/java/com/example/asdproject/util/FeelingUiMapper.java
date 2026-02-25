@@ -23,6 +23,8 @@ public class FeelingUiMapper {
                 return R.drawable.emoji_afraid;
             case DISGUST:
                 return R.drawable.emoji_disgusted;
+            case OTHER:
+                return R.drawable.emoji_unsure; //  future emoji_other
             case UNSURE:
             default:
                 return R.drawable.emoji_unsure;
@@ -51,7 +53,7 @@ public class FeelingUiMapper {
             case OTHER:
                 return "Other";
             default:
-                return "Unsure";
+                return "NULL";
         }
     }
 

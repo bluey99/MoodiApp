@@ -19,6 +19,7 @@ import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
 import com.example.asdproject.view.fragments.Step2WhereFragment;
 import com.example.asdproject.view.fragments.Step3FeelingFragment;
+import com.example.asdproject.view.fragments.CustomFeelingBottomSheet;
 import com.example.asdproject.view.fragments.Step4IntensityFragment;
 import com.example.asdproject.view.fragments.Step5PhotoFragment;
 import com.example.asdproject.view.fragments.Step6NoteFragment;
@@ -46,6 +47,7 @@ public class EmotionLogActivity extends AppCompatActivity
         Step2WhereFragment.Listener,
         CustomLocationBottomSheet.Listener,
         Step3FeelingFragment.Listener,
+        CustomFeelingBottomSheet.Listener,
         Step4IntensityFragment.Listener,
         Step5PhotoFragment.Listener,
         Step6NoteFragment.Listener,
@@ -79,6 +81,8 @@ public class EmotionLogActivity extends AppCompatActivity
     // needed for task completion notification
     private String taskId;
     private String taskTitle;
+    //  stores typed feeling when the child chooses OTHER
+    private String customFeelingText = null;
 
     private FirebaseFirestore db;
 
@@ -235,6 +239,20 @@ public class EmotionLogActivity extends AppCompatActivity
     }
 
     @Override
+    public void onRequestCustomFeeling() {
+        // bayan added here - open custom feeling bottom sheet
+        new CustomFeelingBottomSheet()
+                .show(getSupportFragmentManager(), "CustomFeelingBottomSheet");
+    }
+
+    @Override
+    public void onCustomFeelingEntered(String feelingText) {
+        // save typed feeling directly (same pattern as situation/location)
+        draft.feeling = feelingText.trim();
+        showStep(4);
+    }
+
+    @Override
     public void onIntensitySelected(int intensityLevel) {
         draft.intensity = intensityLevel;
         showStep(5);
@@ -308,7 +326,7 @@ public class EmotionLogActivity extends AppCompatActivity
 
     // -------------------------------------------------------------
     // Mark task completed + create notification
-    // ✅ FIXED: message uses REAL child name (Ali), not "Child"
+    // message uses REAL child name (Ali), not "Child"
     // -------------------------------------------------------------
     private void markTaskCompletedAndNotify() {
 
@@ -342,7 +360,7 @@ public class EmotionLogActivity extends AppCompatActivity
                     update.put("status", "COMPLETED");
                     db.collection("tasks").document(taskId).update(update);
 
-                    // 2) ✅ FIX: get child name by FIELD childID (not document(childId))
+                    // 2) get child name by FIELD childID (not document(childId))
                     db.collection("children")
                             .whereEqualTo("childID", childId)
                             .limit(1)

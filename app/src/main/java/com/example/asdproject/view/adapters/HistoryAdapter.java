@@ -93,21 +93,24 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
         // ---------------- Emotion (single source of truth) ----------------
-        Feeling feeling;
+        String rawFeeling = (log.getFeeling() == null) ? "" : log.getFeeling().trim();
+
+        Feeling feelingEnum;
+        String displayText;
+
         try {
-            feeling = Feeling.valueOf(log.getFeeling());
+            // If it's one of the enum names (HAPPY, SAD, etc.)
+            feelingEnum = Feeling.valueOf(rawFeeling);
+            displayText = FeelingUiMapper.getLabel(feelingEnum);
         } catch (Exception e) {
-            feeling = Feeling.UNSURE; // safety for old/broken data
+            // typed custom feeling: show it as text, and use OTHER icon
+            feelingEnum = Feeling.OTHER;
+            displayText = rawFeeling; // what the child typed (e.g., "overwhelmed")
         }
 
-        // Label + Emoji from mapper
-        h.txtEmotion.setText(
-                FeelingUiMapper.getLabel(feeling)
-        );
-
-        h.imgEmotion.setImageResource(
-                FeelingUiMapper.getEmojiRes(feeling)
-        );
+// Label + Emoji
+        h.txtEmotion.setText(displayText);
+        h.imgEmotion.setImageResource(FeelingUiMapper.getEmojiRes(feelingEnum));
 
         // ---------------- Intensity ----------------
         h.txtIntensity.setText("Intensity: " + log.getIntensity());

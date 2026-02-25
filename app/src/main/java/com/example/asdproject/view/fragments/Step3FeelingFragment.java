@@ -27,6 +27,8 @@ public class Step3FeelingFragment extends Fragment {
     /** Callback interface implemented by the hosting Activity. */
     public interface Listener {
         void onFeelingSelected(Feeling feeling);
+        //  open bottom sheet when "Other" is clicked
+        void onRequestCustomFeeling();
     }
 
     private Listener listener;
@@ -112,7 +114,7 @@ public class Step3FeelingFragment extends Fragment {
                 () -> listener.onFeelingSelected(Feeling.UNSURE));
 
         ChildButtonHelper.setup(btnOther, allButtons,
-                () -> listener.onFeelingSelected(Feeling.OTHER));
+                () -> listener.onRequestCustomFeeling());
     }
 
     private void bindEmoji(View btn, Feeling feeling) {
