@@ -8,12 +8,10 @@
     android:background="#D7F1F1"
     tools:context=".view.activities.ChildHomeActivity">
 
-    <!-- HOME TOP BAR (notifications / settings later) -->
     <include
         android:id="@+id/homeTopBar"
         layout="@layout/view_child_home_topbar" />
 
-    <!-- MAIN SCROLLABLE CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,28 +23,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Child avatar -->
             <ImageView
                 android:id="@+id/imgChildAvatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_child"
-                android:contentDescription="Child avatar" />
+                android:contentDescription="@string/cd_child_avatar" />
 
-            <!-- Greeting -->
             <TextView
                 android:id="@+id/txtGreeting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Good morning!"
+                android:text=""
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="#085F63"
                 android:layout_gravity="center"
                 android:layout_marginTop="12dp" />
 
-            <!-- Streak / Check-in badge -->
             <LinearLayout
                 android:id="@+id/layoutStreak"
                 android:orientation="horizontal"
@@ -67,7 +62,6 @@
                     android:padding="8dp" />
             </LinearLayout>
 
-            <!-- Yellow rounded panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,17 +69,16 @@
                 android:orientation="vertical"
                 android:layout_marginTop="24dp">
 
-                <!-- Section title -->
                 <TextView
                     android:id="@+id/txtQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="How are you feeling?"
+                    android:text="@string/home_question"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="20dp" />
 
                 <!-- Log My Emotion -->
                 <LinearLayout
@@ -101,15 +94,29 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_add" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Log My Emotion\nhow are you feeling?"
-                        android:textColor="#085F63"
-                        android:paddingLeft="16dp"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_log_emotion_title"
+                            android:textColor="#085F63"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_log_emotion_subtitle"
+                            android:textColor="#085F63"
+                            android:textSize="13sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- My Tasks -->
@@ -126,15 +133,29 @@
                     <ImageView
                         android:layout_width="28dp"
                         android:layout_height="28dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_star" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My Tasks"
-                        android:textColor="#085F63"
-                        android:paddingLeft="16dp"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_my_tasks_title"
+                            android:textColor="#085F63"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_my_tasks_subtitle"
+                            android:textColor="#085F63"
+                            android:textSize="13sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- My History -->
@@ -151,15 +172,29 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_book" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My History\nLook at my past feelings"
-                        android:textColor="#085F63"
-                        android:paddingLeft="16dp"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_my_history_title"
+                            android:textColor="#085F63"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_my_history_subtitle"
+                            android:textColor="#085F63"
+                            android:textSize="13sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <!-- Calming Tools -->
@@ -176,15 +211,29 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginEnd="16dp"
                         android:src="@drawable/ic_heart" />
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Calming Tools\nHelp me feel better"
-                        android:textColor="#085F63"
-                        android:paddingLeft="16dp"
-                        android:textSize="16sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_calming_tools_title"
+                            android:textColor="#085F63"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_calming_tools_subtitle"
+                            android:textColor="#085F63"
+                            android:textSize="13sp" />
+                    </LinearLayout>
                 </LinearLayout>
 
             </LinearLayout>

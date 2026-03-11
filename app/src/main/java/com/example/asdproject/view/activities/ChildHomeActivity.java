@@ -1,7 +1,5 @@
 package com.example.asdproject.view.activities;
 
-
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -15,14 +13,13 @@ import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
 import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.notifications.ChildFirebaseMessagingService;
+import com.example.asdproject.util.LocaleHelper;
+import com.example.asdproject.view.fragments.NotificationsBottomSheetFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import com.example.asdproject.view.fragments.NotificationsBottomSheetFragment;
-
-
 
 /**
  * ChildHomeActivity
@@ -43,10 +40,8 @@ public class ChildHomeActivity extends AppCompatActivity {
     private LinearLayout btnHistory;
     private LinearLayout btnCalmingTools;
     private ImageView btnNotifications;
-    private ImageView btnSettings;
+    private ImageView btnLanguage;
     private View viewNotificationDot;
-
-
 
     // Gentle check-in indicator (streak-style feedback)
     private LinearLayout layoutStreak;
@@ -55,20 +50,21 @@ public class ChildHomeActivity extends AppCompatActivity {
     // Firestore document ID representing the logged-in child
     private String childId;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleHelper.applyLanguage(this);
         super.onCreate(savedInstanceState);
         FirebaseManager.init(this);
         setContentView(R.layout.activity_child_home);
 
-        //ChildFirebaseMessagingService.testLocalNotification(this);//This creates/triggers a system-level notification.we couldnt implement it becuase of firebase plan limitations so we are keeping it off.
+        // ChildFirebaseMessagingService.testLocalNotification(this);
+        // This creates/triggers a system-level notification.
+        // We couldnt implement it becuase of firebase plan limitations so we are keeping it off.
 
-        //Bind header UI elements
+        // Bind header UI elements
         btnNotifications = findViewById(R.id.btnNotifications);
         viewNotificationDot = findViewById(R.id.viewNotificationDot);
-
-        btnSettings = findViewById(R.id.btnSettings);
+        btnLanguage = findViewById(R.id.btnLanguage);
 
         findViewById(R.id.btnNotifications).setOnClickListener(v -> {
             NotificationsBottomSheetFragment sheet =
@@ -81,8 +77,15 @@ public class ChildHomeActivity extends AppCompatActivity {
             sheet.show(getSupportFragmentManager(), "NotificationsBottomSheet");
         });
 
+        btnLanguage.setOnClickListener(v -> {
+            String currentLanguage = LocaleHelper.getSavedLanguage(this);
+            String newLanguage = currentLanguage.equals("en") ? "ar" : "en";
 
+            LocaleHelper.saveLanguage(this, newLanguage);
+            LocaleHelper.applyLanguage(this);
 
+            recreate();
+        });
 
         // Bind streak UI elements
         layoutStreak = findViewById(R.id.layoutStreak);
@@ -92,8 +95,6 @@ public class ChildHomeActivity extends AppCompatActivity {
         String childName = getIntent().getStringExtra("childName");
         childId = getIntent().getStringExtra("childId");
 
-
-
         // Bind navigation UI elements
         txtGreeting = findViewById(R.id.txtGreeting);
         btnLogEmotion = findViewById(R.id.btnLogEmotion);
@@ -102,8 +103,7 @@ public class ChildHomeActivity extends AppCompatActivity {
         btnCalmingTools = findViewById(R.id.btnCalmingTools);
 
         // Display personalized greeting
-        txtGreeting.setText(getTimeBasedGreeting() + ", " + childName + "!");
-
+        updateGreeting();
 
         // Navigate to emotion logging flow
         btnLogEmotion.setOnClickListener(v -> {
@@ -119,24 +119,33 @@ public class ChildHomeActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //Navigate to Task screen
+        // Navigate to Task screen
         btnTasks.setOnClickListener(v -> {
             Intent intent = new Intent(ChildHomeActivity.this, ChildTasksActivity.class);
-            intent.putExtra("childId", childId);// can be null, ChildTasksActivity will handle
+            intent.putExtra("childId", childId); // can be null, ChildTasksActivity will handle
             intent.putExtra("childName", childName);
             startActivity(intent);
         });
 
-        //Navigate to Calming tools screen
+        // Navigate to Calming tools screen
         btnCalmingTools.setOnClickListener(v -> {
             Intent intent = new Intent(ChildHomeActivity.this, ChildCalmingToolsActivity.class);
             intent.putExtra("childId", childId); // optional, but consistent
             startActivity(intent);
         });
 
-
         // Initial load of check-in feedback
         loadCheckInStreak();
+    }
+
+    /**
+     * bayan added here - centralize greeting update so the same localized greeting
+     * format is used in both onCreate and onResume without changing the screen design.
+     */
+    private void updateGreeting() {
+        String childName = getIntent().getStringExtra("childName");
+        String greeting = getTimeBasedGreeting();
+        txtGreeting.setText(getString(R.string.greeting_with_name, greeting, childName));
     }
 
     /**
@@ -210,7 +219,6 @@ public class ChildHomeActivity extends AppCompatActivity {
                 );
     }
 
-
     /**
      * Calculates the number of consecutive calendar days,
      * starting from today and going backwards,
@@ -260,13 +268,13 @@ public class ChildHomeActivity extends AppCompatActivity {
         String message;
 
         if (days == 1) {
-            message = "\uD83C\uDF31 You checked in today";
+            message = getString(R.string.streak_today);
         } else if (days == 2) {
-            message = "\uD83C\uDF31 You’ve been checking in";
+            message = getString(R.string.streak_checking_in);
         } else if (days <= 4) {
-            message = "\uD83C\uDF31 You’ve been checking in for " + days + " days";
+            message = getString(R.string.streak_days, days);
         } else {
-            message = "\uD83C\uDF31 You’ve been checking in regularly (" + days + " days)";
+            message = getString(R.string.streak_regular, days);
         }
 
         txtStreak.setText(message);
@@ -280,11 +288,10 @@ public class ChildHomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        txtGreeting.setText(getTimeBasedGreeting() + ", " + getIntent().getStringExtra("childName") + "!");
+        updateGreeting();
         loadCheckInStreak();
-        checkForNewTasks(); //  update notification dot
+        checkForNewTasks(); // update notification dot
     }
-
 
     /**
      * Returns a greeting message based on the current time of day.
@@ -298,15 +305,16 @@ public class ChildHomeActivity extends AppCompatActivity {
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
         if (hour >= 5 && hour <= 11) {
-            return "Good morning";
+            return getString(R.string.greeting_morning);
         } else if (hour >= 12 && hour <= 16) {
-            return "Good afternoon";
+            return getString(R.string.greeting_afternoon);
         } else if (hour >= 17 && hour <= 21) {
-            return "Good evening";
+            return getString(R.string.greeting_evening);
         } else {
-            return "Hello";
+            return getString(R.string.greeting_hello);
         }
     }
+
     private void checkForNewTasks() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -353,10 +361,4 @@ public class ChildHomeActivity extends AppCompatActivity {
                             });
                 });
     }
-
-
-
-
-
-
 }

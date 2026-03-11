@@ -8,8 +8,8 @@
     android:paddingTop="?attr/actionBarSize"
     android:paddingBottom="12dp"
     android:paddingHorizontal="16dp"
-    android:background="#D7F1F1">
-
+    android:background="#D7F1F1"
+    android:layoutDirection="locale">
 
     <!-- App title / branding -->
     <TextView
@@ -17,35 +17,38 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Moodi"
+        android:text="@string/app_title"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#085F63" />
+        android:textColor="#085F63"
+        android:gravity="start"
+        android:textDirection="locale" />
 
     <!-- Notifications button -->
     <ImageView
         android:id="@+id/btnNotifications"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:contentDescription="Notifications"
+        android:contentDescription="@string/cd_notifications"
         android:src="@drawable/ic_notifications"
         android:padding="4dp" />
+
     <View
         android:id="@+id/viewNotificationDot"
         android:layout_width="8dp"
         android:layout_height="8dp"
         android:background="@drawable/red_dot"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_marginStart="4dp" />
 
-
-    <!-- Settings button -->
+    <!-- Language button -->
     <ImageView
-        android:id="@+id/btnSettings"
+        android:id="@+id/btnLanguage"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="12dp"
-        android:contentDescription="Settings"
-        android:src="@drawable/ic_settings"
+        android:contentDescription="@string/cd_change_language"
+        android:src="@drawable/ic_language"
         android:padding="4dp" />
 
 </LinearLayout>

@@ -6,18 +6,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.asdproject.view.fragments.ChildTaskFilterBottomSheetFragment;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.asdproject.R;
 import com.example.asdproject.model.Task;
 import com.example.asdproject.view.adapters.TaskAdapters;
+import com.example.asdproject.view.fragments.ChildTaskFilterBottomSheetFragment;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,24 +22,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class ChildTasksActivity extends AppCompatActivity {
 
     private RecyclerView recyclerTasks;
     private TaskAdapters taskAdapter;
-    private final List<Task> taskList = new ArrayList<>();
+
+    private final List<Task> taskList = new ArrayList<>();     // shown in UI (after filter)
+    private final List<Task> allTasks  = new ArrayList<>();    // master list (before filter)
+
     private CollectionReference tasksRef;
     private String childId;
+
     private TextView txtTasksWaiting;
-    private int lastTaskCount = 0;
+
     // FILTER STATE
-    private String selectedCreatorType = null;
-// null = ALL, "PARENT", "THERAPIST"
+    private String selectedCreatorType = null; // null = ALL, "PARENT", "THERAPIST"
 
-    // Keep a master list (important)
-    private final List<Task> allTasks = new ArrayList<>();
+    // bayan added here - two listeners to support both field names in Firestore
+    private ListenerRegistration tasksRegChildId;
+    private ListenerRegistration tasksRegChildID;
+
+    // bayan added here - hold latest results from both listeners
+    private final List<Task> liveTasksChildId = new ArrayList<>();
+    private final List<Task> liveTasksChildID = new ArrayList<>();
+
     private static final String TASK_DBG = "TASK_DBG";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +59,8 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         View header = findViewById(R.id.header);
         TextView headerTitle = header.findViewById(R.id.txtHeaderTitle);
-        ImageView btnFilter = header.findViewById(R.id.btnFilter);
+        ImageView btnFilter  = header.findViewById(R.id.btnFilter);
+        ImageView btnBack    = header.findViewById(R.id.btnBack);
 
         headerTitle.setText("My Tasks");
 
@@ -62,13 +71,11 @@ public class ChildTasksActivity extends AppCompatActivity {
         taskAdapter = new TaskAdapters(taskList);
         recyclerTasks.setAdapter(taskAdapter);
 
-        ImageView btnBack = header.findViewById(R.id.btnBack);
         btnBack.setOnClickListener(v -> finish());
 
         btnFilter.setOnClickListener(v -> {
             ChildTaskFilterBottomSheetFragment sheet =
                     new ChildTaskFilterBottomSheetFragment(type -> {
-
                         selectedCreatorType = type;
                         applyFilter();
                         updateTaskCountPill();
@@ -78,10 +85,9 @@ public class ChildTasksActivity extends AppCompatActivity {
             sheet.show(getSupportFragmentManager(), "TASK_FILTER");
         });
 
-
         childId = getIntent().getStringExtra("childId");
 
-        if (childId == null || childId.isEmpty()) {
+        if (childId == null || childId.trim().isEmpty()) {
             Toast.makeText(this, "Child id is missing – cannot load tasks", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -89,97 +95,143 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         tasksRef = db.collection("tasks");
+    }
 
-        loadTasksForChild(childId);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startLiveTasksListener(childId); // bayan added here - start listener in onStart
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopLiveTasksListener(); // bayan added here - stop listener in onStop
     }
 
     // ==============================
-    // TASK LOADING WITH TIME FILTER
+    // LIVE TASK LISTENER (updates UI instantly) - supports childId + childID
+    // IMPORTANT CHANGE:
+    // We DO NOT query by status in Firestore to avoid:
+    // 1) case mismatch (ASSIGNED vs assigned)
+    // 2) composite index issues
+    // Instead, we filter status locally with equalsIgnoreCase.
     // ==============================
-    private void loadTasksForChild(String childId) {
+    private void startLiveTasksListener(String childId) {
 
-        Log.d(TASK_DBG, "==== loadTasksForChild START ====");
-        Log.d(TASK_DBG, "childId passed = " + childId);
-        Log.d(TASK_DBG, "Local time now = " + LocalDateTime.now());
+        stopLiveTasksListener(); // bayan added here - remove old listeners
 
-        taskList.clear();
-        allTasks.clear();
-        taskAdapter.notifyDataSetChanged();
+        Log.d(TASK_DBG, "==== startLiveTasksListener START ====");
+        Log.d(TASK_DBG, "childId = " + childId);
 
-        // ---------- QUERY 1: childId ----------
-        tasksRef.whereEqualTo("childId", childId)
-                .whereEqualTo("status", "ASSIGNED")
-                .get()
-                .addOnSuccessListener(snapshot -> {
+        // ✅ Listener #1: field "childId"
+        tasksRegChildId = tasksRef
+                .whereEqualTo("childId", childId)
+                .addSnapshotListener((snapshot, e) -> {
 
-                    Log.d(TASK_DBG, "[Q1 childId] docs = " + snapshot.size());
+                    if (e != null) {
+                        Log.e(TASK_DBG, "[LIVE childId ERROR] " + e.getMessage(), e);
+                        return;
+                    }
+                    if (snapshot == null) return;
 
-                    for (QueryDocumentSnapshot doc : snapshot) {
-                        Log.d(TASK_DBG, "[Q1 RAW] " + doc.getId() + " -> " + doc.getData());
-                        handleTaskDocument(doc);
+                    Log.d(TASK_DBG, "[LIVE childId] docs=" + snapshot.size());
+
+                    liveTasksChildId.clear();
+
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+
+                        String status = doc.getString("status");
+                        if (status == null || !status.equalsIgnoreCase("ASSIGNED")) continue;
+
+                        Task task = doc.toObject(Task.class);
+                        if (task == null) continue;
+
+                        task.setId(doc.getId());
+                        liveTasksChildId.add(task);
                     }
 
-                    // ---------- QUERY 2: childID (fallback) ----------
-                    tasksRef.whereEqualTo("childID", childId)
-                            .whereEqualTo("status", "ASSIGNED")
-                            .get()
-                            .addOnSuccessListener(snapshot2 -> {
+                    mergeLiveTasksAndRender();
+                });
 
-                                Log.d(TASK_DBG, "[Q2 childID] docs = " + snapshot2.size());
+        // ✅ Listener #2: field "childID" (fallback)
+        tasksRegChildID = tasksRef
+                .whereEqualTo("childID", childId)
+                .addSnapshotListener((snapshot, e) -> {
 
-                                for (QueryDocumentSnapshot doc : snapshot2) {
-                                    if (!containsTask(doc.getId())) {
-                                        Log.d(TASK_DBG, "[Q2 RAW] " + doc.getId() + " -> " + doc.getData());
-                                        handleTaskDocument(doc);
-                                    }
-                                }
+                    if (e != null) {
+                        Log.e(TASK_DBG, "[LIVE childID ERROR] " + e.getMessage(), e);
+                        return;
+                    }
+                    if (snapshot == null) return;
 
-                                finalizeTaskList();
-                            })
-                            .addOnFailureListener(e ->
-                                    Log.e(TASK_DBG, "[Q2 ERROR]", e)
-                            );
-                })
-                .addOnFailureListener(e ->
-                        Log.e(TASK_DBG, "[Q1 ERROR]", e)
-                );
+                    Log.d(TASK_DBG, "[LIVE childID] docs=" + snapshot.size());
+
+                    liveTasksChildID.clear();
+
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+
+                        String status = doc.getString("status");
+                        if (status == null || !status.equalsIgnoreCase("ASSIGNED")) continue;
+
+                        Task task = doc.toObject(Task.class);
+                        if (task == null) continue;
+
+                        task.setId(doc.getId());
+                        liveTasksChildID.add(task);
+                    }
+
+                    mergeLiveTasksAndRender();
+                });
     }
 
-
-    // ==============================
-    // HANDLE SINGLE TASK DOCUMENT
-    // ==============================
-    private void handleTaskDocument(QueryDocumentSnapshot doc) {
-
-        Task task = doc.toObject(Task.class);
-        task.setId(doc.getId());
-
-        Log.d(TASK_DBG, "---- TASK ----");
-        Log.d(TASK_DBG, "id = " + task.getId());
-        Log.d(TASK_DBG, "taskName = " + task.getTaskName());
-        Log.d(TASK_DBG, "displayWhen = " + task.getDisplayWhen());
-        Log.d(TASK_DBG, "creatorType = " + task.getCreatorType());
-        Log.d(TASK_DBG, "seenByChild = " + task.isSeenByChild());
-
-        boolean visible = isTaskReadyToDisplay(task.getDisplayWhen());
-
-        Log.d(TASK_DBG, "timeVisible = " + visible);
-
-        if (visible) {
-            allTasks.add(task);
-            Log.d(TASK_DBG, "✔ ADDED to allTasks");
-        } else {
-            Log.d(TASK_DBG, "✘ FILTERED OUT (future)");
+    private void stopLiveTasksListener() {
+        // bayan added here - prevent memory leaks + duplicated listeners
+        if (tasksRegChildId != null) {
+            tasksRegChildId.remove();
+            tasksRegChildId = null;
+        }
+        if (tasksRegChildID != null) {
+            tasksRegChildID.remove();
+            tasksRegChildID = null;
         }
     }
 
+    // bayan added here - merges both live lists + applies your time filter + updates UI
+    private void mergeLiveTasksAndRender() {
+
+        allTasks.clear();
+
+        // merge list #1
+        for (Task t : liveTasksChildId) {
+            if (t == null || t.getId() == null) continue;
+            if (!containsTask(t.getId())) {
+                if (isTaskReadyToDisplay(t.getDisplayWhen())) allTasks.add(t);
+            }
+        }
+
+        // merge list #2
+        for (Task t : liveTasksChildID) {
+            if (t == null || t.getId() == null) continue;
+            if (!containsTask(t.getId())) {
+                if (isTaskReadyToDisplay(t.getDisplayWhen())) allTasks.add(t);
+            }
+        }
+
+        finalizeTaskList();
+    }
 
     // ==============================
     // TIME CHECK LOGIC
+    // IMPORTANT CHANGE:
+    // If parsing fails OR displayWhen is missing, we SHOW the task (demo-safe).
     // ==============================
     private boolean isTaskReadyToDisplay(String displayWhen) {
         try {
+            if (displayWhen == null || displayWhen.trim().isEmpty()) {
+                return true; // bayan added here - missing time? show it
+            }
+
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("d/M/yyyy, h:mma", Locale.ENGLISH);
 
@@ -189,7 +241,7 @@ public class ChildTasksActivity extends AppCompatActivity {
             return !taskTime.isAfter(LocalDateTime.now());
         } catch (Exception e) {
             Log.e("TASK_TIME", "Invalid displayWhen format: " + displayWhen, e);
-            return false;
+            return true; // bayan added here - don't hide tasks on parse error
         }
     }
 
@@ -204,7 +256,6 @@ public class ChildTasksActivity extends AppCompatActivity {
         }
         return false;
     }
-
 
     private void finalizeTaskList() {
 
@@ -228,13 +279,14 @@ public class ChildTasksActivity extends AppCompatActivity {
 
         for (Task task : allTasks) {
             if (selectedCreatorType == null ||
-                    selectedCreatorType.equals(task.getCreatorType())) {
+                    (task.getCreatorType() != null && selectedCreatorType.equals(task.getCreatorType()))) {
                 taskList.add(task);
             }
         }
 
         taskAdapter.notifyDataSetChanged();
     }
+
     private void updateTaskCountPill() {
         int count = taskList.size();
 
@@ -245,14 +297,9 @@ public class ChildTasksActivity extends AppCompatActivity {
         } else if ("THERAPIST".equals(selectedCreatorType)) {
             txtTasksWaiting.setText("Therapist tasks: " + count);
         }
-        if (count == 0) {
-            txtTasksWaiting.setVisibility(View.GONE);
-        } else {
-            txtTasksWaiting.setVisibility(View.VISIBLE);
-        }
 
+        txtTasksWaiting.setVisibility(count == 0 ? View.GONE : View.VISIBLE);
     }
-
 
     private void animateTaskPill(View pill) {
         pill.animate()

@@ -1,5 +1,38 @@
 <resources>
+
     <string name="app_name">ASD Project</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_title">Moodi</string>
+
+    <string name="cd_notifications">Notifications</string>
+    <string name="cd_change_language">Change language</string>
+    <string name="cd_child_avatar">Child avatar</string>
+
+    <string name="greeting_morning">Good morning</string>
+    <string name="greeting_afternoon">Good afternoon</string>
+    <string name="greeting_evening">Good evening</string>
+    <string name="greeting_hello">Hello</string>
+    <string name="greeting_with_name">%1$s, %2$s!</string>
+
+    <string name="streak_today">🌱 You checked in today</string>
+    <string name="streak_checking_in">🌱 You’ve been checking in</string>
+    <string name="streak_days">🌱 You’ve been checking in for %1$d days</string>
+    <string name="streak_regular">🌱 You’ve been checking in regularly (%1$d days)</string>
+
+    <string name="home_question">How are you feeling?</string>
+
+    <string name="home_log_emotion_title">Log My Emotion</string>
+    <string name="home_log_emotion_subtitle">How are you feeling?</string>
+
+    <string name="home_my_tasks_title">My Tasks</string>
+    <string name="home_my_tasks_subtitle">See what I need to do</string>
+
+    <string name="home_my_history_title">My History</string>
+    <string name="home_my_history_subtitle">Look at my past feelings</string>
+
+    <string name="home_calming_tools_title">Calming Tools</string>
+    <string name="home_calming_tools_subtitle">Help me feel better</string>
+
+    <string name="language_english">English</string>
+    <string name="language_arabic">العربية</string>
+
 </resources>

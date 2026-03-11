@@ -51,12 +51,18 @@ public class EmotionDetailActivity extends AppCompatActivity {
 
         // Extract emotion entry data passed from the history list
         String emotionStr = getIntent().getStringExtra("feeling");
+        String rawFeeling = (emotionStr == null) ? "" : emotionStr.trim();
 
-        Feeling feeling;
+        Feeling feelingEnum;
+        String displayText;
+
         try {
-            feeling = Feeling.valueOf(emotionStr);
+            feelingEnum = Feeling.valueOf(rawFeeling);                 // enum feelings (HAPPY, SAD, ...)
+            displayText = FeelingUiMapper.getLabel(feelingEnum);       // pretty label
         } catch (Exception e) {
-            feeling = Feeling.UNSURE; // safety for old logs
+            // bayan added here - typed custom feeling: display as-is and use OTHER icon
+            feelingEnum = Feeling.OTHER;
+            displayText = rawFeeling;                                  // what child typed
         }
 
         int intensity = getIntent().getIntExtra("intensity", 0);
@@ -83,9 +89,7 @@ public class EmotionDetailActivity extends AppCompatActivity {
 
 
         // Display emotion name and intensity
-        txtEmotionName.setText(
-                FeelingUiMapper.getLabel(feeling)
-        );
+        txtEmotionName.setText(displayText);
         txtIntensity.setText("How strong it felt: " + intensity + " / 5");
 
         // Format and display the timestamp
@@ -108,7 +112,7 @@ public class EmotionDetailActivity extends AppCompatActivity {
 
         // Assign an icon based on the emotion type
         imgEmotion.setImageResource(
-                FeelingUiMapper.getEmojiRes(feeling)
+                FeelingUiMapper.getEmojiRes(feelingEnum)
         );
 
     }

@@ -1,0 +1,38 @@
+<resources>
+
+    <string name="app_name">مشروع ASD</string>
+    <string name="app_title">مودي</string>
+
+    <string name="cd_notifications">الإشعارات</string>
+    <string name="cd_change_language">تغيير اللغة</string>
+    <string name="cd_child_avatar">صورة الطفل</string>
+
+    <string name="greeting_morning">صباح الخير</string>
+    <string name="greeting_afternoon">مساء الخير</string>
+    <string name="greeting_evening">مساء الخير</string>
+    <string name="greeting_hello">مرحبًا</string>
+    <string name="greeting_with_name">%1$s، %2$s</string>
+
+    <string name="streak_today">🌱 سجّلت اليوم</string>
+    <string name="streak_checking_in">🌱 أنت تتابع التسجيل</string>
+    <string name="streak_days">🌱 أنت تتابع منذ %1$d أيام</string>
+    <string name="streak_regular">🌱 أنت منتظم في التسجيل (%1$d أيام)</string>
+
+    <string name="home_question">كيف تشعر؟</string>
+
+    <string name="home_log_emotion_title">سجّل شعورك</string>
+    <string name="home_log_emotion_subtitle">كيف تشعر الآن؟</string>
+
+    <string name="home_my_tasks_title">مهامي</string>
+    <string name="home_my_tasks_subtitle">شوف الأشياء اللي عليّ</string>
+
+    <string name="home_my_history_title">سجلّي</string>
+    <string name="home_my_history_subtitle">اطّلع على مشاعري السابقة</string>
+
+    <string name="home_calming_tools_title">أدوات التهدئة</string>
+    <string name="home_calming_tools_subtitle">ساعدني على الشعور بتحسّن</string>
+
+    <string name="language_english">English</string>
+    <string name="language_arabic">العربية</string>
+
+</resources>
