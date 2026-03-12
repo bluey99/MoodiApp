@@ -1,26 +1,24 @@
 package com.example.asdproject.view.activities;
 
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LanguageHelper;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,11 +27,9 @@ import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
-public class TherapistNotesActivity extends AppCompatActivity {
+public class TherapistNotesActivity extends BaseActivity {
 
     private String childId;
     private String childName;
@@ -41,25 +37,27 @@ public class TherapistNotesActivity extends AppCompatActivity {
     private RecyclerView recycler;
     private NotesAdapter adapter;
     private final List<NoteItem> notes = new ArrayList<>();
-    private final List<NoteItem> allNotes = new ArrayList<>();
 
     private FirebaseFirestore db;
     private ListenerRegistration reg;
-
-    private enum SortMode { NONE, TS_ASC, TS_DESC }
-    private SortMode sortMode = SortMode.NONE;
-    private String titleQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_therapist_notes);
+        TextView btnLanguage = findViewById(R.id.btnLanguage);
+
+        btnLanguage.setOnClickListener(v -> {
+            LanguageHelper.toggleLanguage(this);
+        });
 
         childId = getIntent().getStringExtra("CHILD_ID");
         childName = getIntent().getStringExtra("CHILD_NAME");
 
         if (childName != null && !childName.isEmpty()) {
-            setTitle("Therapist Notes – " + childName);
+            setTitle(getString(R.string.therapist_notes_title) + " – " + childName);
+        } else {
+            setTitle(getString(R.string.therapist_notes_title));
         }
 
         recycler = findViewById(R.id.recyclerTherapistNotes);
@@ -68,10 +66,7 @@ public class TherapistNotesActivity extends AppCompatActivity {
         recycler.setAdapter(adapter);
 
         Button btnBack = findViewById(R.id.btnBackFromNotes);
-        Button btnFilter = findViewById(R.id.btnFilterNotes);
-
         btnBack.setOnClickListener(v -> finish());
-        btnFilter.setOnClickListener(v -> showFilterDialog());
 
         db = FirebaseFirestore.getInstance();
 
@@ -83,96 +78,20 @@ public class TherapistNotesActivity extends AppCompatActivity {
         listenForNotes();
     }
 
-    private void showFilterDialog() {
-        String[] items = new String[] {
-                "Timestamp: Newest -> Oldest",
-                "Timestamp: Oldest -> Newest",
-                "Title: Search",
-                "Clear filters"
-        };
-
-        new AlertDialog.Builder(this)
-                .setTitle("Filter By")
-                .setItems(items, (dialog, which) -> {
-                    if (which == 0) {
-                        sortMode = SortMode.TS_DESC;
-                        applyFilters();
-                    } else if (which == 1) {
-                        sortMode = SortMode.TS_ASC;
-                        applyFilters();
-                    } else if (which == 2) {
-                        showTitleSearchDialog();
-                    } else {
-                        sortMode = SortMode.NONE;
-                        titleQuery = "";
-                        applyFilters();
-                    }
-                })
-                .show();
-    }
-
-    private void showTitleSearchDialog() {
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint("Type any word...");
-        input.setText(titleQuery == null ? "" : titleQuery);
-        input.setSelection(input.getText().length());
-
-        int pad = dp(16);
-        input.setPadding(pad, pad, pad, pad);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Search in Title")
-                .setView(input)
-                .setPositiveButton("Apply", (d, w) -> {
-                    titleQuery = input.getText() == null ? "" : input.getText().toString();
-                    applyFilters();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    private void applyFilters() {
-        notes.clear();
-
-        String q = (titleQuery == null) ? "" : titleQuery.trim().toLowerCase(Locale.getDefault());
-
-        for (NoteItem n : allNotes) {
-            if (q.isEmpty()) {
-                notes.add(n);
-            } else {
-                String t = (n.title == null) ? "" : n.title.toLowerCase(Locale.getDefault());
-                if (t.contains(q)) {
-                    notes.add(n);
-                }
-            }
-        }
-
-        if (sortMode == SortMode.TS_ASC) {
-            Collections.sort(notes, (a, b) -> Long.compare(a.tsMillis, b.tsMillis));
-        } else if (sortMode == SortMode.TS_DESC) {
-            Collections.sort(notes, (a, b) -> Long.compare(b.tsMillis, a.tsMillis));
-        }
-
-        adapter.notifyDataSetChanged();
-    }
-
     // ==========================================================
-    // ✅ FIXED: feedbacks store childID sometimes as CHILD DOC ID
+    // feedbacks store childID sometimes as CHILD DOC ID
     // so we try:
-    // 1) childID == passed childId
+    // 1) feedbacks where childID == passed childId
     // 2) if empty -> resolve children doc id by (children where childID == passed childId)
     //    then query feedbacks where childID == that doc id
     // ==========================================================
     private void listenForNotes() {
 
-        // stop old listener
         if (reg != null) {
             reg.remove();
             reg = null;
         }
 
-        // 1) Try direct match first
         Query q1 = db.collection("feedbacks")
                 .whereEqualTo("childID", childId);
 
@@ -183,28 +102,24 @@ public class TherapistNotesActivity extends AppCompatActivity {
             }
             if (snap == null) return;
 
-            // If we found notes, show them
             if (!snap.isEmpty()) {
                 fillFromSnapshot(snap.getDocuments());
                 return;
             }
 
-            // 2) Otherwise: resolve Firestore child DOCUMENT ID using numeric childID field
             db.collection("children")
                     .whereEqualTo("childID", childId)
                     .limit(1)
                     .get()
                     .addOnSuccessListener(childSnap -> {
                         if (childSnap == null || childSnap.isEmpty()) {
-                            // nothing we can do
-                            allNotes.clear();
-                            applyFilters();
+                            notes.clear();
+                            adapter.notifyDataSetChanged();
                             return;
                         }
 
                         String childDocId = childSnap.getDocuments().get(0).getId();
 
-                        // 3) query feedbacks again using childDocId
                         db.collection("feedbacks")
                                 .whereEqualTo("childID", childDocId)
                                 .get()
@@ -212,12 +127,16 @@ public class TherapistNotesActivity extends AppCompatActivity {
                                     if (fbSnap2 == null) return;
                                     fillFromSnapshot(fbSnap2.getDocuments());
                                 });
+                    })
+                    .addOnFailureListener(err -> {
+                        notes.clear();
+                        adapter.notifyDataSetChanged();
                     });
         });
     }
 
     private void fillFromSnapshot(List<DocumentSnapshot> docs) {
-        allNotes.clear();
+        notes.clear();
 
         for (DocumentSnapshot d : docs) {
             String title = d.getString("title");
@@ -233,10 +152,12 @@ public class TherapistNotesActivity extends AppCompatActivity {
             Timestamp createdAt = d.getTimestamp("createdAt");
             long tsMillis = (createdAt == null) ? 0L : createdAt.toDate().getTime();
 
-            allNotes.add(new NoteItem(title, desc, date, time, tsMillis));
+            notes.add(new NoteItem(title, desc, date, time, tsMillis));
         }
 
-        applyFilters();
+        // default sort: newest -> oldest
+        Collections.sort(notes, (a, b) -> Long.compare(b.tsMillis, a.tsMillis));
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -245,6 +166,9 @@ public class TherapistNotesActivity extends AppCompatActivity {
         if (reg != null) reg.remove();
     }
 
+    // ==========================================================
+    // Model
+    // ==========================================================
     private static class NoteItem {
         final String title;
         final String description;
@@ -261,6 +185,9 @@ public class TherapistNotesActivity extends AppCompatActivity {
         }
     }
 
+    // ==========================================================
+    // Adapter
+    // ==========================================================
     private class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.VH> {
 
         private final List<NoteItem> list;
@@ -370,9 +297,13 @@ public class TherapistNotesActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull VH h, int position) {
             NoteItem n = list.get(position);
+
             h.tvTitle.setText(n.title == null ? "" : n.title);
-            h.tvDate.setText("Date: " + (n.date == null ? "" : n.date));
-            h.tvTime.setText("Time: " + (n.time == null ? "" : n.time));
+
+            // ✅ localized labels
+            h.tvDate.setText(getString(R.string.label_date) + " " + (n.date == null ? "" : n.date));
+            h.tvTime.setText(getString(R.string.label_time) + " " + (n.time == null ? "" : n.time));
+
             String desc = (n.description == null ? "" : n.description);
             h.tvDesc.setText("“" + desc + "”");
         }

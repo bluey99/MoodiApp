@@ -11,86 +11,83 @@
         android:padding="24dp"
         android:layout_marginTop="60dp"
         android:gravity="center_horizontal">
-        <Button
+
+        <!-- 🌐 language button (no background) -->
+        <TextView
             android:id="@+id/btnLanguage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/btn_lang"
+            android:textSize="22sp"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_gravity="end"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="🌐"
-            android:textSize="20sp"
-            android:background="@android:color/transparent"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:padding="8dp"/>
+            android:padding="6dp"
+            android:layout_marginBottom="10dp" />
 
         <!-- TITLE -->
         <TextView
-            android:id="@+id/txtTitleSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/signup_title"
-            android:textSize="28sp"
+            android:text="@string/addchild_title"
+            android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="#4C5257"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="10dp"/>
 
-        <!-- SUBTITLE -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/parent_login_subtitle"
+            android:text="@string/addchild_subtitle"
             android:textSize="14sp"
             android:textColor="#777777"
             android:layout_marginTop="4dp"/>
 
-        <!-- WHITE CARD -->
+        <!-- CARD -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
+            android:background="@drawable/white_card_pg"
             android:layout_marginTop="30dp"
             android:padding="24dp"
             android:orientation="vertical"
-            android:elevation="3dp"
-            android:clipToOutline="true">
+            android:elevation="3dp">
 
-            <!-- YOUR INFO -->
+            <!-- Parent Info -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/section_your_info"
+                android:text="@string/addchild_parent_info"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:textColor="#4C5257"
                 android:layout_marginBottom="12dp"/>
 
             <EditText
-                android:id="@+id/edtName"
+                android:id="@+id/edtParentName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="@string/hint_parent_nam_sign_up"
+                android:hint="@string/addchild_hint_parent_name"
                 android:background="@drawable/password_bg"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"/>
 
             <EditText
-                android:id="@+id/edtId"
+                android:id="@+id/edtParentId"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="@string/hint_parent_id_signup"
+                android:hint="@string/addchild_hint_parent_id"
                 android:inputType="number"
                 android:maxLength="9"
                 android:background="@drawable/password_bg"
                 android:padding="12dp"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="20dp"/>
 
-            <!-- CHILD INFO -->
+            <!-- Child Info -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/section_child_info"
+                android:text="@string/addchild_child_info"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:textColor="#4C5257"
@@ -100,7 +97,7 @@
                 android:id="@+id/edtChildName"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="@string/hint_child_name"
+                android:hint="@string/addchild_hint_child_name"
                 android:background="@drawable/password_bg"
                 android:padding="12dp"
                 android:layout_marginBottom="12dp"/>
@@ -109,28 +106,24 @@
                 android:id="@+id/edtChildId"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:hint="@string/hint_child_id"
+                android:hint="@string/addchild_hint_child_id"
                 android:inputType="number"
                 android:maxLength="9"
                 android:background="@drawable/password_bg"
                 android:padding="12dp"
                 android:layout_marginBottom="24dp"/>
 
-            <!-- SIGN UP BUTTON -->
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnSignUp"
+                android:id="@+id/btnAddChild"
                 android:layout_width="160dp"
                 android:layout_height="48dp"
-                android:text="@string/btn_signup"
-                android:textSize="16sp"
+                android:text="@string/addchild_btn_add"
                 android:textColor="#085F63"
                 android:background="@drawable/btn_login_rounded"
-                android:backgroundTint="@null"
                 android:layout_gravity="center"/>
 
         </LinearLayout>
 
-        <!-- CANCEL -->
         <TextView
             android:id="@+id/btnCancel"
             android:layout_width="wrap_content"
