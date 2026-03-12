@@ -17,7 +17,6 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- FRAME PANEL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -25,11 +24,10 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
-                <!-- Title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Can we see your feeling?"
+                    android:text="@string/step5_photo_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
@@ -39,13 +37,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Take a photo of your face right now"
+                    android:text="@string/step5_photo_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- CAMERA CARD (initial state) -->
                 <FrameLayout
                     android:id="@+id/cameraCard"
                     android:layout_width="200dp"
@@ -68,14 +65,13 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Tap to take a photo"
+                            android:text="@string/step5_photo_tap"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
                     </LinearLayout>
                 </FrameLayout>
 
-                <!-- PHOTO PREVIEW -->
                 <ImageView
                     android:id="@+id/imgPhotoPreview"
                     android:layout_width="200dp"
@@ -85,7 +81,6 @@
                     android:scaleType="centerCrop"
                     android:visibility="gone" />
 
-                <!-- Upload spinner -->
                 <ProgressBar
                     android:id="@+id/photoUploadProgress"
                     style="?android:attr/progressBarStyleSmall"
@@ -95,12 +90,11 @@
                     android:layout_marginTop="12dp"
                     android:visibility="gone" />
 
-                <!-- RETAKE BUTTON -->
                 <Button
                     android:id="@+id/btnRetakePhoto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Retake"
+                    android:text="@string/step5_photo_retake"
                     android:textAllCaps="false"
                     android:layout_marginTop="16dp"
                     android:paddingLeft="28dp"
@@ -111,12 +105,11 @@
 
             </LinearLayout>
 
-            <!-- CONTINUE BUTTON -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnPhotoContinue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Continue"
+                android:text="@string/action_continue"
                 android:textAllCaps="false"
                 android:textColor="#085F63"
                 android:textSize="16sp"
@@ -126,10 +119,6 @@
                 android:paddingBottom="12dp"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/pill_button_selector" />
-
-
-
-
 
         </LinearLayout>
 

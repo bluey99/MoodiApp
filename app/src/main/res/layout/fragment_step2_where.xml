@@ -24,18 +24,16 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
-                <!-- Step title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Where were you?"
+                    android:text="@string/step2_where_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- OPTION 1 -->
                 <LinearLayout
                     android:id="@+id/btnWhere1"
                     android:layout_width="match_parent"
@@ -52,13 +50,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="At School"
+                        android:text="@string/step2_where_option_1"
                         android:textColor="#085F63"
                         android:textSize="16sp"
                         android:paddingLeft="12dp" />
                 </LinearLayout>
 
-                <!-- OPTION 2 -->
                 <LinearLayout
                     android:id="@+id/btnWhere2"
                     android:layout_width="match_parent"
@@ -75,13 +72,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="At Home"
+                        android:text="@string/step2_where_option_2"
                         android:textColor="#085F63"
                         android:textSize="16sp"
                         android:paddingLeft="12dp" />
                 </LinearLayout>
 
-                <!-- OPTION 3 -->
                 <LinearLayout
                     android:id="@+id/btnWhere3"
                     android:layout_width="match_parent"
@@ -98,13 +94,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I don't know"
+                        android:text="@string/step2_where_option_3"
                         android:textColor="#085F63"
                         android:textSize="16sp"
                         android:paddingLeft="12dp" />
                 </LinearLayout>
 
-                <!-- OPTION 4 -->
                 <LinearLayout
                     android:id="@+id/btnWhere4"
                     android:layout_width="match_parent"
@@ -120,7 +115,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Somewhere else"
+                        android:text="@string/step2_where_option_4"
                         android:textColor="#085F63"
                         android:textSize="16sp"
                         android:paddingLeft="12dp" />

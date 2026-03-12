@@ -6,12 +6,10 @@
     android:background="#E3F4F4"
     android:padding="24dp">
 
-    <!-- Full-height wrapper enabling true centering -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!-- Centered content -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,7 +17,6 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- Yellow rounded panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,19 +24,17 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
-                <!-- Step title -->
                 <TextView
                     android:id="@+id/txtQuestion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="What happened?"
+                    android:text="@string/step1_situation_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- OPTION 1 -->
                 <LinearLayout
                     android:id="@+id/btnSituation1"
                     android:layout_width="match_parent"
@@ -56,13 +51,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I went somewhere new"
+                        android:text="@string/step1_situation_option_1"
                         android:textColor="#085F63"
                         android:paddingLeft="12dp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!-- OPTION 2 -->
                 <LinearLayout
                     android:id="@+id/btnSituation2"
                     android:layout_width="match_parent"
@@ -79,13 +73,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I got a gift"
+                        android:text="@string/step1_situation_option_2"
                         android:textColor="#085F63"
                         android:paddingLeft="12dp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!-- OPTION 3 -->
                 <LinearLayout
                     android:id="@+id/btnSituation3"
                     android:layout_width="match_parent"
@@ -102,13 +95,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I fought with someone"
+                        android:text="@string/step1_situation_option_3"
                         android:textColor="#085F63"
                         android:paddingLeft="12dp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!-- OPTION 4 -->
                 <LinearLayout
                     android:id="@+id/btnSituation4"
                     android:layout_width="match_parent"
@@ -125,13 +117,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="I had a test"
+                        android:text="@string/step1_situation_option_4"
                         android:textColor="#085F63"
                         android:paddingLeft="12dp"
                         android:textSize="16sp" />
                 </LinearLayout>
 
-                <!-- OPTION 5 -->
                 <LinearLayout
                     android:id="@+id/btnSituation5"
                     android:layout_width="match_parent"
@@ -147,7 +138,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Something else"
+                        android:text="@string/step1_situation_option_5"
                         android:textColor="#085F63"
                         android:paddingLeft="12dp"
                         android:textSize="16sp" />

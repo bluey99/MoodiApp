@@ -2,36 +2,133 @@
 
     <string name="app_name">ASD Project</string>
     <string name="app_title">Moodi</string>
-
+    <!--notifications-->
     <string name="cd_notifications">Notifications</string>
+    <string name="notifications_title">Notifications</string>
+    <string name="notifications_empty">No new notifications right now.</string>
+
+    <string name="notification_channel_child_tasks">Child Tasks</string>
+    <string name="notification_new_task_title">New Task</string>
+    <string name="notification_new_task_body">You have a new task waiting for you</string>
+    <string name="notification_test_body">This is a test notification</string>
+    <!--language-->
     <string name="cd_change_language">Change language</string>
     <string name="cd_child_avatar">Child avatar</string>
-
+    <!--greeting-->
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
     <string name="greeting_hello">Hello</string>
     <string name="greeting_with_name">%1$s, %2$s!</string>
-
+    <!--streak-->
     <string name="streak_today">🌱 You checked in today</string>
     <string name="streak_checking_in">🌱 You’ve been checking in</string>
     <string name="streak_days">🌱 You’ve been checking in for %1$d days</string>
     <string name="streak_regular">🌱 You’ve been checking in regularly (%1$d days)</string>
-
+    <!--main content-->
     <string name="home_question">How are you feeling?</string>
-
+    <!--log emotion btn-->
     <string name="home_log_emotion_title">Log My Emotion</string>
     <string name="home_log_emotion_subtitle">How are you feeling?</string>
-
+    <!--my tasks btn-->
     <string name="home_my_tasks_title">My Tasks</string>
     <string name="home_my_tasks_subtitle">See what I need to do</string>
-
+    <!--my history btn-->
     <string name="home_my_history_title">My History</string>
     <string name="home_my_history_subtitle">Look at my past feelings</string>
-
+    <!--calming tools btn-->
     <string name="home_calming_tools_title">Calming Tools</string>
     <string name="home_calming_tools_subtitle">Help me feel better</string>
 
+    <string name="cd_back">Back</string>
+    <string name="header_title_placeholder">Title</string>
+
+    <!--Log Emotion func-->
+    <string name="emotion_log_header_title">Log My Feelings</string>
+    <string name="emotion_log_step_indicator_placeholder">Step 1 of 7</string>
+    <string name="emotion_log_step_indicator">Step %1$d of %2$d</string>
+    <!-- Log My Emotion - step 1 -->
+    <string name="step1_situation_question">What happened?</string>
+    <string name="step1_situation_option_1">I went somewhere new</string>
+    <string name="step1_situation_option_2">I got a gift</string>
+    <string name="step1_situation_option_3">I had a problem with someone</string>
+    <string name="step1_situation_option_4">I had a test</string>
+    <string name="step1_situation_option_5">Something else</string>
+    <!-- step 1 - custom situation screen -->
+    <string name="custom_situation_title">Can you tell me what happened?</string>
+    <string name="custom_situation_helper">You can write it in your own words 😊</string>
+    <string name="custom_situation_hint">What happened?</string>
+
+    <string name="action_cancel">Cancel</string>
+    <string name="action_continue">Continue</string>
+    <!-- Log My Emotion - step 2 -->
+    <string name="step2_where_question">Where were you?</string>
+    <string name="step2_where_option_1">At school</string>
+    <string name="step2_where_option_2">At home</string>
+    <string name="step2_where_option_3">I don’t know</string>
+    <string name="step2_where_option_4">Somewhere else</string>
+    <!-- step 2 - custom location screen -->
+    <string name="custom_location_title">Where did this happen?</string>
+    <string name="custom_location_helper">You can write the place in your own words.</string>
+    <string name="custom_location_hint">Example: school, home, playground</string>
+    <string name="custom_location_counter_placeholder">0 / 25</string>
+    <string name="custom_location_counter">%1$d / %2$d</string>
+
+    <string name="action_back">Back</string>
+    <!-- Log My Emotion - step 3 -->
+    <string name="step3_feeling_question">How did you feel?</string>
+    <string name="step3_feeling_helper">Choose</string>
+
+    <string name="step3_feeling_happy">Happy</string>
+    <string name="step3_feeling_sad">Sad</string>
+    <string name="step3_feeling_angry">Angry</string>
+    <string name="step3_feeling_surprised">Surprised</string>
+    <string name="step3_feeling_afraid">Afraid</string>
+    <string name="step3_feeling_disgust">Disgust</string>
+    <string name="step3_feeling_unsure">Unsure</string>
+    <string name="step3_feeling_other">Other</string>
+    <!-- step 3 - custom feeling screen -->
+    <string name="custom_feeling_title">What feeling was it?</string>
+    <string name="custom_feeling_helper">You can write it in your own words 😊</string>
+    <string name="custom_feeling_hint">Type a feeling...</string>
+    <!-- Log My Emotion - step 4 -->
+    <string name="step4_intensity_question">How big was the feeling?</string>
+    <string name="step4_intensity_helper">Tap to fill the glass with your feeling</string>
+
+    <string name="step4_intensity_level_1">Just a little</string>
+    <string name="step4_intensity_level_2">A little bit</string>
+    <string name="step4_intensity_level_3">Medium</string>
+    <string name="step4_intensity_level_4">A lot</string>
+    <string name="step4_intensity_level_5">Very much</string>
+    <!-- Log My Emotion - step 5 -->
+    <string name="step5_photo_question">Can we see your feeling?</string>
+    <string name="step5_photo_helper">Take a photo of your face right now</string>
+    <string name="step5_photo_tap">Tap to take a photo</string>
+    <string name="step5_photo_retake">Retake</string>
+
+    <string name="step5_camera_permission_denied">Camera permission denied</string>
+    <string name="step5_upload_failed">Upload failed</string>
+
+    <string name="error_missing_child_information">Missing child information</string>
+    <string name="action_skip">Skip</string>
+    <!-- Log My Emotion - step 6 -->
+    <string name="step6_note_title">Do you want to tell us more?</string>
+    <string name="step6_note_helper">Write anything you want to remember about this moment</string>
+    <string name="step6_note_hint">Write here...</string>
+    <!-- Log My Emotion - step 7 -->
+    <string name="review_title">Let’s review your feeling</string>
+    <string name="review_submit">Submit</string>
+
+    <string name="review_label_situation">Situation</string>
+    <string name="review_label_location">Location</string>
+    <string name="review_label_feeling">Feeling</string>
+    <string name="review_label_note">Note</string>
+
+    <string name="review_intensity_text">Intensity: %1$s</string>
+    <string name="review_intensity_number">%1$d / 5</string>
+
+    <string name="review_intensity_placeholder">Intensity: Medium</string>
+    <string name="review_intensity_number_placeholder">3 / 5</string>
     <string name="language_english">English</string>
     <string name="language_arabic">العربية</string>
 

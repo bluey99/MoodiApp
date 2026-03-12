@@ -70,17 +70,17 @@ public class Step2WhereFragment extends Fragment {
     ) {
         ChildButtonHelper.setup(
                 btnSchool, allButtons,
-                () -> listener.onLocationSelected("At school")
+                () -> listener.onLocationSelected(getString(R.string.step2_where_option_1))
         );
 
         ChildButtonHelper.setup(
                 btnHome, allButtons,
-                () -> listener.onLocationSelected("At home")
+                () -> listener.onLocationSelected(getString(R.string.step2_where_option_2))
         );
 
         ChildButtonHelper.setup(
                 btnOther, allButtons,
-                () -> listener.onLocationSelected("Somewhere else")
+                () -> listener.onLocationSelected(getString(R.string.step2_where_option_3))
         );
 
         ChildButtonHelper.setup(

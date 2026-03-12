@@ -4,13 +4,11 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
-    <!-- Full-height alignment container -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="400dp">
 
-        <!-- Centered content (matches Step 1 logic) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +16,6 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- Yellow panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,7 +28,7 @@
                     android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Can you tell me what happened?"
+                    android:text="@string/custom_situation_title"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
@@ -41,7 +38,7 @@
                     android:id="@+id/txtHelper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You can write it in your own words 😊"
+                    android:text="@string/custom_situation_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_marginBottom="20dp"
@@ -51,7 +48,7 @@
                     android:id="@+id/editCustomSituation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="What happened?"
+                    android:hint="@string/custom_situation_hint"
                     android:background="@drawable/child_input_box"
                     android:padding="16dp"
                     android:textSize="18sp"
@@ -63,7 +60,6 @@
                     android:importantForAutofill="no" />
             </LinearLayout>
 
-            <!-- ACTION BUTTONS -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,12 +67,11 @@
                 android:gravity="center"
                 android:layout_marginTop="20dp">
 
-                <!-- Cancel -->
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnCancelCustomSituation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="@string/action_cancel"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textColor="#51787C"
@@ -87,12 +82,11 @@
                     android:layout_marginEnd="12dp"
                     android:background="@drawable/pill_button_selector" />
 
-                <!-- Continue -->
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnConfirmCustomSituation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Continue"
+                    android:text="@string/action_continue"
                     android:textAllCaps="false"
                     android:textSize="16sp"
                     android:textColor="#085F63"
@@ -105,7 +99,6 @@
                     android:alpha="0.4" />
 
             </LinearLayout>
-
 
         </LinearLayout>
 

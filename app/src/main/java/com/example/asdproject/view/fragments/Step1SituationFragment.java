@@ -48,16 +48,14 @@ public class Step1SituationFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_step1_situation, container, false);
 
-        // Collect all button references
         View btn1 = view.findViewById(R.id.btnSituation1);
         View btn2 = view.findViewById(R.id.btnSituation2);
         View btn3 = view.findViewById(R.id.btnSituation3);
         View btn4 = view.findViewById(R.id.btnSituation4);
         View btn5 = view.findViewById(R.id.btnSituation5);
 
-        allButtons = new View[]{ btn1, btn2, btn3, btn4, btn5 };
+        allButtons = new View[]{btn1, btn2, btn3, btn4, btn5};
 
-        // Attach click behavior using shared helper
         setupButtons();
 
         return view;
@@ -71,29 +69,27 @@ public class Step1SituationFragment extends Fragment {
 
         ChildButtonHelper.setup(
                 allButtons[0], allButtons,
-                () -> listener.onSituationSelected("I went somewhere new")
+                () -> listener.onSituationSelected(getString(R.string.step1_situation_option_1))
         );
 
         ChildButtonHelper.setup(
                 allButtons[1], allButtons,
-                () -> listener.onSituationSelected("I got a gift")
+                () -> listener.onSituationSelected(getString(R.string.step1_situation_option_2))
         );
 
         ChildButtonHelper.setup(
                 allButtons[2], allButtons,
-                () -> listener.onSituationSelected("I fought with someone")
+                () -> listener.onSituationSelected(getString(R.string.step1_situation_option_3))
         );
 
         ChildButtonHelper.setup(
                 allButtons[3], allButtons,
-                () -> listener.onSituationSelected("I had a test")
+                () -> listener.onSituationSelected(getString(R.string.step1_situation_option_4))
         );
 
         ChildButtonHelper.setup(
                 allButtons[4], allButtons,
                 () -> listener.onRequestCustomSituation()
         );
-
     }
 }
-

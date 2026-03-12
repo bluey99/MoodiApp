@@ -16,12 +16,16 @@ public class ChildFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        String title = "New Task";
-        String body = "You have a new task waiting for you";
+        String title = getString(R.string.notification_new_task_title);
+        String body = getString(R.string.notification_new_task_body);
 
         if (remoteMessage.getNotification() != null) {
-            title = remoteMessage.getNotification().getTitle();
-            body = remoteMessage.getNotification().getBody();
+            if (remoteMessage.getNotification().getTitle() != null) {
+                title = remoteMessage.getNotification().getTitle();
+            }
+            if (remoteMessage.getNotification().getBody() != null) {
+                body = remoteMessage.getNotification().getBody();
+            }
         }
 
         showNotification(title, body);
@@ -38,7 +42,7 @@ public class ChildFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Child Tasks",
+                    getString(R.string.notification_channel_child_tasks),
                     NotificationManager.IMPORTANCE_HIGH
             );
             notificationManager.createNotificationChannel(channel);
@@ -54,6 +58,7 @@ public class ChildFirebaseMessagingService extends FirebaseMessagingService {
 
         notificationManager.notify(1001, builder.build());
     }
+
     // TEMPORARY TEST METHOD — REMOVE LATER
     public static void testLocalNotification(Context context) {
 
@@ -65,7 +70,7 @@ public class ChildFirebaseMessagingService extends FirebaseMessagingService {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Child Tasks",
+                    context.getString(R.string.notification_channel_child_tasks),
                     NotificationManager.IMPORTANCE_HIGH
             );
             manager.createNotificationChannel(channel);
@@ -74,12 +79,11 @@ public class ChildFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("New Task")
-                        .setContentText("This is a test notification")
+                        .setContentTitle(context.getString(R.string.notification_new_task_title))
+                        .setContentText(context.getString(R.string.notification_test_body))
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setAutoCancel(true);
 
         manager.notify(999, builder.build());
     }
-
 }

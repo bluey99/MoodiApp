@@ -16,7 +16,6 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <!-- Panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -24,11 +23,10 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
-                <!-- Title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="How did you feel?"
+                    android:text="@string/step3_feeling_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
@@ -38,13 +36,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Choose"
+                    android:text="@string/step3_feeling_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- Feelings Grid -->
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -52,9 +49,6 @@
                     android:rowCount="4"
                     android:alignmentMode="alignMargins"
                     android:useDefaultMargins="true">
-
-                    <!-- FEELING BUTTON TEMPLATE (reused below) -->
-                    <!-- Each item is: 120dp tall, equal width, clickable, centered -->
 
                     <!-- Happy -->
                     <LinearLayout
@@ -70,15 +64,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Happy"
+                            android:text="@string/step3_feeling_happy"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Sad -->
@@ -95,15 +89,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Sad"
+                            android:text="@string/step3_feeling_sad"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Angry -->
@@ -120,15 +114,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Angry"
+                            android:text="@string/step3_feeling_angry"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Surprised -->
@@ -145,15 +139,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Surprised"
+                            android:text="@string/step3_feeling_surprised"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Afraid -->
@@ -170,15 +164,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Afraid"
+                            android:text="@string/step3_feeling_afraid"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Disgust -->
@@ -195,15 +189,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Disgust"
+                            android:text="@string/step3_feeling_disgust"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Unsure -->
@@ -220,15 +214,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Unsure"
+                            android:text="@string/step3_feeling_unsure"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                     <!-- Other -->
@@ -245,15 +239,15 @@
                         <ImageView
                             android:layout_width="48dp"
                             android:layout_height="48dp"
-                            android:src="@android:color/transparent"/>
+                            android:src="@android:color/transparent" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Other"
+                            android:text="@string/step3_feeling_other"
                             android:textColor="#085F63"
                             android:textSize="14sp"
-                            android:layout_marginTop="8dp"/>
+                            android:layout_marginTop="8dp" />
                     </LinearLayout>
 
                 </GridLayout>

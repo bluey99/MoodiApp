@@ -67,9 +67,11 @@ public class Step5PhotoFragment extends Fragment {
                         if (isGranted) {
                             launchCamera();
                         } else {
-                            Toast.makeText(getContext(),
-                                    "Camera permission denied",
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                    getContext(),
+                                    getString(R.string.step5_camera_permission_denied),
+                                    Toast.LENGTH_SHORT
+                            ).show();
                         }
                     }
             );
@@ -121,12 +123,10 @@ public class Step5PhotoFragment extends Fragment {
         imgPreview.setVisibility(View.GONE);
         btnRetake.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        btnContinue.setText("Skip");   // default state → no photo taken yet
-
+        btnContinue.setText(getString(R.string.action_skip));
 
         // Continue is always enabled (photo is optional)
         btnContinue.setAlpha(1f);
-
 
         // Click events
         cameraCard.setOnClickListener(v -> checkPermissionAndOpenCamera());
@@ -167,6 +167,7 @@ public class Step5PhotoFragment extends Fragment {
         imgPreview.setVisibility(View.VISIBLE);
         imgPreview.setImageBitmap(bitmap);
         btnRetake.setVisibility(View.VISIBLE);
+        btnContinue.setText(getString(R.string.action_continue));
 
         uploadPhotoToFirebase(bitmap);
     }
@@ -174,7 +175,11 @@ public class Step5PhotoFragment extends Fragment {
     /** Upload captured photo */
     private void uploadPhotoToFirebase(Bitmap bitmap) {
         if (childId == null || getContext() == null) {
-            Toast.makeText(getContext(), "Missing child information", Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    getContext(),
+                    getString(R.string.error_missing_child_information),
+                    Toast.LENGTH_SHORT
+            ).show();
             return;
         }
 
@@ -206,7 +211,11 @@ public class Step5PhotoFragment extends Fragment {
                 )
                 .addOnFailureListener(e -> {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), "Upload failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                            getContext(),
+                            getString(R.string.step5_upload_failed),
+                            Toast.LENGTH_SHORT
+                    ).show();
                 });
     }
 }

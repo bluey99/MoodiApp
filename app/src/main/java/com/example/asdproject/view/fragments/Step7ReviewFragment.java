@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.asdproject.R;
 import com.example.asdproject.model.EmotionLogDraft;
-import com.example.asdproject.util.IntensityHelper;
 
 /**
  * Step 7 – Review screen
@@ -58,32 +57,30 @@ public class Step7ReviewFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_step7_review, container, false);
 
-        // Get data
         draft = (EmotionLogDraft) getArguments().getSerializable(ARG_DRAFT);
 
         LinearLayout summary = v.findViewById(R.id.summaryContainer);
         Button btnConfirm = v.findViewById(R.id.btnConfirmLog);
 
-        // Summary text items
-        addSummaryRow(summary, "Situation", draft.situation);
-        addSummaryRow(summary, "Location", draft.location);
-        addSummaryRow(summary, "Feeling", draft.feeling);
+        addSummaryRow(summary, getString(R.string.review_label_situation), draft.situation);
+        addSummaryRow(summary, getString(R.string.review_label_location), draft.location);
+        addSummaryRow(summary, getString(R.string.review_label_feeling), draft.feeling);
         if (draft.note != null && !draft.note.trim().isEmpty()) {
-            addSummaryRow(summary, "Note", draft.note);
+            addSummaryRow(summary, getString(R.string.review_label_note), draft.note);
         }
 
-        // ----------------------------
-        // INTENSITY VISUAL REVIEW
-        // ----------------------------
         TextView txtLabel = v.findViewById(R.id.txtIntensityLabelReview);
         TextView txtNumber = v.findViewById(R.id.txtIntensityNumberReview);
         View glass = v.findViewById(R.id.reviewGlassContainer);
         View fill = v.findViewById(R.id.reviewFillView);
 
-        txtLabel.setText("Intensity: " + IntensityHelper.getLabel(draft.intensity));
-        txtNumber.setText(draft.intensity + " / 5");
+        txtLabel.setText(getString(
+                R.string.review_intensity_text,
+                getIntensityLabel(draft.intensity)
+        ));
+        txtNumber.setText(getString(R.string.review_intensity_number, draft.intensity));
 
-        fill.setBackgroundResource(IntensityHelper.getFillDrawable(draft.intensity));
+        fill.setBackgroundResource(getIntensityFillDrawable(draft.intensity));
 
         glass.post(() -> {
             int maxH = glass.getHeight();
@@ -96,16 +93,12 @@ public class Step7ReviewFragment extends Fragment {
             fill.setLayoutParams(p);
         });
 
-        // ----------------------------
-        // PHOTO (optional)
-        // ----------------------------
         ImageView imgPhoto = v.findViewById(R.id.imgSummaryPhoto);
         if (draft.photoUri != null) {
             imgPhoto.setVisibility(View.VISIBLE);
             imgPhoto.setImageURI(Uri.parse(draft.photoUri));
         }
 
-        // Confirm
         btnConfirm.setOnClickListener(view -> {
             if (listener != null) listener.onReviewConfirmed();
         });
@@ -123,5 +116,39 @@ public class Step7ReviewFragment extends Fragment {
         ((TextView) row.findViewById(R.id.txtValue)).setText(value);
 
         container.addView(row);
+    }
+
+    private String getIntensityLabel(int level) {
+        switch (level) {
+            case 1:
+                return getString(R.string.step4_intensity_level_1);
+            case 2:
+                return getString(R.string.step4_intensity_level_2);
+            case 3:
+                return getString(R.string.step4_intensity_level_3);
+            case 4:
+                return getString(R.string.step4_intensity_level_4);
+            case 5:
+                return getString(R.string.step4_intensity_level_5);
+            default:
+                return getString(R.string.step4_intensity_level_1);
+        }
+    }
+
+    private int getIntensityFillDrawable(int level) {
+        switch (level) {
+            case 1:
+                return R.drawable.intensity_fill_level1;
+            case 2:
+                return R.drawable.intensity_fill_level2;
+            case 3:
+                return R.drawable.intensity_fill_level3;
+            case 4:
+                return R.drawable.intensity_fill_level4;
+            case 5:
+                return R.drawable.intensity_fill_level5;
+            default:
+                return R.drawable.intensity_fill_level1;
+        }
     }
 }

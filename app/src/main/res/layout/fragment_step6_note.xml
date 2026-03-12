@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:gravity="center">
 
-        <!-- Yellow Panel -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Do you want to tell us more?"
+                android:text="@string/step6_note_title"
                 android:textColor="#085F63"
                 android:textStyle="bold"
                 android:textSize="20sp"
@@ -33,13 +32,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Write anything you want to remember about this moment"
+                android:text="@string/step6_note_helper"
                 android:textColor="#51787C"
                 android:textSize="14sp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="20dp"/>
 
-            <!-- Notes text box -->
             <EditText
                 android:id="@+id/editNote"
                 android:layout_width="match_parent"
@@ -49,17 +47,16 @@
                 android:padding="16dp"
                 android:textColor="#085F63"
                 android:textSize="14sp"
-                android:hint="Write here..."
+                android:hint="@string/step6_note_hint"
                 android:inputType="textMultiLine"
                 android:maxLines="6"/>
         </LinearLayout>
 
-        <!-- Continue Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnNoteContinue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="@string/action_continue"
             android:textAllCaps="false"
             android:textColor="#085F63"
             android:textSize="16sp"

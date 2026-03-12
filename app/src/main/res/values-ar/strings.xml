@@ -1,36 +1,135 @@
 <resources>
 
-    <string name="app_name">مشروع ASD</string>
+    <string name="app_name">بروجكت ASD</string>
     <string name="app_title">مودي</string>
-
+    <!--notifications-->
     <string name="cd_notifications">الإشعارات</string>
+    <string name="notifications_title">الإشعارات</string>
+    <string name="notifications_empty">ما في إشعارات جديدة حاليًا.</string>
+
+    <string name="notification_channel_child_tasks">مهام الطفل</string>
+    <string name="notification_new_task_title">مهمة جديدة</string>
+    <string name="notification_new_task_body">عندك مهمة جديدة ناطرتك</string>
+    <string name="notification_test_body">هذا إشعار تجريبي</string>
+    <!--language-->
     <string name="cd_change_language">تغيير اللغة</string>
     <string name="cd_child_avatar">صورة الطفل</string>
-
+    <!--greeting-->
     <string name="greeting_morning">صباح الخير</string>
     <string name="greeting_afternoon">مساء الخير</string>
     <string name="greeting_evening">مساء الخير</string>
     <string name="greeting_hello">مرحبًا</string>
     <string name="greeting_with_name">%1$s، %2$s</string>
-
+    <!--streak-->
     <string name="streak_today">🌱 سجّلت اليوم</string>
     <string name="streak_checking_in">🌱 أنت تتابع التسجيل</string>
     <string name="streak_days">🌱 أنت تتابع منذ %1$d أيام</string>
     <string name="streak_regular">🌱 أنت منتظم في التسجيل (%1$d أيام)</string>
-
+    <!--main content-->
     <string name="home_question">كيف تشعر؟</string>
-
+    <!--log emotion btn-->
     <string name="home_log_emotion_title">سجّل شعورك</string>
     <string name="home_log_emotion_subtitle">كيف تشعر الآن؟</string>
-
+    <!--my tasks btn-->
     <string name="home_my_tasks_title">مهامي</string>
     <string name="home_my_tasks_subtitle">شوف الأشياء اللي عليّ</string>
-
+    <!--my history btn-->
     <string name="home_my_history_title">سجلّي</string>
     <string name="home_my_history_subtitle">اطّلع على مشاعري السابقة</string>
-
+    <!--calming tools btn-->
     <string name="home_calming_tools_title">أدوات التهدئة</string>
     <string name="home_calming_tools_subtitle">ساعدني على الشعور بتحسّن</string>
+
+    <string name="cd_back">رجوع</string>
+    <string name="header_title_placeholder">العنوان</string>
+
+    <!--Log Emotion func-->
+    <string name="emotion_log_header_title">تسجيل مشاعري</string>
+    <string name="emotion_log_step_indicator_placeholder">خطوة 1 من 7</string>
+    <string name="emotion_log_step_indicator">خطوة %1$d من %2$d</string>
+    <!-- Log My Emotion - step 1 -->
+    <string name="step1_situation_question">ماذا حدث؟</string>
+    <string name="step1_situation_option_1">رحت على مكان جديد</string>
+    <string name="step1_situation_option_2">وصلتني هدية</string>
+    <string name="step1_situation_option_3">صار بيني وبين حدا موقف</string>
+    <string name="step1_situation_option_4">كان عندي اختبار</string>
+    <string name="step1_situation_option_5">شيء آخر</string>
+    <!-- step 1 - custom situation screen -->
+    <string name="custom_situation_title">ممكن تحكيلي شو صار؟</string>
+    <string name="custom_situation_helper">اكتبها بطريقتك 😊</string>
+    <string name="custom_situation_hint">شو صار؟</string>
+
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_continue">متابعة</string>
+
+    <!-- Log My Emotion - step 2 -->
+    <string name="step2_where_question">وين كنت؟</string>
+    <string name="step2_where_option_1">بالمدرسة</string>
+    <string name="step2_where_option_2">بالبيت</string>
+    <string name="step2_where_option_3">مش متأكد</string>
+    <string name="step2_where_option_4">بمكان ثاني</string>
+    <!-- step 2 - custom location screen -->
+    <string name="custom_location_title">وين كنت؟</string>
+    <string name="custom_location_helper">اكتب المكان بطريقتك.</string>
+    <string name="custom_location_hint">مثال: المدرسة، البيت، ساحة اللعب</string>
+    <string name="custom_location_counter_placeholder">0 / 25</string>
+    <string name="custom_location_counter">%1$d / %2$d</string>
+
+    <string name="action_back">رجوع</string>
+    <!-- Log My Emotion - step 3 -->
+    <string name="step3_feeling_question">كيف كان شعورك؟</string>
+    <string name="step3_feeling_helper">اختار</string>
+
+    <string name="step3_feeling_happy">مبسوط</string>
+    <string name="step3_feeling_sad">حزين</string>
+    <string name="step3_feeling_angry">عصبي</string>
+    <string name="step3_feeling_surprised">متفاجئ</string>
+    <string name="step3_feeling_afraid">خايف</string>
+    <string name="step3_feeling_disgust">مشمئز</string>
+    <string name="step3_feeling_unsure">مش متأكد</string>
+    <string name="step3_feeling_other">غيرو</string>
+    <!-- step 3 - custom feeling screen -->
+    <string name="custom_feeling_title">شو كان شعورك؟</string>
+    <string name="custom_feeling_helper">اكتبه بطريقتك 😊</string>
+    <string name="custom_feeling_hint">اكتب الشعور...</string>
+    <!-- Log My Emotion - step 4 -->
+    <string name="step4_intensity_question">قديش كان الشعور قوي؟</string>
+    <string name="step4_intensity_helper">اضغط عشان تعبي الكاسة بقد شعورك</string>
+
+    <string name="step4_intensity_level_1">خفيف</string>
+    <string name="step4_intensity_level_2">شوي</string>
+    <string name="step4_intensity_level_3">متوسط</string>
+    <string name="step4_intensity_level_4">كثير</string>
+    <string name="step4_intensity_level_5">كثير جدًا</string>
+    <!-- Log My Emotion - step 5 -->
+    <string name="step5_photo_question">ممكن نشوف شعورك؟</string>
+    <string name="step5_photo_helper">صوّر وجهك</string>
+    <string name="step5_photo_tap">اضغط لتصوير صورة</string>
+    <string name="step5_photo_retake">إعادة التصوير</string>
+
+    <string name="step5_camera_permission_denied">إذن الكاميرا مش مفعّل</string>
+    <string name="step5_upload_failed">فشل رفع الصورة</string>
+
+    <string name="error_missing_child_information">معلومات الطفل غير موجودة</string>
+    <string name="action_skip">تخطي</string>
+    <!-- Log My Emotion - step 6 -->
+    <string name="step6_note_title">بدك تحكيلنا أكثر؟</string>
+    <string name="step6_note_helper">اكتب أي شيء بتحبو عن هاللحظة</string>
+    <string name="step6_note_hint">اكتب هون...</string>
+    <!-- Log My Emotion - step 7 -->
+    <string name="review_title">يلا نراجع شعورك</string>
+    <string name="review_submit">حفظ</string>
+
+    <string name="review_label_situation">اللي صار</string>
+    <string name="review_label_location">المكان</string>
+    <string name="review_label_feeling">الشعور</string>
+    <string name="review_label_note">ملاحظة</string>
+
+    <string name="review_intensity_text">قوة الشعور: %1$s</string>
+    <string name="review_intensity_number">%1$d / 5</string>
+
+    <string name="review_intensity_placeholder">قوة الشعور: متوسط</string>
+    <string name="review_intensity_number_placeholder">3 / 5</string>
 
     <string name="language_english">English</string>
     <string name="language_arabic">العربية</string>

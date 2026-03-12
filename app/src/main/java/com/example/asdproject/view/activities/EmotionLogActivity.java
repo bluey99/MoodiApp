@@ -122,7 +122,7 @@ public class EmotionLogActivity extends AppCompatActivity
 
         btnBack = headerView.findViewById(R.id.btnBack);
         TextView txtHeaderTitle = headerView.findViewById(R.id.txtHeaderTitle);
-        txtHeaderTitle.setText("Log My Feelings");
+        txtHeaderTitle.setText(getString(R.string.emotion_log_header_title));
 
         txtStepIndicator = findViewById(R.id.txtStepIndicator);
         stepProgressFill = findViewById(R.id.stepProgressFill);
@@ -145,7 +145,9 @@ public class EmotionLogActivity extends AppCompatActivity
     }
 
     private void updateStepIndicator() {
-        txtStepIndicator.setText("Step " + currentStep + " of " + TOTAL_STEPS);
+        txtStepIndicator.setText(
+                getString(R.string.emotion_log_step_indicator, currentStep, TOTAL_STEPS)
+        );
     }
 
     private void updateProgressBar() {

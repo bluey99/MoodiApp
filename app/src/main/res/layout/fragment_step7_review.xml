@@ -12,7 +12,6 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- YELLOW PANEL -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,18 +19,16 @@
             android:background="@drawable/child_panel_background"
             android:padding="24dp">
 
-            <!-- Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Let's review your feeling"
+                android:text="@string/review_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="#085F63"
                 android:layout_gravity="center"
                 android:layout_marginBottom="16dp" />
 
-            <!-- SUMMARY CONTAINER (Step 1–3, 6) -->
             <LinearLayout
                 android:id="@+id/summaryContainer"
                 android:layout_width="match_parent"
@@ -40,7 +37,6 @@
                 android:divider="@drawable/divider_line"
                 android:showDividers="middle" />
 
-            <!-- INTENSITY BLOCK -->
             <LinearLayout
                 android:id="@+id/intensityBlock"
                 android:layout_width="match_parent"
@@ -50,7 +46,6 @@
                 android:paddingBottom="10dp"
                 android:gravity="center_vertical">
 
-                <!-- GLASS -->
                 <FrameLayout
                     android:id="@+id/reviewGlassContainer"
                     android:layout_width="60dp"
@@ -66,7 +61,6 @@
                         android:layout_gravity="bottom" />
                 </FrameLayout>
 
-                <!-- Intensity labels -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -77,7 +71,7 @@
                         android:id="@+id/txtIntensityLabelReview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Intensity: Medium"
+                        android:text="@string/review_intensity_placeholder"
                         android:textColor="#085F63"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -86,13 +80,12 @@
                         android:id="@+id/txtIntensityNumberReview"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="3 / 5"
+                        android:text="@string/review_intensity_number_placeholder"
                         android:textColor="#51787C"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- PHOTO PREVIEW (optional) -->
             <ImageView
                 android:id="@+id/imgSummaryPhoto"
                 android:layout_width="160dp"
@@ -105,12 +98,11 @@
 
         </LinearLayout>
 
-        <!-- Confirm Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnConfirmLog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Submit"
+            android:text="@string/review_submit"
             android:textAllCaps="false"
             android:textColor="#085F63"
             android:textSize="16sp"

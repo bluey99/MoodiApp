@@ -17,7 +17,6 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- Yellow rounded panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -25,28 +24,25 @@
                 android:background="@drawable/child_panel_background"
                 android:padding="24dp">
 
-                <!-- Title -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="How big was the feeling?"
+                    android:text="@string/step4_intensity_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
                     android:layout_gravity="center"
                     android:layout_marginBottom="4dp" />
 
-                <!-- Subtitle -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Tap to fill the glass with your feeling"
+                    android:text="@string/step4_intensity_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_gravity="center"
                     android:layout_marginBottom="20dp" />
 
-                <!-- Glass container -->
                 <FrameLayout
                     android:id="@+id/glassContainer"
                     android:layout_width="120dp"
@@ -56,7 +52,6 @@
                     android:padding="8dp"
                     android:clipToOutline="true">
 
-                    <!-- Bottom-aligned fill -->
                     <FrameLayout
                         android:id="@+id/fillContainer"
                         android:layout_width="match_parent"
@@ -77,12 +72,11 @@
 
                 </FrameLayout>
 
-                <!-- Intensity label -->
                 <TextView
                     android:id="@+id/txtIntensityLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Just a little"
+                    android:text="@string/step4_intensity_level_1"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
@@ -92,12 +86,11 @@
 
             </LinearLayout>
 
-            <!-- Continue button -->
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnIntensityContinue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Continue"
+                android:text="@string/action_continue"
                 android:textAllCaps="false"
                 android:textColor="#085F63"
                 android:textSize="16sp"

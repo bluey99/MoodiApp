@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true">
 
-    <!-- Back Button (same size & position as Log Emotion) -->
     <ImageView
         android:id="@+id/btnBack"
         android:layout_width="94dp"
@@ -14,16 +13,15 @@
         android:layout_marginTop="20dp"
         android:padding="5dp"
         android:src="@drawable/ic_arrow_back"
-        android:contentDescription="Back"
+        android:contentDescription="@string/cd_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Header Title (aligned exactly like Log Emotion) -->
     <TextView
         android:id="@+id/txtHeaderTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
+        android:text="@string/header_title_placeholder"
         android:textStyle="bold"
         android:textSize="26sp"
         android:textColor="#4C5257"

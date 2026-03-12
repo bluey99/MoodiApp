@@ -63,7 +63,7 @@ public class CustomLocationBottomSheet extends BottomSheetDialogFragment {
 
         btnContinue.setEnabled(false);
         btnContinue.setAlpha(0.4f);
-        counter.setText("0 / " + MAX_LENGTH);
+        counter.setText(getString(R.string.custom_location_counter, 0, MAX_LENGTH));
 
         input.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
@@ -72,7 +72,7 @@ public class CustomLocationBottomSheet extends BottomSheetDialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 int length = s.length();
-                counter.setText(length + " / " + MAX_LENGTH);
+                counter.setText(getString(R.string.custom_location_counter, length, MAX_LENGTH));
 
                 boolean valid = !TextUtils.isEmpty(s.toString().trim());
                 btnContinue.setEnabled(valid);

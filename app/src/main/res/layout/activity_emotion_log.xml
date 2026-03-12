@@ -7,7 +7,6 @@
     android:background="#E3F4F4"
     android:fitsSystemWindows="true">
 
-    <!-- REUSABLE HEADER -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_header"
@@ -15,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Progress Bar Background -->
     <View
         android:id="@+id/stepProgressBar"
         android:layout_width="0dp"
@@ -26,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Progress Fill -->
     <View
         android:id="@+id/stepProgressFill"
         android:layout_width="0dp"
@@ -36,12 +33,11 @@
         app:layout_constraintBottom_toBottomOf="@id/stepProgressBar"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Step Indicator -->
     <TextView
         android:id="@+id/txtStepIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Step 1 of 7"
+        android:text="@string/emotion_log_step_indicator_placeholder"
         android:textSize="16sp"
         android:textColor="#51787C"
         android:layout_marginTop="14dp"
@@ -49,7 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
         android:layout_width="0dp"

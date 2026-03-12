@@ -49,7 +49,7 @@ public class Step6NoteFragment extends Fragment {
         btnContinue = view.findViewById(R.id.btnNoteContinue);
 
         // Default: Skip (no note)
-        btnContinue.setText("Skip");
+        btnContinue.setText(getString(R.string.action_skip));
 
         editNote.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -58,9 +58,9 @@ public class Step6NoteFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().trim().isEmpty()) {
-                    btnContinue.setText("Skip");
+                    btnContinue.setText(getString(R.string.action_skip));
                 } else {
-                    btnContinue.setText("Continue");
+                    btnContinue.setText(getString(R.string.action_continue));
                 }
             }
         });

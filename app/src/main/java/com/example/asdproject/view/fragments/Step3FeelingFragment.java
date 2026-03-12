@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,9 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.asdproject.R;
 import com.example.asdproject.model.Feeling;
 import com.example.asdproject.util.ChildButtonHelper;
-import android.widget.ImageView;
 import com.example.asdproject.util.FeelingUiMapper;
-
 
 /**
  * Step 3 of the child emotion-logging flow.
@@ -27,7 +26,6 @@ public class Step3FeelingFragment extends Fragment {
     /** Callback interface implemented by the hosting Activity. */
     public interface Listener {
         void onFeelingSelected(Feeling feeling);
-        //  open bottom sheet when "Other" is clicked
         void onRequestCustomFeeling();
     }
 
@@ -53,7 +51,6 @@ public class Step3FeelingFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_step3_feelings, container, false);
 
-        // Collect all feeling buttons
         View btnHappy     = view.findViewById(R.id.btnHappy);
         View btnSad       = view.findViewById(R.id.btnSad);
         View btnAngry     = view.findViewById(R.id.btnAngry);
@@ -71,13 +68,11 @@ public class Step3FeelingFragment extends Fragment {
         bindEmoji(btnDisgust, Feeling.DISGUST);
         bindEmoji(btnUnsure, Feeling.UNSURE);
 
-
         allButtons = new View[]{
                 btnHappy, btnSad, btnAngry, btnSurprised,
                 btnScared, btnDisgust, btnUnsure, btnOther
         };
 
-        // Setup click behavior for each feeling
         setupButtons(btnHappy, btnSad, btnAngry, btnSurprised,
                 btnScared, btnDisgust, btnUnsure, btnOther);
 
@@ -121,5 +116,4 @@ public class Step3FeelingFragment extends Fragment {
         ImageView img = (ImageView) ((ViewGroup) btn).getChildAt(0);
         img.setImageResource(FeelingUiMapper.getEmojiRes(feeling));
     }
-
 }

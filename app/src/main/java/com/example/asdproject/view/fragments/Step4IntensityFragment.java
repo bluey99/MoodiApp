@@ -77,6 +77,9 @@ public class Step4IntensityFragment extends Fragment {
         // Initially disabled until the child taps at least once
         disableContinueButton();
 
+        // bayan added here - set initial localized label
+        txtLabel.setText(getIntensityLabel(currentLevel));
+
         // Compute fill height after layout pass
         fillContainer.post(() -> {
             maxFillHeightPx = fillContainer.getHeight();
@@ -120,6 +123,7 @@ public class Step4IntensityFragment extends Fragment {
         fillContainer.setOnTouchListener((v, event) -> {
 
             if (event.getAction() == MotionEvent.ACTION_DOWN ||
+                    event.getAction() == MotionEvent.ACTION_MOVE ||
                     event.getAction() == MotionEvent.ACTION_UP) {
 
                 float containerHeight = v.getHeight();
@@ -148,9 +152,9 @@ public class Step4IntensityFragment extends Fragment {
         int previous = currentLevel;
         currentLevel = level;
 
-        txtLabel.setText(IntensityHelper.getLabel(level));
+        // bayan added here - use localized labels instead of helper text
+        txtLabel.setText(getIntensityLabel(level));
         fillView.setBackgroundResource(IntensityHelper.getFillDrawable(level));
-
 
         // If layout not measured yet, apply after measurement
         if (maxFillHeightPx == 0) {
@@ -159,6 +163,26 @@ public class Step4IntensityFragment extends Fragment {
         }
 
         applyFillHeightAnimated(previous, level, animate);
+    }
+
+    /**
+     * bayan added here - provide localized intensity labels without changing design.
+     */
+    private String getIntensityLabel(int level) {
+        switch (level) {
+            case 1:
+                return getString(R.string.step4_intensity_level_1);
+            case 2:
+                return getString(R.string.step4_intensity_level_2);
+            case 3:
+                return getString(R.string.step4_intensity_level_3);
+            case 4:
+                return getString(R.string.step4_intensity_level_4);
+            case 5:
+                return getString(R.string.step4_intensity_level_5);
+            default:
+                return getString(R.string.step4_intensity_level_1);
+        }
     }
 
     /**
@@ -199,34 +223,6 @@ public class Step4IntensityFragment extends Fragment {
         lp.height = heightPx;
         fillView.setLayoutParams(lp);
         fillView.requestLayout();
-    }
-
-    /**
-     * Updates the label text + liquid color drawable.
-     */
-    private void updateLabelAndColor(int level) {
-        switch (level) {
-            case 1:
-                txtLabel.setText("Just a little");
-                fillView.setBackgroundResource(R.drawable.intensity_fill_level1);
-                break;
-            case 2:
-                txtLabel.setText("A little bit");
-                fillView.setBackgroundResource(R.drawable.intensity_fill_level2);
-                break;
-            case 3:
-                txtLabel.setText("Medium");
-                fillView.setBackgroundResource(R.drawable.intensity_fill_level3);
-                break;
-            case 4:
-                txtLabel.setText("A lot");
-                fillView.setBackgroundResource(R.drawable.intensity_fill_level4);
-                break;
-            case 5:
-                txtLabel.setText("Very much");
-                fillView.setBackgroundResource(R.drawable.intensity_fill_level5);
-                break;
-        }
     }
 
     /**
