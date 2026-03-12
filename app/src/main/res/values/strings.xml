@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- ================================================== -->
@@ -377,7 +378,7 @@
     <string name="reports_history_subtitle">All the reports you’ve written to the therapist</string>
 
     <string name="therapist_notes_title">Therapist Feedback</string>
-    <string name="therapist_notes_subtitle">Here are all of your child's therapist notes for easy review.</string>
+    <string name="therapist_notes_subtitle">Here are all of your child\'s therapist notes for easy review.</string>
     <string name="label_time">Time:</string>
 
     <string name="new_report_fill_required">Please fill all the required fields</string>
