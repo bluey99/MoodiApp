@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="VisualStimmingView">
+        <attr name="stimMode" format="enum">
+            <enum name="soft" value="0"/>
+            <enum name="gentle" value="1"/>
+            <enum name="active" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>

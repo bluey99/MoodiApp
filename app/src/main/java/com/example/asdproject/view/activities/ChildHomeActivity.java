@@ -59,6 +59,7 @@ public class ChildHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseManager.init(this);
         setContentView(R.layout.activity_child_home);
 
         //ChildFirebaseMessagingService.testLocalNotification(this);//This creates/triggers a system-level notification.we couldnt implement it becuase of firebase plan limitations so we are keeping it off.

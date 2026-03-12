@@ -187,6 +187,11 @@ public class ChildLogsHistoryActivity extends BaseActivity {
                     for (DocumentSnapshot doc : snap.getDocuments()) {
                         if (isTaskLog(doc)) continue;
 
+                        String logId = safe(doc.getString("id"));
+
+                        // ✅ FILTER: skip TASK logs
+                        if ("TASK".equals(logId)) continue;
+
                         String situation = safe(doc.getString("situation"));
                         String location  = safe(doc.getString("location"));
                         String emotion   = safe(doc.getString("feeling"));
@@ -198,6 +203,7 @@ public class ChildLogsHistoryActivity extends BaseActivity {
                         Timestamp ts = doc.getTimestamp("timestamp");
                         long tsMillis = (ts == null) ? 0L : ts.toDate().getTime();
                         String tsText = (tsMillis == 0L) ? "" : sdf.format(ts.toDate());
+
 
                         allLogs.add(new LogItem(tsText, situation, location, emotion, intensity, note, tsMillis));
                     }
@@ -215,6 +221,9 @@ public class ChildLogsHistoryActivity extends BaseActivity {
         String id = doc.getString("id");
         return id != null && id.trim().equalsIgnoreCase("TASK");
     }
+
+
+
 
     // ==========================================================
     // ✅ Pretty Filter Bottom Sheet (Time + Emotion + Situation + Location)

@@ -150,6 +150,58 @@
             app:chipBackgroundColor="@color/chip_emotion_selector"
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
+        <!-- Disgust -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipDisgust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="110dp"
+            android:minHeight="72dp"
+            android:text="Disgust"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="DISGUST"
+            app:chipIcon="@drawable/emoji_disgusted"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Unsure -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipUnsure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="110dp"
+            android:minHeight="72dp"
+            android:text="Unsure"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="UNSURE"
+            app:chipIcon="@drawable/emoji_unsure"
+            app:chipIconSize="36dp"
+            app:chipIconVisible="true"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+        <!-- Other -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="110dp"
+            android:minHeight="72dp"
+            android:text="Other"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:tag="OTHER"
+            app:chipBackgroundColor="@color/chip_emotion_selector"
+            app:checkedIconVisible="false"
+            style="@style/Widget.MaterialComponents.Chip.Choice"/>
+
+
 
     </com.google.android.material.chip.ChipGroup>
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_breathing"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_history_header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <TextView
+            android:id="@+id/txtVisualNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="14dp"
+            android:text="you can just watch for a bit 🤍"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textColor="#6FAFB2"
+            android:alpha="0" />
+
+        <TextView
+            android:id="@+id/btnVisualOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="12dp"
+            android:text="Adjust"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="8dp"
+            android:background="@drawable/pill_button_selector" />
+
+
+        <!-- The visual fills the rest of the screen -->
+        <com.example.asdproject.view.views.VisualStimmingView
+            android:id="@+id/visualStimmingView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:stimMode="gentle" />
+
+    </LinearLayout>
+
+</LinearLayout>

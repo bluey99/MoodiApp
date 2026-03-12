@@ -33,6 +33,16 @@
             android:textColor="#085F63"
             android:textStyle="bold"
             android:textSize="18sp" />
+        <TextView
+            android:id="@+id/txtTaskBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="From task"
+            android:textSize="12sp"
+            android:textColor="#6A8F8E"
+            android:visibility="gone"
+            android:layout_marginTop="2dp"/>
+
 
         <!-- Intensity Label -->
         <TextView
@@ -60,6 +70,17 @@
                 android:layout_height="10dp"
                 android:layout_gravity="bottom" />
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/txtTaskPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task prompt"
+            android:textSize="14sp"
+            android:textColor="#085F63"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_marginTop="6dp"/>
 
         <!-- Note preview -->
         <TextView

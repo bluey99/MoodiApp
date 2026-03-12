@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_breathing"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <!-- Reused header -->
+    <include
+        android:id="@+id/header"
+        layout="@layout/view_child_history_header" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <!-- Gentle companion note -->
+        <TextView
+            android:id="@+id/txtBreathNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:text="let’s do this together 🤍"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textColor="#6FAFB2"
+            android:alpha="0" />
+
+
+        <!-- TOP SPACER -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Breathing visual -->
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <View
+                android:id="@+id/breathGlow"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:layout_gravity="center"
+                android:background="@drawable/breathing_glow"
+                android:alpha="0.3" />
+
+            <View
+                android:id="@+id/breathCircle"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:background="@drawable/breathing_circle" />
+        </FrameLayout>
+
+        <!-- Instruction -->
+        <TextView
+            android:id="@+id/txtBreathInstruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="breathe in"
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#4A7F82" />
+
+        <!-- BOTTOM SPACER -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

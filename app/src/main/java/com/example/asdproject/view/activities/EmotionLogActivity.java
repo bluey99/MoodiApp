@@ -104,9 +104,7 @@ public class EmotionLogActivity extends AppCompatActivity
         startStep = "TASK".equals(logType) ? 2 : 1;
 
         if ("TASK".equals(logType)) {
-            draft.situation = (taskTitle != null && !taskTitle.trim().isEmpty())
-                    ? ("Task: " + taskTitle)
-                    : "Task";
+            draft.situation = null; // tasks don't use situation
             draft.location = "From task";
         }
 
@@ -274,6 +272,18 @@ public class EmotionLogActivity extends AppCompatActivity
         }
 
         EmotionLog finalLog = new EmotionLog(childId, draft);
+        if ("TASK".equals(logType)) {
+            finalLog.setLogType("TASK");
+            finalLog.setTaskPrompt(discussionPrompts);
+        } else {
+            finalLog.setLogType("SELF");
+        }
+
+        //  mark emotion log as task-based if created from a task
+        if ("TASK".equals(logType)) {
+            finalLog.setId("TASK");
+        }
+
 
         Toast.makeText(this, "Saving your feeling...", Toast.LENGTH_SHORT).show();
         emotionRepository.addEmotionLog(
