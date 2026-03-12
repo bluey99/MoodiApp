@@ -1,7 +1,5 @@
 package com.example.asdproject.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -47,9 +45,7 @@ public class NewReportActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // ✅ apply saved language BEFORE loading layout
         LocaleManager.setLocale(this);
-
         setContentView(R.layout.activity_new_report);
 
         db = FirebaseFirestore.getInstance();
@@ -67,15 +63,15 @@ public class NewReportActivity extends BaseActivity {
                 intent.getStringExtra("childName")
         );
 
-        edtSituation          = findViewById(R.id.edtSituation);
-        edtDateTime           = findViewById(R.id.edtDateTime);
-        edtLocation           = findViewById(R.id.edtLocation);
-        edtChildReaction      = findViewById(R.id.edtChildReaction);
-        edtHowHandled         = findViewById(R.id.edtHowHandled);
+        edtSituation = findViewById(R.id.edtSituation);
+        edtDateTime = findViewById(R.id.edtDateTime);
+        edtLocation = findViewById(R.id.edtLocation);
+        edtChildReaction = findViewById(R.id.edtChildReaction);
+        edtHowHandled = findViewById(R.id.edtHowHandled);
         edtQuestionsTherapist = findViewById(R.id.edtQuestionsTherapist);
 
-        Button btnViewHistory  = findViewById(R.id.btnViewHistory);
-        Button btnSendReport   = findViewById(R.id.btnSendReport);
+        Button btnViewHistory = findViewById(R.id.btnViewHistory);
+        Button btnSendReport = findViewById(R.id.btnSendReport);
         Button btnGoBackReport = findViewById(R.id.btnGoBackReport);
 
         edtDateTime.setFocusable(false);
@@ -94,6 +90,7 @@ public class NewReportActivity extends BaseActivity {
 
         btnSendReport.setOnClickListener(v -> sendReport());
         btnGoBackReport.setOnClickListener(v -> finish());
+
         TextView btnLanguage = findViewById(R.id.btnLanguage);
         btnLanguage.setOnClickListener(v -> {
             LocaleManager.toggleLanguage(this);
@@ -102,9 +99,9 @@ public class NewReportActivity extends BaseActivity {
     }
 
     private void showDateTimePicker() {
-        int year  = selectedDateTime.get(Calendar.YEAR);
+        int year = selectedDateTime.get(Calendar.YEAR);
         int month = selectedDateTime.get(Calendar.MONTH);
-        int day   = selectedDateTime.get(Calendar.DAY_OF_MONTH);
+        int day = selectedDateTime.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog dp = new DatePickerDialog(
                 this,
@@ -141,7 +138,7 @@ public class NewReportActivity extends BaseActivity {
     }
 
     private void showTimePicker() {
-        int hour   = selectedDateTime.get(Calendar.HOUR_OF_DAY);
+        int hour = selectedDateTime.get(Calendar.HOUR_OF_DAY);
         int minute = selectedDateTime.get(Calendar.MINUTE);
 
         TimePickerDialog tp = new TimePickerDialog(
@@ -157,7 +154,7 @@ public class NewReportActivity extends BaseActivity {
                     Calendar now = Calendar.getInstance();
 
                     Calendar today = Calendar.getInstance();
-                    if (chosen.get(Calendar.YEAR)  == today.get(Calendar.YEAR) &&
+                    if (chosen.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
                             chosen.get(Calendar.MONTH) == today.get(Calendar.MONTH) &&
                             chosen.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH)) {
 
@@ -191,11 +188,11 @@ public class NewReportActivity extends BaseActivity {
     private void sendReport() {
         String situation = edtSituation.getText().toString().trim();
         String timestamp = edtDateTime.getText().toString().trim();
-        String location  = edtLocation.getText().toString().trim();
+        String location = edtLocation.getText().toString().trim();
 
         String childReaction = edtChildReaction.getText().toString().trim();
-        String howHandled    = edtHowHandled.getText().toString().trim();
-        String questions     = edtQuestionsTherapist.getText().toString().trim();
+        String howHandled = edtHowHandled.getText().toString().trim();
+        String questions = edtQuestionsTherapist.getText().toString().trim();
 
         if (situation.isEmpty() || timestamp.isEmpty()
                 || location.isEmpty() || childReaction.isEmpty()
@@ -253,7 +250,6 @@ public class NewReportActivity extends BaseActivity {
                         report.put("childReaction", childReaction);
                         report.put("howHandled", howHandled);
                         report.put("questions", questions);
-
                         report.put("parentID", parentIdField);
                         report.put("childID", childIdField);
 
@@ -309,14 +305,13 @@ public class NewReportActivity extends BaseActivity {
             JSONArray arr = new JSONArray(json);
 
             JSONObject obj = new JSONObject();
-            obj.put("situation",     situation);
-            obj.put("timestamp",     timestamp);
-            obj.put("location",      location);
+            obj.put("situation", situation);
+            obj.put("timestamp", timestamp);
+            obj.put("location", location);
             obj.put("childReaction", childReaction);
-            obj.put("howHandled",    howHandled);
-            obj.put("questions",     questions);
-
-            obj.put("childID",   childIdField);
+            obj.put("howHandled", howHandled);
+            obj.put("questions", questions);
+            obj.put("childID", childIdField);
             obj.put("childName", childName);
 
             arr.put(obj);

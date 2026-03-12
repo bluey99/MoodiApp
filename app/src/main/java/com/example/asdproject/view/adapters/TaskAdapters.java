@@ -48,7 +48,6 @@ public class TaskAdapters extends RecyclerView.Adapter<TaskAdapters.TaskViewHold
             holder.txtTaskTitle.setText("Task by Mom");
         }
 
-
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ChildTaskDetailsActivity.class);
 
