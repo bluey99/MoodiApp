@@ -1,12 +1,3 @@
-// ===============================
-// NewReportActivity.java (FIELD-ID ONLY) ✅
-// ✅ childId is treated as childID FIELD (e.g., "214578903") always
-// ✅ fetch child doc by: whereEqualTo("childID", childIdField)
-// ✅ save locally using "childID" (capital D) so history filter matches
-// ✅ still sends report to Firestore reports + therapist notification
-// ✅ FIX: use finalTherapistId / finalChildName inside callbacks (no "effectively final" errors)
-// ===============================
-
 package com.example.asdproject.view.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +8,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,7 +26,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class NewReportActivity extends AppCompatActivity {
+public class NewReportActivity extends BaseActivity {
 
     private static final String PREFS = "reports_prefs";
     private static final String KEY_REPORTS_PREFIX = "reports_list_";
@@ -45,7 +38,6 @@ public class NewReportActivity extends AppCompatActivity {
     private final SimpleDateFormat dateTimeFormat =
             new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
-    // ✅ this is the FIELD childID (not doc id)
     private String childIdField;
     private String childName;
 
@@ -54,13 +46,16 @@ public class NewReportActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ✅ apply saved language BEFORE loading layout
+        LocaleManager.setLocale(this);
+
         setContentView(R.layout.activity_new_report);
 
         db = FirebaseFirestore.getInstance();
 
         Intent intent = getIntent();
 
-        // accept multiple keys, but treat value as FIELD childID always
         childIdField = firstNonEmpty(
                 intent.getStringExtra("CHILD_ID"),
                 intent.getStringExtra("childID"),
@@ -91,7 +86,7 @@ public class NewReportActivity extends AppCompatActivity {
         btnViewHistory.setOnClickListener(v -> {
             Intent i = new Intent(NewReportActivity.this, ReportsHistoryActivity.class);
             if (!isEmpty(childIdField)) {
-                i.putExtra("CHILD_ID", childIdField);   // ✅ pass FIELD id
+                i.putExtra("CHILD_ID", childIdField);
                 i.putExtra("CHILD_NAME", childName);
             }
             startActivity(i);
@@ -99,9 +94,12 @@ public class NewReportActivity extends AppCompatActivity {
 
         btnSendReport.setOnClickListener(v -> sendReport());
         btnGoBackReport.setOnClickListener(v -> finish());
+        TextView btnLanguage = findViewById(R.id.btnLanguage);
+        btnLanguage.setOnClickListener(v -> {
+            LocaleManager.toggleLanguage(this);
+            recreate();
+        });
     }
-
-    // --------- DATE + TIME PICKERS (no future allowed) ----------
 
     private void showDateTimePicker() {
         int year  = selectedDateTime.get(Calendar.YEAR);
@@ -124,7 +122,7 @@ public class NewReportActivity extends AppCompatActivity {
 
                     if (chosen.after(today)) {
                         Toast.makeText(this,
-                                "You cannot choose a future date!",
+                                getString(R.string.error_future_date),
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -204,32 +202,34 @@ public class NewReportActivity extends AppCompatActivity {
                 || howHandled.isEmpty()) {
 
             Toast.makeText(this,
-                    "Please fill all the required fields!!",
+                    getString(R.string.new_report_fill_required),
                     Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (isEmpty(childIdField)) {
-            Toast.makeText(this, "Missing childID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    getString(R.string.missing_child_id),
+                    Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ Always fetch by FIELD childID
         db.collection("children")
                 .whereEqualTo("childID", childIdField)
                 .limit(1)
                 .get()
                 .addOnSuccessListener(qs -> {
                     if (qs == null || qs.isEmpty()) {
-                        Toast.makeText(this, "Child not found (childID).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                getString(R.string.child_not_found),
+                                Toast.LENGTH_SHORT).show();
                         return;
                     }
 
-                    // Avoid "var" to prevent Java version issues
                     com.google.firebase.firestore.DocumentSnapshot childDoc =
                             qs.getDocuments().get(0);
 
-                    String therapistId = childDoc.getString("therapistID"); // children doc uses therapistID
+                    String therapistId = childDoc.getString("therapistID");
                     if (therapistId == null) therapistId = "";
                     therapistId = therapistId.trim();
 
@@ -237,28 +237,25 @@ public class NewReportActivity extends AppCompatActivity {
                     if (parentIdField == null) parentIdField = "";
                     parentIdField = parentIdField.trim();
 
-                    // ✅ Save locally (field id only)
                     saveFullReportLocal(situation, timestamp, location, childReaction, howHandled, questions);
 
-                    // ✅ Send to Firestore reports (for therapist history)
                     if (!therapistId.isEmpty()) {
 
-                        // ✅ FIX: make them final for async callbacks
                         final String finalTherapistId = therapistId;
                         final String finalChildName = childName;
 
                         Map<String, Object> report = new HashMap<>();
                         report.put("childName", finalChildName);
-                        report.put("therapistId", finalTherapistId); // reports collection uses therapistId
+                        report.put("therapistId", finalTherapistId);
                         report.put("situation", situation);
-                        report.put("timestamp", timestamp);          // string time (when it happened)
+                        report.put("timestamp", timestamp);
                         report.put("location", location);
                         report.put("childReaction", childReaction);
                         report.put("howHandled", howHandled);
                         report.put("questions", questions);
 
                         report.put("parentID", parentIdField);
-                        report.put("childID", childIdField);         // ✅ field id
+                        report.put("childID", childIdField);
 
                         db.collection("reports")
                                 .add(report)
@@ -276,15 +273,22 @@ public class NewReportActivity extends AppCompatActivity {
                                     notif.put("createdAt", System.currentTimeMillis());
                                     db.collection("notifications").add(notif);
 
-                                    Toast.makeText(this, "Report sent", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(this,
+                                            getString(R.string.report_sent),
+                                            Toast.LENGTH_SHORT).show();
                                     finish();
                                 })
                                 .addOnFailureListener(e ->
-                                        Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(this,
+                                                getString(R.string.error_prefix) + " " + e.getMessage(),
+                                                Toast.LENGTH_SHORT
+                                        ).show()
                                 );
 
                     } else {
-                        Toast.makeText(this, "Report saved (no therapist linked).", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                getString(R.string.report_saved_no_therapist),
+                                Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 })
@@ -293,7 +297,6 @@ public class NewReportActivity extends AppCompatActivity {
                 );
     }
 
-    // ✅ Local save uses "childID" (capital D) for consistent filtering
     private void saveFullReportLocal(String situation, String timestamp, String location,
                                      String childReaction, String howHandled, String questions) {
 
@@ -313,7 +316,6 @@ public class NewReportActivity extends AppCompatActivity {
             obj.put("howHandled",    howHandled);
             obj.put("questions",     questions);
 
-            // ✅ store FIELD id (capital D)
             obj.put("childID",   childIdField);
             obj.put("childName", childName);
 

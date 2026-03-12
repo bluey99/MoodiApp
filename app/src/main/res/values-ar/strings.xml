@@ -1,8 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">بروجكت ASD</string>
+    <!-- ================================================== -->
+    <!-- Shared / common strings -->
+    <!-- ================================================== -->
+    <string name="app_name">مودي</string>
     <string name="app_title">مودي</string>
-    <!--notifications-->
+    <string name="btn_lang">🌐</string>
+
+    <string name="language_english">English</string>
+    <string name="language_arabic">العربية</string>
+
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_continue">متابعة</string>
+    <string name="action_back">رجوع</string>
+    <string name="cd_back">رجوع</string>
+
+    <string name="ok">حسنًا</string>
+    <string name="apply">تطبيق</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="delete">حذف</string>
+    <string name="edit">عدّل</string>
+
+    <!-- ================================================== -->
+    <!-- Child screens -->
+    <!-- ================================================== -->
+
+    <!-- child home / top bar -->
     <string name="cd_notifications">الإشعارات</string>
     <string name="notifications_title">الإشعارات</string>
     <string name="notifications_empty">ما في إشعارات جديدة حاليًا.</string>
@@ -11,72 +36,68 @@
     <string name="notification_new_task_title">مهمة جديدة</string>
     <string name="notification_new_task_body">عندك مهمة جديدة ناطرتك</string>
     <string name="notification_test_body">هذا إشعار تجريبي</string>
-    <!--language-->
+
     <string name="cd_change_language">تغيير اللغة</string>
     <string name="cd_child_avatar">صورة الطفل</string>
-    <!--greeting-->
+
     <string name="greeting_morning">صباح الخير</string>
     <string name="greeting_afternoon">مساء الخير</string>
     <string name="greeting_evening">مساء الخير</string>
     <string name="greeting_hello">مرحبًا</string>
     <string name="greeting_with_name">%1$s، %2$s</string>
-    <!--streak-->
+
     <string name="streak_today">🌱 سجّلت اليوم</string>
     <string name="streak_checking_in">🌱 أنت تتابع التسجيل</string>
     <string name="streak_days">🌱 أنت تتابع منذ %1$d أيام</string>
     <string name="streak_regular">🌱 أنت منتظم في التسجيل (%1$d أيام)</string>
-    <!--main content-->
+
     <string name="home_question">كيف تشعر؟</string>
-    <!--log emotion btn-->
+
     <string name="home_log_emotion_title">سجّل شعورك</string>
     <string name="home_log_emotion_subtitle">كيف تشعر الآن؟</string>
-    <!--my tasks btn-->
+
     <string name="home_my_tasks_title">مهامي</string>
     <string name="home_my_tasks_subtitle">شوف الأشياء اللي عليّ</string>
-    <!--my history btn-->
+
     <string name="home_my_history_title">سجلّي</string>
     <string name="home_my_history_subtitle">اطّلع على مشاعري السابقة</string>
-    <!--calming tools btn-->
+
     <string name="home_calming_tools_title">أدوات التهدئة</string>
     <string name="home_calming_tools_subtitle">ساعدني على الشعور بتحسّن</string>
 
-    <string name="cd_back">رجوع</string>
     <string name="header_title_placeholder">العنوان</string>
 
-    <!--Log Emotion func-->
+    <!-- child log emotion flow -->
     <string name="emotion_log_header_title">تسجيل مشاعري</string>
     <string name="emotion_log_step_indicator_placeholder">خطوة 1 من 7</string>
     <string name="emotion_log_step_indicator">خطوة %1$d من %2$d</string>
-    <!-- Log My Emotion - step 1 -->
+
+    <!-- step 1 -->
     <string name="step1_situation_question">ماذا حدث؟</string>
     <string name="step1_situation_option_1">رحت على مكان جديد</string>
     <string name="step1_situation_option_2">وصلتني هدية</string>
     <string name="step1_situation_option_3">صار بيني وبين حدا موقف</string>
     <string name="step1_situation_option_4">كان عندي اختبار</string>
     <string name="step1_situation_option_5">شيء آخر</string>
-    <!-- step 1 - custom situation screen -->
+
     <string name="custom_situation_title">ممكن تحكيلي شو صار؟</string>
     <string name="custom_situation_helper">اكتبها بطريقتك 😊</string>
     <string name="custom_situation_hint">شو صار؟</string>
 
-    <string name="action_cancel">إلغاء</string>
-    <string name="action_continue">متابعة</string>
-
-    <!-- Log My Emotion - step 2 -->
+    <!-- step 2 -->
     <string name="step2_where_question">وين كنت؟</string>
     <string name="step2_where_option_1">بالمدرسة</string>
     <string name="step2_where_option_2">بالبيت</string>
     <string name="step2_where_option_3">مش متأكد</string>
     <string name="step2_where_option_4">بمكان ثاني</string>
-    <!-- step 2 - custom location screen -->
+
     <string name="custom_location_title">وين كنت؟</string>
     <string name="custom_location_helper">اكتب المكان بطريقتك.</string>
     <string name="custom_location_hint">مثال: المدرسة، البيت، ساحة اللعب</string>
     <string name="custom_location_counter_placeholder">0 / 25</string>
     <string name="custom_location_counter">%1$d / %2$d</string>
 
-    <string name="action_back">رجوع</string>
-    <!-- Log My Emotion - step 3 -->
+    <!-- step 3 -->
     <string name="step3_feeling_question">كيف كان شعورك؟</string>
     <string name="step3_feeling_helper">اختار</string>
 
@@ -87,12 +108,13 @@
     <string name="step3_feeling_afraid">خايف</string>
     <string name="step3_feeling_disgust">مشمئز</string>
     <string name="step3_feeling_unsure">مش متأكد</string>
-    <string name="step3_feeling_other">غيرو</string>
-    <!-- step 3 - custom feeling screen -->
+    <string name="step3_feeling_other">غيره</string>
+
     <string name="custom_feeling_title">شو كان شعورك؟</string>
     <string name="custom_feeling_helper">اكتبه بطريقتك 😊</string>
     <string name="custom_feeling_hint">اكتب الشعور...</string>
-    <!-- Log My Emotion - step 4 -->
+
+    <!-- step 4 -->
     <string name="step4_intensity_question">قديش كان الشعور قوي؟</string>
     <string name="step4_intensity_helper">اضغط عشان تعبي الكاسة بقد شعورك</string>
 
@@ -101,22 +123,24 @@
     <string name="step4_intensity_level_3">متوسط</string>
     <string name="step4_intensity_level_4">كثير</string>
     <string name="step4_intensity_level_5">كثير جدًا</string>
-    <!-- Log My Emotion - step 5 -->
+
+    <!-- step 5 -->
     <string name="step5_photo_question">ممكن نشوف شعورك؟</string>
     <string name="step5_photo_helper">صوّر وجهك</string>
     <string name="step5_photo_tap">اضغط لتصوير صورة</string>
     <string name="step5_photo_retake">إعادة التصوير</string>
-
     <string name="step5_camera_permission_denied">إذن الكاميرا مش مفعّل</string>
     <string name="step5_upload_failed">فشل رفع الصورة</string>
 
     <string name="error_missing_child_information">معلومات الطفل غير موجودة</string>
     <string name="action_skip">تخطي</string>
-    <!-- Log My Emotion - step 6 -->
+
+    <!-- step 6 -->
     <string name="step6_note_title">بدك تحكيلنا أكثر؟</string>
     <string name="step6_note_helper">اكتب أي شيء بتحبو عن هاللحظة</string>
     <string name="step6_note_hint">اكتب هون...</string>
-    <!-- Log My Emotion - step 7 -->
+
+    <!-- step 7 -->
     <string name="review_title">يلا نراجع شعورك</string>
     <string name="review_submit">حفظ</string>
 
@@ -127,11 +151,265 @@
 
     <string name="review_intensity_text">قوة الشعور: %1$s</string>
     <string name="review_intensity_number">%1$d / 5</string>
-
     <string name="review_intensity_placeholder">قوة الشعور: متوسط</string>
     <string name="review_intensity_number_placeholder">3 / 5</string>
 
-    <string name="language_english">English</string>
-    <string name="language_arabic">العربية</string>
+    <!-- ================================================== -->
+    <!-- Parent screens -->
+    <!-- ================================================== -->
+
+    <!-- parent role/login/signup/add child -->
+    <string name="parent_login_title_bar">تسجيل دخول وليّ الأمر</string>
+
+    <string name="role_title">تسجيل الدخول إلى مودي</string>
+    <string name="role_select_text">يرجى تحديد هويتك لتسجيل الدخول</string>
+    <string name="role_child">طفل</string>
+    <string name="role_parent">وليّ الأمر</string>
+    <string name="desc_child_icon">أيقونة الطفل</string>
+    <string name="desc_parent_icon">أيقونة وليّ الأمر</string>
+
+    <string name="parent_login_title">سجّل الدخول إلى مودي</string>
+    <string name="parent_login_subtitle">حيث المشاعر تتناغم — معًا.</string>
+    <string name="parent_login_helper">مرحبًا! أدخل رقم هويتك واسمك للبدء</string>
+    <string name="parent_icon_desc">أيقونة وليّ الأمر</string>
+    <string name="hint_parent_id">أدخل رقم الهوية</string>
+    <string name="hint_parent_name">أدخل الاسم</string>
+    <string name="btn_login">تسجيل الدخول</string>
+    <string name="link_signup">ليس لديك حساب؟ سجّل الآن</string>
+    <string name="link_add_child">لديك حساب بالفعل؟ أضف طفلًا</string>
+    <string name="btn_cancel">إلغاء</string>
+
+    <string name="error_fill_all">يرجى تعبئة جميع الحقول.</string>
+    <string name="error_id_9_digits">رقم الهوية يجب أن يكون 9 أرقام.</string>
+    <string name="error_not_found">رقم الهوية غير موجود.</string>
+    <string name="error_wrong_name">رقم الهوية أو الاسم غير صحيح.</string>
+    <string name="error_firestore">خطأ في قاعدة البيانات:</string>
+
+    <string name="signup_title">سجل في مودي</string>
+    <string name="section_your_info">معلوماتك:</string>
+    <string name="hint_parent_id_signup">رقم هوية وليّ الأمر</string>
+    <string name="hint_parent_nam_sign_up">اسم وليّ الأمر</string>
+    <string name="section_child_info">معلومات الطفل:</string>
+    <string name="hint_child_name">اسم الطفل</string>
+    <string name="hint_child_id">رقم هوية الطفل</string>
+    <string name="btn_signup">سجل</string>
+
+    <string name="error_parent_id_9_digits">رقم هوية وليّ الأمر يجب أن يكون 9 أرقام.</string>
+    <string name="error_child_id_9_digits">رقم هوية الطفل يجب أن يكون 9 أرقام.</string>
+    <string name="error_child_not_found">لم يتم العثور على الطفل.</string>
+    <string name="error_child_name_mismatch">اسم الطفل غير مطابق.</string>
+    <string name="error_child_not_linked_to_parent">هذا الطفل غير مرتبط برقم هوية وليّ الأمر.</string>
+    <string name="error_verification_failed">فشل التحقق:</string>
+    <string name="signup_success">تم إنشاء الحساب بنجاح!</string>
+    <string name="error_failed_prefix">فشل:</string>
+
+    <string name="addchild_title">إضافة طفل إلى مودي</string>
+    <string name="addchild_subtitle">اربط طفلًا بحسابك.</string>
+    <string name="addchild_parent_info">معلوماتك:</string>
+    <string name="addchild_hint_parent_name">اسم وليّ الأمر</string>
+    <string name="addchild_hint_parent_id">رقم هوية وليّ الأمر</string>
+    <string name="addchild_child_info">معلومات الطفل:</string>
+    <string name="addchild_hint_child_name">اسم الطفل</string>
+    <string name="addchild_hint_child_id">رقم هوية الطفل</string>
+    <string name="addchild_btn_add">إضافة طفل</string>
+
+    <string name="addchild_success">تمت إضافة الطفل بنجاح!</string>
+    <string name="addchild_already_added">هذا الطفل مضاف بالفعل.</string>
+    <string name="addchild_child_not_found">لم يتم العثور على رقم هوية الطفل.</string>
+    <string name="addchild_child_name_mismatch">اسم الطفل غير مطابق.</string>
+    <string name="addchild_child_not_linked">هذا الطفل غير مرتبط بهذا الوالد.</string>
+
+    <!-- parent home -->
+    <string name="parent_home_no_child_selected">لم يتم اختيار طفل</string>
+    <string name="parent_home_parent_not_found">لم يتم العثور على وليّ الأمر</string>
+    <string name="parent_home_no_children_linked">لا يوجد أطفال مرتبطون بعد</string>
+    <string name="parent_home_no_children_found">لم يتم العثور على أطفال</string>
+    <string name="parent_home_default_child_name">طفل</string>
+
+    <string name="parent_home_welcome">👋 أهلاً!</string>
+    <string name="parent_home_task_done_default">أنهى الطفل المهمة...</string>
+    <string name="parent_home_subtitle">تابع مشاعر طفلك والسيناريوهات أدناه.</string>
+
+    <string name="parent_home_btn_view_history">عرض السجل\nمشاعر طفلك السابقة</string>
+    <string name="parent_home_btn_add_report">إضافة تقرير\nسجّل إدخالًا جديدًا</string>
+    <string name="parent_home_btn_add_task">إضافة مهمة\nأنشئ مهامًا لطفلك</string>
+    <string name="parent_home_btn_therapist_notes">ملاحظات المعالج\nراجع ملاحظات المعالج</string>
+
+    <string name="parent_home_logout">تسجيل خروج</string>
+
+    <string name="parent_home_failed_load_children">فشل تحميل الأطفال:</string>
+    <string name="parent_home_failed_load_parent">فشل تحميل وليّ الأمر:</string>
+
+    <string name="parent_home_now_viewing">عرض: %1$s</string>
+    <string name="parent_home_toast_viewing">يتم عرض: %1$s</string>
+
+    <string name="parent_home_notif_error">خطأ بالإشعارات:</string>
+    <string name="parent_home_no_new_notifications">لا توجد إشعارات جديدة</string>
+    <string name="parent_home_notification_title">إشعار</string>
+
+    <string name="desc_parent_avatar">صورة وليّ الأمر</string>
+    <string name="desc_notifications">الإشعارات</string>
+
+    <!-- parent history / report / task / therapist flow -->
+    <string name="history_title">سجل</string>
+    <string name="history_subtitle">اختر السجل الذي ترغب في عرضه</string>
+    <string name="history_child">المشاعر التي يسجلها الطفل بنفسه</string>
+    <string name="history_tasks">مهام الوالدين والمعالج: تم تسجيل المشاعر للمهام المطلوبة</string>
+    <string name="go_back">← العودة إلى الخلف</string>
+
+    <string name="new_report_title">تقرير جديد</string>
+    <string name="new_report_subtitle">شارك ما مرّ به طفلك</string>
+    <string name="new_report_view_history">🕑 عرض السجل</string>
+    <string name="new_report_label_situation">•  الموقف :</string>
+    <string name="new_report_hint_situation">اشرح الموقف الذي تريد الإبلاغ عنه</string>
+    <string name="new_report_label_timestamp">•  الوقت والتاريخ :</string>
+    <string name="new_report_hint_timestamp">متى حدث ذلك؟</string>
+    <string name="new_report_label_location">•  المكان :</string>
+    <string name="new_report_hint_location">أين حدث ذلك؟</string>
+    <string name="new_report_label_child_reaction">•  ردّة فعل الطفل :</string>
+    <string name="new_report_hint_child_reaction">كيف كانت ردّة فعل طفلك؟</string>
+    <string name="new_report_label_how_handled">•  كيف تعاملت مع الموقف :</string>
+    <string name="new_report_hint_how_handled">اشرح كيف أدرت الموقف</string>
+    <string name="new_report_label_questions">•  أسئلة للمعالج (اختياري) :</string>
+    <string name="new_report_hint_questions">هل هناك شيء تود أن يركز عليه المعالج؟</string>
+    <string name="new_report_send">إرسال</string>
+    <string name="new_report_go_back">← رجوع</string>
+    <string name="Error">يرجى ملء جميع الحقول المطلوبة!!</string>
+
+    <string name="new_task_title">مهمة جديدة</string>
+    <string name="new_task_title_with_child">مهمة جديدة – %1$s</string>
+    <string name="new_task_subtitle">أضف شيئًا سيقيّمه طفلك</string>
+
+    <string name="new_task_label_name">•  اسم المهمة :</string>
+    <string name="new_task_hint_name">اكتب اسمًا للمهمة</string>
+
+    <string name="new_task_label_when">•  موعد الظهور :</string>
+    <string name="new_task_hint_when">اختر التاريخ والوقت</string>
+
+    <string name="new_task_label_prompts">•  أسئلة للنقاش :</string>
+    <string name="new_task_hint_prompts">اكتب أسئلة لطفلك</string>
+
+    <string name="new_task_send">إرسال</string>
+    <string name="new_task_go_back">← رجوع</string>
+
+    <string name="new_task_error_fill_all">يرجى تعبئة جميع الحقول</string>
+    <string name="new_task_error_parent_missing">لم يتم تسجيل دخول وليّ الأمر</string>
+    <string name="new_task_error_select_child">يرجى اختيار طفل أولًا من الصفحة الرئيسية</string>
+    <string name="new_task_error_future_time">يرجى اختيار وقت/تاريخ مستقبلي</string>
+    <string name="new_task_error_choose_future_time">اختر وقتًا مستقبليًا</string>
+
+    <string name="new_task_sent_success">تم إرسال المهمة بنجاح</string>
+    <string name="new_task_failed_prefix">فشل إرسال المهمة:</string>
+
+    <string name="child_logs_title">سجل مشاعر الطفل</string>
+    <string name="child_logs_title_with_name">سجل %1$s</string>
+    <string name="child_logs_subtitle">جميع المشاعر التي سجّلها الطفل بنفسه</string>
+    <string name="child_logs_filter_btn">تصفية</string>
+
+    <string name="missing_child_id">معرّف الطفل غير موجود</string>
+    <string name="child_not_found">لم يتم العثور على الطفل</string>
+    <string name="error_prefix">خطأ:</string>
+
+    <string name="filter_title">تصفية</string>
+    <string name="filter_time_section">الوقت</string>
+    <string name="filter_emotion_section">المشاعر</string>
+    <string name="filter_search_section">بحث</string>
+
+    <string name="filter_time_all">الكل</string>
+    <string name="filter_time_today">اليوم</string>
+    <string name="filter_time_7">آخر 7 أيام</string>
+    <string name="filter_time_30">آخر 30 يوم</string>
+
+    <string name="filter_choose_emotion">اختيار المشاعر</string>
+    <string name="filter_emotion_any">اختر شعورًا</string>
+    <string name="filter_emotion_other">شعور آخر</string>
+    <string name="filter_other_hint">اكتب/ي اسم الشعور…</string>
+
+    <string name="filter_clear">حذف</string>
+
+    <string name="label_date">التاريخ:</string>
+    <string name="label_location">المكان:</string>
+    <string name="label_emotion">الشعور:</string>
+    <string name="label_intensity">الشدة:</string>
+    <string name="note_empty">"—"</string>
+
+    <string name="emotion_happy">سعيد</string>
+    <string name="emotion_sad">حزين</string>
+    <string name="emotion_angry">غاضب</string>
+    <string name="emotion_afraid">خائف</string>
+    <string name="emotion_disgusted">مشمئز</string>
+    <string name="emotion_surprised">متفاجئ</string>
+    <string name="emotion_unsure">غير متأكد</string>
+    <string name="emotion_other">أخرى</string>
+
+    <string name="filter_situation_search">الموقف</string>
+    <string name="filter_location_search">المكان</string>
+    <string name="filter_choose_situation">اختر الموقف</string>
+    <string name="filter_choose_location">اختر المكان</string>
+
+    <string name="filter_situation_any">اختر موقفًا</string>
+    <string name="filter_location_any">اختر موقعًا</string>
+
+    <string name="situation_gift">تلقيت هدية</string>
+    <string name="situation_fight">تشاجرت مع أحد</string>
+    <string name="situation_test">كان عندي اختبار</string>
+    <string name="situation_other">أخرى</string>
+
+    <string name="location_school">في المدرسة</string>
+    <string name="location_home">في البيت</string>
+    <string name="location_dontknow">لا أعرف</string>
+    <string name="location_other">مكان آخر</string>
+
+    <string name="tasks_history_title">سجل المهام</string>
+    <string name="tasks_history_title_with_name">سجل المهام – %1$s</string>
+    <string name="emotion_history_subtitle">انظر كيف شعر طفلك أثناء المهام التي كلفته أنت والمعالج بها.</string>
+
+    <string name="filter_source_section">مصدر المهمة</string>
+    <string name="filter_source_all">الكل</string>
+    <string name="filter_source_mom">وليّ الأمر</string>
+    <string name="filter_source_therapist">المعالج</string>
+
+    <string name="label_source">المصدر:</string>
+    <string name="source_mom">وليّ الأمر</string>
+    <string name="source_therapist">المعالج</string>
+    <string name="source_unknown">غير معروف</string>
+    <string name="task_default">مهمة</string>
+
+    <string name="reports_history_title">سجل التقارير</string>
+    <string name="reports_history_subtitle">جميع التقارير التي كتبتها للمعالج النفسي</string>
+
+    <string name="therapist_notes_title">ملاحظات المعالج</string>
+    <string name="therapist_notes_subtitle">هنا كل ملاحظات المعالج الخاصة بطفلك لسهولة المراجعة.</string>
+    <string name="label_time">الوقت:</string>
+
+    <string name="new_report_fill_required">يرجى تعبئة جميع الحقول المطلوبة</string>
+    <string name="error_future_date">لا يمكن اختيار تاريخ في المستقبل</string>
+    <string name="error_future_time">لا يمكن اختيار وقت في المستقبل</string>
+    <string name="report_sent">تم إرسال التقرير بنجاح</string>
+    <string name="report_saved_no_therapist">تم حفظ التقرير بدون معالج</string>
+
+    <string name="reports_failed_load">فشل التحميل:</string>
+
+    <string name="report_edit_title">عدّل التقرير</string>
+    <string name="report_saved">تم الحفظ</string>
+    <string name="report_save_failed">فشلت عملية الحفظ:</string>
+
+    <string name="report_delete_title">حذف التقرير</string>
+    <string name="report_delete_message">هل أنت متأكد من رغبتك في حذف هذا التقرير؟</string>
+    <string name="report_deleted">تم الحذف</string>
+    <string name="report_delete_failed">فشلت عملية الحذف:</string>
+
+    <string name="report_label_what_happened">ماذا حدث</string>
+    <string name="report_label_when">متى</string>
+    <string name="report_label_where">أين</string>
+    <string name="report_label_child_reaction">رد فعل الطفل</string>
+    <string name="report_label_how_handled">كيف تعاملت مع الأمر؟</string>
+    <string name="report_label_questions">أسئلة للمعالج</string>
+
+    <string name="logout_title">تسجيل الخروج</string>
+    <string name="logout_message">هل أنت متأكد أنك تريد تسجيل الخروج؟</string>
+
+    <string name="send_report_title">إرسال التقرير</string>
+    <string name="send_report_message">هل أنت متأكد أنك تريد إرسال هذا التقرير؟</string>
 
 </resources>

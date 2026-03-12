@@ -1,65 +1,71 @@
 package com.example.asdproject.view.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
+import android.view.ViewGroup;
 import android.widget.*;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.asdproject.R;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.asdproject.util.LocaleManager;
 import com.google.firebase.firestore.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ReportsHistoryActivity extends AppCompatActivity {
+public class ReportsHistoryActivity extends BaseActivity {
 
-    private static final String TAG = "ReportsHistoryActivity";
-
-    private TableLayout table;
-
-    private static final int COL_SITUATION = 0;
-    private static final int COL_TIMESTAMP = 1;
-    private static final int COL_LOCATION  = 2;
-
-    //  FIELD childID (not doc id)
-    private String childIdField;
-    private String childName;
+    private RecyclerView recycler;
+    private ReportsAdapter adapter;
 
     private FirebaseFirestore db;
     private ListenerRegistration reg;
 
-    // Keep loaded reports in memory so we can sort/filter easily
-    private final List<ReportItem> reports = new ArrayList<>();
+    private String childIdField;
+    private String childName;
 
-    // Parse the timestamp you use in NewReportActivity: "dd/MM/yyyy HH:mm"
-    private final SimpleDateFormat tsFormat =
-            new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+    private final List<ReportItem> reports = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LocaleManager.setLocale(this);
         setContentView(R.layout.activity_reports_history);
 
         db = FirebaseFirestore.getInstance();
-        table = findViewById(R.id.tableReportsHistory);
 
-        childIdField = getIntent().getStringExtra("CHILD_ID");
-        if (childIdField == null) childIdField = getIntent().getStringExtra("childID");
-        if (childIdField == null) childIdField = getIntent().getStringExtra("childId");
+        recycler = findViewById(R.id.recyclerReportsHistory);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ReportsAdapter(reports);
+        recycler.setAdapter(adapter);
 
-        childName = getIntent().getStringExtra("CHILD_NAME");
-        if (childName == null) childName = getIntent().getStringExtra("childName");
+        childIdField = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_ID"),
+                getIntent().getStringExtra("childID"),
+                getIntent().getStringExtra("childId")
+        );
 
-        findViewById(R.id.btnGoBackReports).setOnClickListener(v -> finish());
-        findViewById(R.id.btnFilterReports).setOnClickListener(v -> showFilterDialog());
+        childName = firstNonEmpty(
+                getIntent().getStringExtra("CHILD_NAME"),
+                getIntent().getStringExtra("childName")
+        );
+
+        TextView btnLanguage = findViewById(R.id.btnLanguage);
+        Button back = findViewById(R.id.btnGoBackReports);
+
+        back.setOnClickListener(v -> finish());
+
+        btnLanguage.setOnClickListener(v -> {
+            LocaleManager.toggleLanguage(this);
+            recreate();
+        });
     }
 
     @Override
@@ -71,338 +77,350 @@ public class ReportsHistoryActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (reg != null) {
-            reg.remove();
-            reg = null;
-        }
+        if (reg != null) reg.remove();
     }
 
-    // ---------------- FIRESTORE LISTENER ----------------
-
     private void startListening() {
+
         if (isEmpty(childIdField)) {
-            Toast.makeText(this, "Missing childID", Toast.LENGTH_SHORT).show();
-            clearTableRows();
+            Toast.makeText(this, getString(R.string.missing_child_id), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Optional parent filter:
-        // If you want each parent to only see their own reports, keep this.
-        // If you want all reports for the child regardless of parent account, remove parent filter part.
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String uid = (user != null) ? user.getUid() : null;
+        reg = db.collection("reports")
+                .whereEqualTo("childID", childIdField)
+                .addSnapshotListener((snap, e) -> {
 
-        Query q = db.collection("reports")
-                .whereEqualTo("childID", childIdField);
-
-        // If your reports have "parentID" field that equals child doc parentID (not auth uid),
-        // then filtering by auth uid won't work.
-        // So we only filter by parent if YOU stored auth uid in reports (you currently do NOT).
-        // If you want strict parent filtering, store auth uid in report (e.g., report.put("parentAuthUid", uid)).
-        // Example:
-        // if (uid != null) q = q.whereEqualTo("parentAuthUid", uid);
-
-        // Live updates (both you + partner will see same)
-        reg = q.addSnapshotListener((snap, e) -> {
-            if (e != null) {
-                Log.e(TAG, "listen failed", e);
-                Toast.makeText(this, "Failed to load reports: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            reports.clear();
-
-            if (snap != null) {
-                for (DocumentSnapshot d : snap.getDocuments()) {
-                    ReportItem item = ReportItem.fromDoc(d);
-                    // defensive: enforce childID match
-                    if (childIdField.equals(item.childID)) {
-                        reports.add(item);
+                    if (e != null) {
+                        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                }
+
+                    reports.clear();
+
+                    if (snap != null) {
+                        for (DocumentSnapshot d : snap.getDocuments()) {
+                            reports.add(ReportItem.fromDoc(d));
+                        }
+                    }
+
+                    Collections.sort(reports,
+                            (a, b) -> safeStr(b.timestamp).compareTo(safeStr(a.timestamp)));
+
+                    adapter.notifyDataSetChanged();
+                });
+    }
+
+    // ---------------- DELETE ----------------
+
+    private void confirmDeleteReport(ReportItem item) {
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.report_delete_title))
+                .setMessage(getString(R.string.report_delete_message))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setPositiveButton(getString(R.string.delete),
+                        (d, w) -> deleteReport(item))
+                .show();
+    }
+
+    private void deleteReport(ReportItem item) {
+
+        db.collection("reports")
+                .document(item.docId)
+                .delete()
+                .addOnSuccessListener(v ->
+                        Toast.makeText(this,
+                                getString(R.string.report_deleted),
+                                Toast.LENGTH_SHORT).show()
+                )
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                getString(R.string.report_delete_failed),
+                                Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    // ---------------- EDIT ----------------
+
+    private void openEditDialog(ReportItem item) {
+
+        ScrollView scroll = new ScrollView(this);
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setPadding(dp(18), dp(14), dp(18), dp(6));
+        scroll.addView(root);
+
+        EditText s = niceInput(getString(R.string.report_label_what_happened), item.situation, true);
+        EditText t = niceInput(getString(R.string.report_label_when), item.timestamp, false);
+        EditText l = niceInput(getString(R.string.report_label_where), item.location, false);
+        EditText r = niceInput(getString(R.string.report_label_child_reaction), item.childReaction, true);
+        EditText h = niceInput(getString(R.string.report_label_how_handled), item.howHandled, true);
+        EditText q = niceInput(getString(R.string.report_label_questions), item.questions, true);
+
+        root.addView(label(getString(R.string.report_label_what_happened)));
+        root.addView(s);
+        root.addView(space(10));
+
+        root.addView(label(getString(R.string.report_label_when)));
+        root.addView(t);
+        root.addView(space(10));
+
+        root.addView(label(getString(R.string.report_label_where)));
+        root.addView(l);
+        root.addView(space(10));
+
+        root.addView(label(getString(R.string.report_label_child_reaction)));
+        root.addView(r);
+        root.addView(space(10));
+
+        root.addView(label(getString(R.string.report_label_how_handled)));
+        root.addView(h);
+        root.addView(space(10));
+
+        root.addView(label(getString(R.string.report_label_questions)));
+        root.addView(q);
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.report_edit_title))
+                .setView(scroll)
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setPositiveButton(getString(R.string.save), (d, w) -> {
+
+                    Map<String, Object> updates = new HashMap<>();
+
+                    updates.put("situation", safeStr(s.getText().toString()));
+                    updates.put("timestamp", safeStr(t.getText().toString()));
+                    updates.put("location", safeStr(l.getText().toString()));
+                    updates.put("childReaction", safeStr(r.getText().toString()));
+                    updates.put("howHandled", safeStr(h.getText().toString()));
+                    updates.put("questions", safeStr(q.getText().toString()));
+
+                    db.collection("reports")
+                            .document(item.docId)
+                            .update(updates)
+                            .addOnSuccessListener(v ->
+                                    Toast.makeText(this,
+                                            getString(R.string.report_saved),
+                                            Toast.LENGTH_SHORT).show());
+                })
+                .show();
+    }
+
+    // ---------------- MODEL ----------------
+
+    private static class ReportItem {
+
+        String docId;
+        String situation;
+        String timestamp;
+        String location;
+        String childReaction;
+        String howHandled;
+        String questions;
+        String childID;
+
+        static ReportItem fromDoc(DocumentSnapshot d) {
+
+            ReportItem r = new ReportItem();
+
+            r.docId = d.getId();
+            r.situation = safeStr(d.getString("situation"));
+            r.timestamp = safeStr(d.getString("timestamp"));
+            r.location = safeStr(d.getString("location"));
+            r.childReaction = safeStr(d.getString("childReaction"));
+            r.howHandled = safeStr(d.getString("howHandled"));
+            r.questions = safeStr(d.getString("questions"));
+            r.childID = safeStr(d.getString("childID"));
+
+            return r;
+        }
+    }
+
+    // ---------------- ADAPTER ----------------
+
+    private class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.VH> {
+
+        List<ReportItem> list;
+
+        ReportsAdapter(List<ReportItem> list) {
+            this.list = list;
+        }
+
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+            CardView card = new CardView(parent.getContext());
+
+            RecyclerView.LayoutParams lp =
+                    new RecyclerView.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            lp.setMargins(dp(16), dp(8), dp(16), dp(8));
+            card.setLayoutParams(lp);
+
+            card.setRadius(dp(24));
+            card.setCardBackgroundColor(0xFFFBF6E9);
+
+            LinearLayout root = new LinearLayout(parent.getContext());
+            root.setOrientation(LinearLayout.VERTICAL);
+            root.setPadding(dp(18), dp(18), dp(18), dp(18));
+            root.setLayoutParams(new CardView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            TextView title = new TextView(parent.getContext());
+            title.setTextSize(20);
+            title.setTypeface(null, android.graphics.Typeface.BOLD);
+
+            TextView meta = new TextView(parent.getContext());
+            meta.setTextSize(14);
+
+            TextView body = new TextView(parent.getContext());
+            body.setTextSize(16);
+
+            LinearLayout actions = new LinearLayout(parent.getContext());
+            actions.setGravity(Gravity.END);
+
+            TextView edit = actionChip(getString(R.string.edit));
+            TextView delete = actionChip(getString(R.string.delete));
+
+            actions.addView(edit);
+            actions.addView(space(10));
+            actions.addView(delete);
+
+            root.addView(title);
+            root.addView(meta);
+            root.addView(body);
+            root.addView(actions);
+
+            card.addView(root);
+
+            return new VH(card, title, meta, body, edit, delete);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull VH h, int position) {
+
+            ReportItem it = list.get(position);
+
+            h.title.setText(it.situation);
+
+            h.meta.setText(
+                    getString(R.string.label_date) + " " + it.timestamp +
+                            "   •   " +
+                            getString(R.string.label_location) + " " + it.location
+            );
+
+            String body =
+                    getString(R.string.report_label_child_reaction) +
+                            "\n" + it.childReaction +
+                            "\n\n" +
+                            getString(R.string.report_label_how_handled) +
+                            "\n" + it.howHandled;
+
+            if (!isEmpty(it.questions)) {
+                body += "\n\n" +
+                        getString(R.string.report_label_questions) +
+                        "\n" + it.questions;
             }
 
-            // default view: just render in current order (or sort newest first)
-            sortReportsByTimestamp(true);
-            renderTable(reports);
-        });
-    }
+            h.body.setText(body);
 
-    // ---------------- TABLE RENDER ----------------
+            h.edit.setOnClickListener(v -> openEditDialog(it));
+            h.delete.setOnClickListener(v -> confirmDeleteReport(it));
+        }
 
-    private void clearTableRows() {
-        if (table.getChildCount() > 1) {
-            table.removeViews(1, table.getChildCount() - 1);
+        @Override
+        public int getItemCount() {
+            return list.size();
+        }
+
+        class VH extends RecyclerView.ViewHolder {
+
+            TextView title, meta, body, edit, delete;
+
+            VH(@NonNull android.view.View itemView,
+               TextView title,
+               TextView meta,
+               TextView body,
+               TextView edit,
+               TextView delete) {
+
+                super(itemView);
+
+                this.title = title;
+                this.meta = meta;
+                this.body = body;
+                this.edit = edit;
+                this.delete = delete;
+            }
         }
     }
 
-    private void renderTable(List<ReportItem> list) {
-        clearTableRows();
+    // ---------------- HELPERS ----------------
 
-        for (ReportItem item : list) {
-            addRow(item);
-        }
-    }
+    private TextView actionChip(String txt) {
 
-    private void addRow(ReportItem item) {
-        TableRow row = new TableRow(this);
-
-        row.addView(cell(item.situation, 160));
-        row.addView(cell(item.timestamp, 150));
-        row.addView(cell(item.location, 120));
-
-        TextView edit = cell("✏️", 80);
-        edit.setOnClickListener(v -> openEditDialog(item));
-
-        TextView del = cell("🗑️", 90);
-        del.setOnClickListener(v -> deleteReport(item));
-
-        row.addView(edit);
-        row.addView(del);
-
-        // store doc id so filters/sorts can still work without losing association
-        row.setTag(item.docId);
-
-        table.addView(row);
-    }
-
-    private TextView cell(String text, int widthDp) {
         TextView tv = new TextView(this);
-        tv.setText(text == null ? "" : text);
-        tv.setGravity(Gravity.CENTER);
-        tv.setPadding(10, 10, 10, 10);
-        tv.setBackgroundResource(R.drawable.table_cell_bg);
-        tv.setLayoutParams(new TableRow.LayoutParams(dp(widthDp), dp(44)));
+        tv.setText(txt);
+        tv.setPadding(dp(16), dp(10), dp(16), dp(10));
+        tv.setBackgroundResource(R.drawable.report_action_chip_bg);
+        tv.setClickable(true);
+
         return tv;
+    }
+
+    private TextView label(String txt) {
+
+        TextView tv = new TextView(this);
+        tv.setText(txt);
+        tv.setTypeface(null, android.graphics.Typeface.BOLD);
+
+        return tv;
+    }
+
+    private EditText niceInput(String hint, String val, boolean multiline) {
+
+        EditText e = new EditText(this);
+
+        e.setHint(hint);
+        e.setText(val);
+
+        if (multiline)
+            e.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+
+        return e;
+    }
+
+    private Space space(int dp) {
+
+        Space s = new Space(this);
+        s.setLayoutParams(new LinearLayout.LayoutParams(dp(dp), 1));
+
+        return s;
     }
 
     private int dp(int d) {
         return (int) (d * getResources().getDisplayMetrics().density);
     }
 
-    // ---------------- DELETE / EDIT (FIRESTORE) ----------------
-
-    private void deleteReport(ReportItem item) {
-        if (item == null || isEmpty(item.docId)) return;
-
-        db.collection("reports")
-                .document(item.docId)
-                .delete()
-                .addOnSuccessListener(v ->
-                        Toast.makeText(this, "Deleted", Toast.LENGTH_SHORT).show()
-                )
-                .addOnFailureListener(e ->
-                        Toast.makeText(this, "Delete failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                );
+    private static String safeStr(String s) {
+        return s == null ? "" : s.trim();
     }
-
-    private void openEditDialog(ReportItem item) {
-        if (item == null || isEmpty(item.docId)) return;
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(20, 10, 20, 10);
-
-        EditText s = input("Situation", item.situation);
-        EditText t = input("Timestamp", item.timestamp);
-        EditText l = input("Location", item.location);
-        EditText r = input("Child’s reaction", item.childReaction);
-        EditText h = input("How handled", item.howHandled);
-        EditText q = input("Questions for therapist ( optional )", item.questions);
-
-        layout.addView(s);
-        layout.addView(t);
-        layout.addView(l);
-        layout.addView(r);
-        layout.addView(h);
-        layout.addView(q);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Edit report")
-                .setView(layout)
-                .setNegativeButton("Cancel", null)
-                .setPositiveButton("Save", (d, w) -> {
-                    Map<String, Object> updates = new HashMap<>();
-                    updates.put("situation", s.getText().toString().trim());
-                    updates.put("timestamp", t.getText().toString().trim());
-                    updates.put("location", l.getText().toString().trim());
-                    updates.put("childReaction", r.getText().toString().trim());
-                    updates.put("howHandled", h.getText().toString().trim());
-                    updates.put("questions", q.getText().toString().trim());
-
-                    // keep these consistent
-                    if (!isEmpty(childIdField)) updates.put("childID", childIdField);
-                    if (!isEmpty(childName)) updates.put("childName", childName);
-
-                    db.collection("reports")
-                            .document(item.docId)
-                            .update(updates)
-                            .addOnSuccessListener(v ->
-                                    Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show()
-                            )
-                            .addOnFailureListener(e ->
-                                    Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                            );
-                })
-                .show();
-    }
-
-    private EditText input(String hint, String val) {
-        EditText e = new EditText(this);
-        e.setHint(hint);
-        e.setText(val == null ? "" : val);
-        e.setInputType(InputType.TYPE_CLASS_TEXT);
-        return e;
-    }
-
-    // ---------------- FILTERS / SORT (TABLE-BASED) ----------------
-
-    private void showFilterDialog() {
-        String[] opts = {"Situation Name", "Location", "Timestamp", "Clear filters"};
-
-        new AlertDialog.Builder(this)
-                .setTitle("Filter by")
-                .setItems(opts, (dialog, which) -> {
-                    if (which == 0) {
-                        textFilter(COL_SITUATION, "Situation");
-                    } else if (which == 1) {
-                        textFilter(COL_LOCATION, "Location");
-                    } else if (which == 2) {
-                        showTimestampFilterDialog();
-                    } else {
-                        clearFilters();
-                    }
-                })
-                .show();
-    }
-
-    private void clearFilters() {
-        // show everything again
-        for (int i = 1; i < table.getChildCount(); i++) {
-            View v = table.getChildAt(i);
-            if (v instanceof TableRow) v.setVisibility(TableRow.VISIBLE);
-        }
-    }
-
-    private void showTimestampFilterDialog() {
-        String[] options = {"Newest -> Oldest", "Oldest -> Newest"};
-
-        new AlertDialog.Builder(this)
-                .setTitle("Sort by time")
-                .setItems(options, (dialog, which) -> {
-                    boolean newestFirst = (which == 0);
-                    sortReportsByTimestamp(newestFirst);
-                    renderTable(reports);
-                })
-                .show();
-    }
-
-    private void sortReportsByTimestamp(boolean newestFirst) {
-        reports.sort((a, b) -> {
-            long ta = parseTimestampMillis(a.timestamp);
-            long tb = parseTimestampMillis(b.timestamp);
-
-            // fallback if parsing fails
-            if (ta == Long.MIN_VALUE || tb == Long.MIN_VALUE) {
-                int cmp = safeStr(a.timestamp).compareTo(safeStr(b.timestamp));
-                return newestFirst ? -cmp : cmp;
-            }
-
-            int cmp = Long.compare(ta, tb);
-            return newestFirst ? -cmp : cmp;
-        });
-    }
-
-    private long parseTimestampMillis(String ts) {
-        if (isEmpty(ts)) return Long.MIN_VALUE;
-        try {
-            Date d = tsFormat.parse(ts.trim());
-            return (d == null) ? Long.MIN_VALUE : d.getTime();
-        } catch (ParseException e) {
-            return Long.MIN_VALUE;
-        }
-    }
-
-    private void textFilter(int col, String title) {
-        EditText input = new EditText(this);
-
-        new AlertDialog.Builder(this)
-                .setTitle("Search by " + title)
-                .setView(input)
-                .setPositiveButton("Search", (d, w) -> {
-                    String q = input.getText().toString().toLowerCase(Locale.getDefault()).trim();
-
-                    for (int i = 1; i < table.getChildCount(); i++) {
-                        View v = table.getChildAt(i);
-                        if (!(v instanceof TableRow)) continue;
-
-                        TableRow r = (TableRow) v;
-                        View cellView = r.getChildAt(col);
-                        if (!(cellView instanceof TextView)) continue;
-
-                        String txt = ((TextView) cellView).getText().toString()
-                                .toLowerCase(Locale.getDefault());
-
-                        r.setVisibility(txt.contains(q) ? TableRow.VISIBLE : TableRow.GONE);
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    // ---------------- UTILS ----------------
 
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
 
-    private String safeStr(String s) {
-        return s == null ? "" : s;
-    }
+    private String firstNonEmpty(String... vals) {
 
-    // ---------------- MODEL ----------------
+        for (String v : vals)
+            if (v != null && !v.trim().isEmpty())
+                return v.trim();
 
-    private static class ReportItem {
-        String docId;
-
-        String childID;
-        String childName;
-
-        String situation;
-        String timestamp;
-        String location;
-
-        String childReaction;
-        String howHandled;
-        String questions;
-
-        static ReportItem fromDoc(DocumentSnapshot d) {
-            ReportItem r = new ReportItem();
-            r.docId = d.getId();
-
-            r.childID = d.getString("childID");
-            r.childName = d.getString("childName");
-
-            r.situation = d.getString("situation");
-            r.timestamp = d.getString("timestamp");
-            r.location  = d.getString("location");
-
-            r.childReaction = d.getString("childReaction");
-            r.howHandled    = d.getString("howHandled");
-            r.questions     = d.getString("questions");
-
-            // Avoid nulls in table
-            if (r.situation == null) r.situation = "";
-            if (r.timestamp == null) r.timestamp = "";
-            if (r.location  == null) r.location  = "";
-            if (r.childReaction == null) r.childReaction = "";
-            if (r.howHandled == null) r.howHandled = "";
-            if (r.questions == null) r.questions = "";
-
-            if (r.childID == null) r.childID = "";
-            if (r.childName == null) r.childName = "";
-
-            return r;
-        }
+        return "";
     }
 }

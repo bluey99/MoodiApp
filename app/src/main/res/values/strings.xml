@@ -1,8 +1,32 @@
 <resources>
 
-    <string name="app_name">ASD Project</string>
+    <!-- ================================================== -->
+    <!-- Shared / common strings -->
+    <!-- ================================================== -->
+    <string name="app_name">Moodi</string>
     <string name="app_title">Moodi</string>
-    <!--notifications-->
+    <string name="btn_lang">🌐</string>
+
+    <string name="language_english">English</string>
+    <string name="language_arabic">العربية</string>
+
+    <string name="action_cancel">Cancel</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_back">Back</string>
+    <string name="cd_back">Back</string>
+
+    <string name="ok">OK</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+
+    <!-- ================================================== -->
+    <!-- Child screens -->
+    <!-- ================================================== -->
+
+    <!-- child home / top bar -->
     <string name="cd_notifications">Notifications</string>
     <string name="notifications_title">Notifications</string>
     <string name="notifications_empty">No new notifications right now.</string>
@@ -11,71 +35,68 @@
     <string name="notification_new_task_title">New Task</string>
     <string name="notification_new_task_body">You have a new task waiting for you</string>
     <string name="notification_test_body">This is a test notification</string>
-    <!--language-->
+
     <string name="cd_change_language">Change language</string>
     <string name="cd_child_avatar">Child avatar</string>
-    <!--greeting-->
+
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
     <string name="greeting_hello">Hello</string>
     <string name="greeting_with_name">%1$s, %2$s!</string>
-    <!--streak-->
+
     <string name="streak_today">🌱 You checked in today</string>
     <string name="streak_checking_in">🌱 You’ve been checking in</string>
     <string name="streak_days">🌱 You’ve been checking in for %1$d days</string>
     <string name="streak_regular">🌱 You’ve been checking in regularly (%1$d days)</string>
-    <!--main content-->
+
     <string name="home_question">How are you feeling?</string>
-    <!--log emotion btn-->
+
     <string name="home_log_emotion_title">Log My Emotion</string>
     <string name="home_log_emotion_subtitle">How are you feeling?</string>
-    <!--my tasks btn-->
+
     <string name="home_my_tasks_title">My Tasks</string>
     <string name="home_my_tasks_subtitle">See what I need to do</string>
-    <!--my history btn-->
+
     <string name="home_my_history_title">My History</string>
     <string name="home_my_history_subtitle">Look at my past feelings</string>
-    <!--calming tools btn-->
+
     <string name="home_calming_tools_title">Calming Tools</string>
     <string name="home_calming_tools_subtitle">Help me feel better</string>
 
-    <string name="cd_back">Back</string>
     <string name="header_title_placeholder">Title</string>
 
-    <!--Log Emotion func-->
+    <!-- child log emotion flow -->
     <string name="emotion_log_header_title">Log My Feelings</string>
     <string name="emotion_log_step_indicator_placeholder">Step 1 of 7</string>
     <string name="emotion_log_step_indicator">Step %1$d of %2$d</string>
-    <!-- Log My Emotion - step 1 -->
+
+    <!-- step 1 -->
     <string name="step1_situation_question">What happened?</string>
     <string name="step1_situation_option_1">I went somewhere new</string>
     <string name="step1_situation_option_2">I got a gift</string>
     <string name="step1_situation_option_3">I had a problem with someone</string>
     <string name="step1_situation_option_4">I had a test</string>
     <string name="step1_situation_option_5">Something else</string>
-    <!-- step 1 - custom situation screen -->
+
     <string name="custom_situation_title">Can you tell me what happened?</string>
     <string name="custom_situation_helper">You can write it in your own words 😊</string>
     <string name="custom_situation_hint">What happened?</string>
 
-    <string name="action_cancel">Cancel</string>
-    <string name="action_continue">Continue</string>
-    <!-- Log My Emotion - step 2 -->
+    <!-- step 2 -->
     <string name="step2_where_question">Where were you?</string>
     <string name="step2_where_option_1">At school</string>
     <string name="step2_where_option_2">At home</string>
     <string name="step2_where_option_3">I don’t know</string>
     <string name="step2_where_option_4">Somewhere else</string>
-    <!-- step 2 - custom location screen -->
+
     <string name="custom_location_title">Where did this happen?</string>
     <string name="custom_location_helper">You can write the place in your own words.</string>
     <string name="custom_location_hint">Example: school, home, playground</string>
     <string name="custom_location_counter_placeholder">0 / 25</string>
     <string name="custom_location_counter">%1$d / %2$d</string>
 
-    <string name="action_back">Back</string>
-    <!-- Log My Emotion - step 3 -->
+    <!-- step 3 -->
     <string name="step3_feeling_question">How did you feel?</string>
     <string name="step3_feeling_helper">Choose</string>
 
@@ -87,11 +108,12 @@
     <string name="step3_feeling_disgust">Disgust</string>
     <string name="step3_feeling_unsure">Unsure</string>
     <string name="step3_feeling_other">Other</string>
-    <!-- step 3 - custom feeling screen -->
+
     <string name="custom_feeling_title">What feeling was it?</string>
     <string name="custom_feeling_helper">You can write it in your own words 😊</string>
     <string name="custom_feeling_hint">Type a feeling...</string>
-    <!-- Log My Emotion - step 4 -->
+
+    <!-- step 4 -->
     <string name="step4_intensity_question">How big was the feeling?</string>
     <string name="step4_intensity_helper">Tap to fill the glass with your feeling</string>
 
@@ -100,22 +122,24 @@
     <string name="step4_intensity_level_3">Medium</string>
     <string name="step4_intensity_level_4">A lot</string>
     <string name="step4_intensity_level_5">Very much</string>
-    <!-- Log My Emotion - step 5 -->
+
+    <!-- step 5 -->
     <string name="step5_photo_question">Can we see your feeling?</string>
     <string name="step5_photo_helper">Take a photo of your face right now</string>
     <string name="step5_photo_tap">Tap to take a photo</string>
     <string name="step5_photo_retake">Retake</string>
-
     <string name="step5_camera_permission_denied">Camera permission denied</string>
     <string name="step5_upload_failed">Upload failed</string>
 
     <string name="error_missing_child_information">Missing child information</string>
     <string name="action_skip">Skip</string>
-    <!-- Log My Emotion - step 6 -->
+
+    <!-- step 6 -->
     <string name="step6_note_title">Do you want to tell us more?</string>
     <string name="step6_note_helper">Write anything you want to remember about this moment</string>
     <string name="step6_note_hint">Write here...</string>
-    <!-- Log My Emotion - step 7 -->
+
+    <!-- step 7 -->
     <string name="review_title">Let’s review your feeling</string>
     <string name="review_submit">Submit</string>
 
@@ -126,10 +150,264 @@
 
     <string name="review_intensity_text">Intensity: %1$s</string>
     <string name="review_intensity_number">%1$d / 5</string>
-
     <string name="review_intensity_placeholder">Intensity: Medium</string>
     <string name="review_intensity_number_placeholder">3 / 5</string>
-    <string name="language_english">English</string>
-    <string name="language_arabic">العربية</string>
+
+    <!-- ================================================== -->
+    <!-- Parent screens -->
+    <!-- ================================================== -->
+
+    <!-- parent role/login/signup/add child -->
+    <string name="parent_login_title_bar">Parent Login</string>
+
+    <string name="role_title">Sign In to Moodi</string>
+    <string name="role_select_text">Please select who you are to log in</string>
+    <string name="role_child">Child</string>
+    <string name="role_parent">Parent</string>
+    <string name="desc_child_icon">Child icon</string>
+    <string name="desc_parent_icon">Parent icon</string>
+
+    <string name="parent_login_title">Sign In to Moodi</string>
+    <string name="parent_login_subtitle">Where emotions make sense — together.</string>
+    <string name="parent_login_helper">Hi! Enter your ID and name to start</string>
+    <string name="parent_icon_desc">Parent Icon</string>
+    <string name="hint_parent_id">Enter ID</string>
+    <string name="hint_parent_name">Enter Name</string>
+    <string name="btn_login">Login</string>
+    <string name="link_signup">Dont have an account? Sign Up</string>
+    <string name="link_add_child">Already have an account? Add a child</string>
+    <string name="btn_cancel">Cancel</string>
+
+    <string name="error_fill_all">Please fill all fields.</string>
+    <string name="error_id_9_digits">ID must be exactly 9 digits.</string>
+    <string name="error_not_found">ID not found.</string>
+    <string name="error_wrong_name">ID or name is incorrect.</string>
+    <string name="error_firestore">Firestore error:</string>
+
+    <string name="signup_title">Sign Up to Moodi</string>
+    <string name="section_your_info">Your Info:</string>
+    <string name="hint_parent_nam_sign_up">Parent Name</string>
+    <string name="hint_parent_id_signup">Parent ID</string>
+    <string name="section_child_info">Child’s Info:</string>
+    <string name="hint_child_name">Child’s Name</string>
+    <string name="hint_child_id">Child’s ID</string>
+    <string name="btn_signup">SIGN UP</string>
+
+    <string name="error_parent_id_9_digits">Parent ID must be exactly 9 digits.</string>
+    <string name="error_child_id_9_digits">Child ID must be exactly 9 digits.</string>
+    <string name="error_child_not_found">Child not found.</string>
+    <string name="error_child_name_mismatch">Child name does not match.</string>
+    <string name="error_child_not_linked_to_parent">This child is not linked to this Parent ID.</string>
+    <string name="error_verification_failed">Verification failed:</string>
+    <string name="signup_success">Sign up successful!</string>
+    <string name="error_failed_prefix">Failed:</string>
+
+    <string name="addchild_title">Add Child to Moodi</string>
+    <string name="addchild_subtitle">Link a child to your account.</string>
+    <string name="addchild_parent_info">Your Info:</string>
+    <string name="addchild_hint_parent_name">Parent Name</string>
+    <string name="addchild_hint_parent_id">Parent ID</string>
+    <string name="addchild_child_info">Child Info:</string>
+    <string name="addchild_hint_child_name">Child Name</string>
+    <string name="addchild_hint_child_id">Child ID</string>
+    <string name="addchild_btn_add">Add Child</string>
+    <string name="addchild_success">Child added successfully!</string>
+    <string name="addchild_already_added">This child is already added.</string>
+    <string name="addchild_child_not_found">Child ID not found.</string>
+    <string name="addchild_child_name_mismatch">Child name does not match.</string>
+    <string name="addchild_child_not_linked">This child does not belong to this parent.</string>
+
+    <!-- parent home -->
+    <string name="parent_home_no_child_selected">No child selected</string>
+    <string name="parent_home_parent_not_found">Parent not found</string>
+    <string name="parent_home_no_children_linked">No children linked yet</string>
+    <string name="parent_home_no_children_found">No children found</string>
+    <string name="parent_home_default_child_name">Child</string>
+
+    <string name="parent_home_welcome">👋 Welcome!</string>
+    <string name="parent_home_task_done_default">Child finished the task...</string>
+    <string name="parent_home_subtitle">Track your child/s emotions and scenarios below.</string>
+
+    <string name="parent_home_btn_view_history">View History\nSee your child/s past feelings</string>
+    <string name="parent_home_btn_add_report">Add Report\nRecord a new entry</string>
+    <string name="parent_home_btn_add_task">Add Task\nCreate tasks for your child</string>
+    <string name="parent_home_btn_therapist_notes">Therapist Notes\nReview therapist feedback</string>
+
+    <string name="parent_home_logout">Log Out</string>
+
+    <string name="parent_home_failed_load_children">Failed to load children:</string>
+    <string name="parent_home_failed_load_parent">Failed to load parent:</string>
+
+    <string name="parent_home_now_viewing">Now viewing: %1$s</string>
+    <string name="parent_home_toast_viewing">Viewing: %1$s</string>
+
+    <string name="parent_home_notif_error">Notif error:</string>
+    <string name="parent_home_no_new_notifications">No new notifications</string>
+    <string name="parent_home_notification_title">Notification</string>
+
+    <string name="desc_parent_avatar">parent avatar</string>
+    <string name="desc_notifications">Notifications</string>
+
+    <!-- parent history / report / task / therapist flow -->
+    <string name="history_title">History</string>
+    <string name="history_subtitle">Choose which history you want to view</string>
+    <string name="history_child">Child Self-Logged Emotions</string>
+    <string name="history_tasks">Parent and Therapist Tasks</string>
+    <string name="go_back">← Go Back</string>
+
+    <string name="new_report_title">New Report</string>
+    <string name="new_report_subtitle">Share what your child experienced</string>
+    <string name="new_report_view_history">🕑 View History</string>
+    <string name="new_report_label_situation">•  Situation :</string>
+    <string name="new_report_hint_situation">Describe the situation you’re reporting on</string>
+    <string name="new_report_label_timestamp">•  Timestamp :</string>
+    <string name="new_report_hint_timestamp">When did this happen?</string>
+    <string name="new_report_label_location">•  Location :</string>
+    <string name="new_report_hint_location">Where did this happen?</string>
+    <string name="new_report_label_child_reaction">•  Child’s reaction :</string>
+    <string name="new_report_hint_child_reaction">How did your child respond?</string>
+    <string name="new_report_label_how_handled">•  How you handled it :</string>
+    <string name="new_report_hint_how_handled">Describe how you managed the situation.</string>
+    <string name="new_report_label_questions">•  Questions for the therapist (optional) :</string>
+    <string name="new_report_hint_questions">Anything you’d like the therapist to focus on?</string>
+    <string name="new_report_send">Send</string>
+    <string name="new_report_go_back">← Go Back</string>
+    <string name="Error">Please fill all the required fields!!</string>
+
+    <string name="new_task_title">New Task</string>
+    <string name="new_task_title_with_child">New Task – %1$s</string>
+    <string name="new_task_subtitle">Add something your child will rate</string>
+
+    <string name="new_task_label_name">•  Task Name :</string>
+    <string name="new_task_hint_name">Give it a name</string>
+
+    <string name="new_task_label_when">•  Display When :</string>
+    <string name="new_task_hint_when">Choose date and time</string>
+
+    <string name="new_task_label_prompts">•  Discussion\n   Prompts :</string>
+    <string name="new_task_hint_prompts">Ask your child questions</string>
+
+    <string name="new_task_send">Send</string>
+    <string name="new_task_go_back">← Go Back</string>
+
+    <string name="new_task_error_fill_all">Please fill all fields</string>
+    <string name="new_task_error_parent_missing">Parent not logged in (missing parent id)</string>
+    <string name="new_task_error_select_child">Please select a child in the parent home screen first</string>
+    <string name="new_task_error_future_time">Please choose a future date/time</string>
+    <string name="new_task_error_choose_future_time">Choose a future time</string>
+
+    <string name="new_task_sent_success">Task sent successfully</string>
+    <string name="new_task_failed_prefix">Failed to send task:</string>
+
+    <string name="child_logs_title">Child Logs History</string>
+    <string name="child_logs_title_with_name">Child Logs – %1$s</string>
+    <string name="child_logs_subtitle">All emotions logged by the child</string>
+    <string name="child_logs_filter_btn">Filter</string>
+
+    <string name="missing_child_id">Missing child id</string>
+    <string name="child_not_found">Child not found</string>
+    <string name="error_prefix">Error:</string>
+
+    <string name="filter_title">Filter</string>
+    <string name="filter_time_section">Time</string>
+    <string name="filter_emotion_section">Emotion</string>
+    <string name="filter_search_section">Search</string>
+
+    <string name="filter_time_all">All</string>
+    <string name="filter_time_today">Today</string>
+    <string name="filter_time_7">Last 7 days</string>
+    <string name="filter_time_30">Last 30 days</string>
+
+    <string name="filter_choose_emotion">Choose Emotion</string>
+    <string name="filter_emotion_any">Choose an emotion</string>
+    <string name="filter_emotion_other">Other</string>
+    <string name="filter_other_hint">Type the emotion…</string>
+
+    <string name="filter_clear">Clear</string>
+
+    <string name="label_date">Date:</string>
+    <string name="label_location">Location:</string>
+    <string name="label_emotion">Emotion:</string>
+    <string name="label_intensity">Intensity:</string>
+    <string name="note_empty">“—”</string>
+
+    <string name="emotion_happy">Happy</string>
+    <string name="emotion_sad">Sad</string>
+    <string name="emotion_angry">Angry</string>
+    <string name="emotion_afraid">Afraid</string>
+    <string name="emotion_disgusted">Disgusted</string>
+    <string name="emotion_surprised">Surprised</string>
+    <string name="emotion_unsure">Unsure</string>
+    <string name="emotion_other">Other</string>
+
+    <string name="filter_situation_search">Situation</string>
+    <string name="filter_location_search">Location</string>
+    <string name="filter_choose_situation">Choose Situation</string>
+    <string name="filter_choose_location">Choose Location</string>
+
+    <string name="filter_situation_any">Choose a situation</string>
+    <string name="filter_location_any">Choose a location</string>
+
+    <string name="situation_gift">I got a gift</string>
+    <string name="situation_fight">I fought with someone</string>
+    <string name="situation_test">I had a test</string>
+    <string name="situation_other">Other</string>
+
+    <string name="location_school">At school</string>
+    <string name="location_home">At home</string>
+    <string name="location_dontknow">I dont know</string>
+    <string name="location_other">Elsewhere</string>
+
+    <string name="tasks_history_title">Tasks History</string>
+    <string name="tasks_history_title_with_name">Tasks History – %1$s</string>
+    <string name="emotion_history_subtitle">See how your child felt during the tasks you and the therapist assigned.</string>
+
+    <string name="filter_source_section">Task Source</string>
+    <string name="filter_source_all">All</string>
+    <string name="filter_source_mom">Parent</string>
+    <string name="filter_source_therapist">Therapist</string>
+
+    <string name="label_source">Source:</string>
+    <string name="source_mom">Parent</string>
+    <string name="source_therapist">Therapist</string>
+    <string name="source_unknown">Unknown</string>
+    <string name="task_default">Task</string>
+
+    <string name="reports_history_title">Report History</string>
+    <string name="reports_history_subtitle">All the reports you’ve written to the therapist</string>
+
+    <string name="therapist_notes_title">Therapist Feedback</string>
+    <string name="therapist_notes_subtitle">Here are all of your child's therapist notes for easy review.</string>
+    <string name="label_time">Time:</string>
+
+    <string name="new_report_fill_required">Please fill all the required fields</string>
+    <string name="error_future_date">You cannot choose a future date</string>
+    <string name="error_future_time">You cannot choose a future time</string>
+    <string name="report_sent">Report sent successfully</string>
+    <string name="report_saved_no_therapist">Report saved (no therapist linked)</string>
+
+    <string name="reports_failed_load">Failed to load:</string>
+
+    <string name="report_edit_title">Edit Report</string>
+    <string name="report_saved">Saved</string>
+    <string name="report_save_failed">Save failed:</string>
+
+    <string name="report_delete_title">Delete Report</string>
+    <string name="report_delete_message">Are you sure you want to delete this report?</string>
+    <string name="report_deleted">Deleted</string>
+    <string name="report_delete_failed">Delete failed:</string>
+
+    <string name="report_label_what_happened">What happened</string>
+    <string name="report_label_when">When</string>
+    <string name="report_label_where">Where</string>
+    <string name="report_label_child_reaction">Child’s reaction</string>
+    <string name="report_label_how_handled">How did you handle it</string>
+    <string name="report_label_questions">Questions for therapist</string>
+
+    <string name="logout_title">Log Out</string>
+    <string name="logout_message">Are you sure you want to log out?</string>
+
+    <string name="send_report_title">Send Report</string>
+    <string name="send_report_message">Are you sure you want to send this report?</string>
 
 </resources>

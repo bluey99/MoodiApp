@@ -20,14 +20,26 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp">
-
+            <TextView
+                android:id="@+id/btnLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_lang"
+                android:textSize="22sp"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:elevation="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_gravity="end"/>
             <!-- Title -->
             <TextView
                 android:id="@+id/txtTitleNewReport"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="New Report"
+                android:text="@string/new_report_title"
                 android:textSize="26sp"
                 android:layout_marginTop="28dp"
                 android:textColor="@color/black"
@@ -40,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="4dp"
-                android:text="Share what your child experienced"
+                android:text="@string/new_report_subtitle"
                 android:textSize="15sp" />
 
             <!-- View history button (top-right) -->
@@ -51,11 +63,12 @@
                 android:layout_marginTop="8dp"
                 android:gravity="end">
 
+
                 <Button
                     android:id="@+id/btnViewHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🕑view history"
+                    android:text="@string/new_report_view_history"
                     android:textSize="12sp"
                     android:paddingHorizontal="28dp"
                     android:paddingVertical="10dp"
@@ -65,7 +78,6 @@
                     android:layout_marginBottom="20dp" />
             </LinearLayout>
 
-            <!-- Space -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
@@ -80,7 +92,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  Situation :"
+                    android:text="@string/new_report_label_situation"
                     android:textSize="14sp" />
 
                 <EditText
@@ -89,7 +101,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="Describe the situation you're reporting on"
+                    android:hint="@string/new_report_hint_situation"
                     android:background="@drawable/white_card_pg"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -107,7 +119,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  Timestamp :"
+                    android:text="@string/new_report_label_timestamp"
                     android:textSize="14sp" />
 
                 <EditText
@@ -116,7 +128,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="When did this happen?"
+                    android:hint="@string/new_report_hint_timestamp"
                     android:background="@drawable/white_card_pg"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
@@ -134,7 +146,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  Location :"
+                    android:text="@string/new_report_label_location"
                     android:textSize="14sp" />
 
                 <EditText
@@ -143,14 +155,14 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="Where did this happen?"
+                    android:hint="@string/new_report_hint_location"
                     android:background="@drawable/white_card_pg"
                     android:paddingStart="12dp"
                     android:paddingEnd="12dp"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Child's reaction -->
+            <!-- Child reaction -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -161,7 +173,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  Child's reaction :"
+                    android:text="@string/new_report_label_child_reaction"
                     android:textSize="14sp" />
 
                 <EditText
@@ -170,7 +182,7 @@
                     android:layout_height="100dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="How did your child respond ?"
+                    android:hint="@string/new_report_hint_child_reaction"
                     android:gravity="top|start"
                     android:background="@drawable/white_card_pg"
                     android:padding="12dp"
@@ -189,7 +201,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  How you handled it :"
+                    android:text="@string/new_report_label_how_handled"
                     android:textSize="14sp" />
 
                 <EditText
@@ -198,7 +210,7 @@
                     android:layout_height="100dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="Describe how you managed the situation."
+                    android:hint="@string/new_report_hint_how_handled"
                     android:gravity="top|start"
                     android:background="@drawable/white_card_pg"
                     android:padding="12dp"
@@ -217,7 +229,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="•  Questions for the therapist (optional) :"
+                    android:text="@string/new_report_label_questions"
                     android:textSize="14sp" />
 
                 <EditText
@@ -226,7 +238,7 @@
                     android:layout_height="100dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:hint="Anything you'd like the therapist to focus on?"
+                    android:hint="@string/new_report_hint_questions"
                     android:gravity="top|start"
                     android:background="@drawable/white_card_pg"
                     android:padding="12dp"
@@ -246,7 +258,7 @@
                     android:id="@+id/btnSendReport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Send"
+                    android:text="@string/new_report_send"
                     android:textSize="14sp"
                     android:paddingHorizontal="28dp"
                     android:paddingVertical="10dp"
@@ -264,7 +276,7 @@
                     android:id="@+id/btnGoBackReport"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="← Go Back"
+                    android:text="@string/new_report_go_back"
                     android:textSize="14sp"
                     android:paddingHorizontal="28dp"
                     android:paddingVertical="10dp"

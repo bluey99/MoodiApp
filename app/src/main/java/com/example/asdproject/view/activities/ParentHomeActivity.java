@@ -15,77 +15,78 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleManager;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class ParentHomeActivity extends AppCompatActivity {
+import java.util.List;
+
+public class ParentHomeActivity extends BaseActivity {
 
     private String parentId;
     private FirebaseFirestore db;
 
-    // child bar views
     private HorizontalScrollView childScroll;
     private LinearLayout childContainer;
     private TextView txtCurrentChild;
 
-    // current selected child
     private String selectedChildId = null;
     private String selectedChildName = null;
     private View selectedChildView = null;
 
-    // keep your existing TextView (won't be used as main notification UI)
     private TextView txtTaskNotification;
 
-    // ✅ NEW: bell + red dot (from your XML)
     private ImageView btnBell;
     private View notifDot;
 
     private ListenerRegistration notifReg;
 
-    // latest unread notification
     private String latestNotifId = null;
     private String latestNotifMessage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // ✅ Apply saved language BEFORE layout
+        LocaleManager.setLocale(this);
+
         setContentView(R.layout.activity_parent_home);
 
-        Intent intent = getIntent();
-        parentId = intent.getStringExtra("PARENT_ID");
-
+        parentId = getIntent().getStringExtra("PARENT_ID");
         db = FirebaseFirestore.getInstance();
 
-        // child bar
         childScroll = findViewById(R.id.childScroll);
         childContainer = findViewById(R.id.childContainer);
         txtCurrentChild = findViewById(R.id.txtCurrentChild);
-
-        // existing message TextView (leave it as-is)
         txtTaskNotification = findViewById(R.id.txtTaskNotification);
-        if (txtTaskNotification != null) {
-            txtTaskNotification.setVisibility(View.GONE);
-        }
-
-        // ✅ Bell + Red dot
         btnBell = findViewById(R.id.btnBell);
         notifDot = findViewById(R.id.notifDot);
-        if (notifDot != null) notifDot.setVisibility(View.GONE);
+
+        if (txtTaskNotification != null)
+            txtTaskNotification.setVisibility(View.GONE);
+
+        if (notifDot != null)
+            notifDot.setVisibility(View.GONE);
+
+        // 🌐 Language toggle
+        TextView btnLanguage = findViewById(R.id.btnLanguage);
+        if (btnLanguage != null) {
+            btnLanguage.setOnClickListener(v -> {
+                LocaleManager.toggleLanguage(this);
+                recreate();
+            });
+        }
 
         if (btnBell != null) {
             btnBell.setOnClickListener(v -> openNotificationPopup());
         }
 
-        // default state
-        childScroll.setVisibility(View.GONE);
-        if (txtCurrentChild != null) {
-            txtCurrentChild.setText("No child selected");
-        }
+        txtCurrentChild.setText(getString(R.string.parent_home_no_child_selected));
 
-        // Buttons
         Button btnViewHistory = findViewById(R.id.btnViewHistory);
         Button btnAddReport = findViewById(R.id.btnAddReport);
         Button btnAddTask = findViewById(R.id.btnAddTask);
@@ -93,36 +94,45 @@ public class ParentHomeActivity extends AppCompatActivity {
         Button btnLogout = findViewById(R.id.btnLogout);
 
         btnViewHistory.setOnClickListener(v -> {
-            Intent i = new Intent(ParentHomeActivity.this, SelectionHistoryActivity.class);
+            Intent i = new Intent(this, SelectionHistoryActivity.class);
             putChildExtras(i);
             startActivity(i);
         });
 
         btnAddReport.setOnClickListener(v -> {
-            Intent i = new Intent(ParentHomeActivity.this, NewReportActivity.class);
+            Intent i = new Intent(this, NewReportActivity.class);
             putChildExtras(i);
             startActivity(i);
         });
 
         btnAddTask.setOnClickListener(v -> {
-            Intent i = new Intent(ParentHomeActivity.this, NewTaskActivity.class);
+            Intent i = new Intent(this, NewTaskActivity.class);
             i.putExtra("PARENT_ID", parentId);
             putChildExtras(i);
             startActivity(i);
         });
 
         btnTherapistNotes.setOnClickListener(v -> {
-            Intent i = new Intent(ParentHomeActivity.this, TherapistNotesActivity.class);
+            Intent i = new Intent(this, TherapistNotesActivity.class);
             putChildExtras(i);
             startActivity(i);
         });
 
-        btnLogout.setOnClickListener(v -> finish());
+        btnLogout.setOnClickListener(v -> showLogoutDialog());
+
 
         loadChildrenForParent();
-
-        // ✅ This is what makes the dot appear
         listenForUnreadNotifications();
+    }
+    private void showLogoutDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.logout_title))
+                .setMessage(getString(R.string.logout_message))
+                .setNegativeButton(getString(R.string.cancel), null)
+                .setPositiveButton(getString(R.string.parent_home_logout), (dialog, which) -> {
+                    finish();
+                })
+                .show();
     }
 
     @Override
@@ -142,28 +152,46 @@ public class ParentHomeActivity extends AppCompatActivity {
     }
 
     private void loadChildrenForParent() {
-        if (parentId == null || parentId.isEmpty()) {
-            return;
-        }
 
-        db.collection("children")
-                .whereEqualTo("parentID", parentId)
+        if (parentId == null || parentId.isEmpty())
+            return;
+
+        db.collection("parents")
+                .document(parentId)
                 .get()
-                .addOnSuccessListener(this::buildChildBar)
-                .addOnFailureListener(e -> {
-                    Toast.makeText(
-                            ParentHomeActivity.this,
-                            "Failed to load children: " + e.getMessage(),
-                            Toast.LENGTH_SHORT
-                    ).show();
-                    childScroll.setVisibility(View.GONE);
-                    if (txtCurrentChild != null) {
-                        txtCurrentChild.setText("No children linked yet");
+                .addOnSuccessListener(parentDoc -> {
+
+                    if (!parentDoc.exists()) {
+                        txtCurrentChild.setText(getString(R.string.parent_home_parent_not_found));
+                        return;
                     }
-                });
+
+                    List<String> linkedChildren =
+                            (List<String>) parentDoc.get("linkedChildren");
+
+                    if (linkedChildren == null || linkedChildren.isEmpty()) {
+                        childScroll.setVisibility(View.GONE);
+                        txtCurrentChild.setText(getString(R.string.parent_home_no_children_linked));
+                        return;
+                    }
+
+                    db.collection("children")
+                            .whereIn("childID", linkedChildren)
+                            .get()
+                            .addOnSuccessListener(this::buildChildBar)
+                            .addOnFailureListener(e ->
+                                    Toast.makeText(this,
+                                            getString(R.string.parent_home_failed_load_children) + " " + e.getMessage(),
+                                            Toast.LENGTH_SHORT).show());
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                getString(R.string.parent_home_failed_load_parent) + " " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
     }
 
     private void buildChildBar(QuerySnapshot qs) {
+
         childContainer.removeAllViews();
         selectedChildId = null;
         selectedChildName = null;
@@ -171,9 +199,7 @@ public class ParentHomeActivity extends AppCompatActivity {
 
         if (qs == null || qs.isEmpty()) {
             childScroll.setVisibility(View.GONE);
-            if (txtCurrentChild != null) {
-                txtCurrentChild.setText("No children linked yet");
-            }
+            txtCurrentChild.setText(getString(R.string.parent_home_no_children_found));
             return;
         }
 
@@ -188,11 +214,12 @@ public class ParentHomeActivity extends AppCompatActivity {
         int index = 0;
 
         for (DocumentSnapshot doc : qs.getDocuments()) {
+
             String childId = doc.getString("childID");
             String childName = doc.getString("name");
-            if (childName == null || childName.trim().isEmpty()) {
-                childName = "Child";
-            }
+
+            if (childName == null || childName.trim().isEmpty())
+                childName = getString(R.string.parent_home_default_child_name);
 
             LinearLayout childItem = new LinearLayout(this);
             childItem.setOrientation(LinearLayout.VERTICAL);
@@ -223,41 +250,42 @@ public class ParentHomeActivity extends AppCompatActivity {
             final String finalChildId = childId;
             final String finalChildName = childName;
 
-            childItem.setOnClickListener(v -> setSelectedChild(finalChildId, finalChildName, childItem));
+            childItem.setOnClickListener(v ->
+                    setSelectedChild(finalChildId, finalChildName, childItem));
 
             childContainer.addView(childItem);
 
-            if (index == 0) {
+            if (index == 0)
                 setSelectedChild(finalChildId, finalChildName, childItem);
-            }
+
             index++;
         }
     }
 
     private void setSelectedChild(String childId, String childName, View childView) {
+
         selectedChildId = childId;
         selectedChildName = childName;
 
-        if (selectedChildView != null) {
+        if (selectedChildView != null)
             selectedChildView.setBackground(null);
-        }
 
         childView.setBackground(getResources().getDrawable(R.drawable.white_card_pg));
         selectedChildView = childView;
 
-        if (txtCurrentChild != null) {
-            txtCurrentChild.setText("Now viewing: " + selectedChildName);
-        }
+        txtCurrentChild.setText(
+                getString(R.string.parent_home_now_viewing, selectedChildName)
+        );
 
-        Toast.makeText(this, "Viewing: " + selectedChildName, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,
+                getString(R.string.parent_home_toast_viewing, selectedChildName),
+                Toast.LENGTH_SHORT).show();
     }
 
-    // ==========================================================
-    // ✅ NOTIFICATIONS (red dot + popup)
-    // ==========================================================
-
     private void listenForUnreadNotifications() {
-        if (parentId == null || parentId.trim().isEmpty()) return;
+
+        if (parentId == null || parentId.trim().isEmpty())
+            return;
 
         Query q = db.collection("notifications")
                 .whereEqualTo("receiverType", "PARENT")
@@ -267,16 +295,18 @@ public class ParentHomeActivity extends AppCompatActivity {
 
         notifReg = q.addSnapshotListener((snap, err) -> {
 
-            // ✅ show errors instead of silent fail
             if (err != null) {
-                Toast.makeText(this, "Notif error: " + err.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this,
+                        getString(R.string.parent_home_notif_error) + " " + err.getMessage(),
+                        Toast.LENGTH_LONG).show();
                 return;
             }
 
             if (snap == null || snap.isEmpty()) {
                 latestNotifId = null;
                 latestNotifMessage = null;
-                if (notifDot != null) notifDot.setVisibility(View.GONE);
+                if (notifDot != null)
+                    notifDot.setVisibility(View.GONE);
                 return;
             }
 
@@ -284,34 +314,33 @@ public class ParentHomeActivity extends AppCompatActivity {
             latestNotifId = d.getId();
 
             String msg = d.getString("message");
-            if (msg == null || msg.trim().isEmpty()) msg = "Child has finished the task.";
+            if (msg == null || msg.trim().isEmpty())
+                msg = getString(R.string.parent_home_task_done_default);
+
             latestNotifMessage = msg;
 
-            if (notifDot != null) notifDot.setVisibility(View.VISIBLE);
+            if (notifDot != null)
+                notifDot.setVisibility(View.VISIBLE);
         });
     }
 
     private void openNotificationPopup() {
-        // ✅ ALWAYS show something when clicking bell
+
         String messageToShow = (latestNotifMessage == null)
-                ? "No new notifications"
+                ? getString(R.string.parent_home_no_new_notifications)
                 : latestNotifMessage;
 
         new AlertDialog.Builder(this)
-                .setTitle("Notification")
+                .setTitle(getString(R.string.parent_home_notification_title))
                 .setMessage(messageToShow)
-                .setPositiveButton("OK", (dialog, which) -> {
-                    // mark as read only if we have a real notification
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+
                     if (latestNotifId != null) {
                         db.collection("notifications")
                                 .document(latestNotifId)
-                                .update("read", true)
-                                .addOnSuccessListener(v -> {
-                                    latestNotifId = null;
-                                    latestNotifMessage = null;
-                                    if (notifDot != null) notifDot.setVisibility(View.GONE);
-                                });
+                                .update("read", true);
                     }
+
                     dialog.dismiss();
                 })
                 .show();

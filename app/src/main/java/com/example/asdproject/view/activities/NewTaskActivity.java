@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleManager;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class NewTaskActivity extends AppCompatActivity {
+public class NewTaskActivity extends BaseActivity {
 
     private EditText edtTaskName, edtDisplayWhen, edtDiscussionPrompts;
     private Button btnSaveTask, btnGoBack;
@@ -31,9 +31,8 @@ public class NewTaskActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
 
-    // 👇 from ParentHomeActivity
     private String parentId;
-    private String childId;   // this is the FIELD "childID" value (e.g. "214578903")
+    private String childId;   // FIELD childID value
     private String childName;
 
     @Override
@@ -43,16 +42,23 @@ public class NewTaskActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // ✅ get IDs from intent (NO childDoc here)
         parentId = getIntent().getStringExtra("PARENT_ID");
         childId  = getIntent().getStringExtra("CHILD_ID");
         childName = getIntent().getStringExtra("CHILD_NAME");
 
+        // Title (localized)
         if (childName != null && !childName.isEmpty()) {
-            setTitle("New Task – " + childName);
+            setTitle(getString(R.string.new_task_title_with_child, childName));
         } else {
-            setTitle("New Task");
+            setTitle(getString(R.string.new_task_title));
         }
+
+        // 🌐 language button
+        TextView btnLanguage = findViewById(R.id.btnLanguage);
+        btnLanguage.setOnClickListener(v -> {
+            LocaleManager.toggleLanguage(this);
+            recreate();
+        });
 
         edtTaskName = findViewById(R.id.edtTaskName);
         edtDisplayWhen = findViewById(R.id.edtDisplayWhen);
@@ -65,7 +71,6 @@ public class NewTaskActivity extends AppCompatActivity {
         edtDisplayWhen.setOnClickListener(v -> openDatePicker());
 
         btnGoBack.setOnClickListener(v -> finish());
-
         btnSaveTask.setOnClickListener(v -> validateAndSendTask());
     }
 
@@ -79,23 +84,22 @@ public class NewTaskActivity extends AppCompatActivity {
                 TextUtils.isEmpty(displayWhen) ||
                 TextUtils.isEmpty(discussionPrompts)) {
 
-            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.new_task_error_fill_all), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (parentId == null || parentId.isEmpty()) {
-            Toast.makeText(this, "Parent not logged in (missing parent id)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.new_task_error_parent_missing), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // ✅ if this happens, it means ParentHomeActivity didn't send CHILD_ID
         if (childId == null || childId.isEmpty()) {
-            Toast.makeText(this, "Please select a child in the parent home screen first", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.new_task_error_select_child), Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (selectedDateTime.getTimeInMillis() < System.currentTimeMillis()) {
-            Toast.makeText(this, "Please choose a future date/time", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.new_task_error_future_time), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -113,9 +117,8 @@ public class NewTaskActivity extends AppCompatActivity {
         task.put("displayWhen", displayWhen);
         task.put("discussionPrompts", discussionPrompts);
 
-        // ✅ store the field ID (not doc id)
-        // If you want to match the children field name exactly, use "childID"
-        task.put("childId", childId);
+        // ✅ keep consistent with children field name
+        task.put("childID", childId);
 
         task.put("creatorType", "PARENT");
         task.put("creatorId", parentId);
@@ -124,11 +127,13 @@ public class NewTaskActivity extends AppCompatActivity {
         db.collection("tasks")
                 .add(task)
                 .addOnSuccessListener(docRef -> {
-                    Toast.makeText(this, "Task sent successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.new_task_sent_success), Toast.LENGTH_SHORT).show();
                     finish();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this, "Failed to send task: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this,
+                                getString(R.string.new_task_failed_prefix) + " " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show()
                 );
     }
 
@@ -171,7 +176,7 @@ public class NewTaskActivity extends AppCompatActivity {
                                     candidate.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR);
 
                     if (sameDay && candidate.getTimeInMillis() < System.currentTimeMillis()) {
-                        Toast.makeText(this, "Choose a future time", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.new_task_error_choose_future_time), Toast.LENGTH_SHORT).show();
                         openTimePicker();
                         return;
                     }
