@@ -140,6 +140,11 @@
     <string name="step6_note_helper">اكتب أي شيء بتحبو عن هاللحظة</string>
     <string name="step6_note_hint">اكتب هون...</string>
 
+    <!--step 6 - for task-->
+    <string name="step6_tasks_title">أسئلة للنقاش</string>
+    <string name="step6_tasks_subtitle">جاوب على كل سؤال تحت</string>
+    <string name="step6_tasks_answer_hint">اكتب جوابك هون...</string>
+
     <!-- step 7 -->
     <string name="review_title">يلا نراجع شعورك</string>
     <string name="review_submit">حفظ</string>
@@ -154,6 +159,43 @@
     <string name="review_intensity_placeholder">قوة الشعور: متوسط</string>
     <string name="review_intensity_number_placeholder">3 / 5</string>
 
+    <!--child task flow-->
+    <string name="child_tasks_header_title">مهامي</string>
+    <string name="child_tasks_missing_child_id">معرّف الطفل غير موجود - لا يمكن تحميل المهام</string>
+
+    <string name="child_tasks_count_placeholder">المهام المنتظرة: 0</string>
+    <string name="child_tasks_count_all">المهام المنتظرة: %1$d</string>
+    <string name="child_tasks_count_parent">مهام الأهل: %1$d</string>
+    <string name="child_tasks_count_therapist">مهام الأخصائي: %1$d</string>
+
+    <string name="child_tasks_empty">ما في مهام حاليًا</string>
+
+    <string name="task_item_title_placeholder">مهمة جديدة</string>
+    <string name="task_item_by_parent">مهمة من الأهل</string>
+    <string name="task_item_by_therapist">مهمة من الأخصائي</string>
+    <!--task filter-->
+    <string name="task_filter_title">فلترة المهام حسب</string>
+    <string name="task_filter_by_parent">فلترة حسب الأهل</string>
+    <string name="task_filter_by_therapist">فلترة حسب الأخصائي</string>
+    <string name="task_filter_clear">إلغاء الفلترة</string>
+    <!--task detail screen-->
+    <string name="task_details_header_parent">مهمة من الأهل</string>
+    <string name="task_details_header_therapist">مهمة من الأخصائي</string>
+
+    <string name="task_details_title_parent">مهمة من الأهل</string>
+    <string name="task_details_title_therapist">مهمة من الأخصائي</string>
+
+    <string name="task_details_creator_parent">الأهل</string>
+    <string name="task_details_creator_therapist">الأخصائي</string>
+
+    <string name="task_details_sender_avatar">صورة مرسل المهمة</string>
+
+    <string name="task_details_task_name_placeholder">اسم المهمة</string>
+    <string name="task_details_when_placeholder">متى:</string>
+    <string name="task_details_when">متى: %1$s</string>
+    <string name="task_details_prompt_placeholder">نص المهمة يظهر هنا</string>
+
+    <string name="task_details_log_now">سجّل الآن</string>
     <!-- ================================================== -->
     <!-- Parent screens -->
     <!-- ================================================== -->

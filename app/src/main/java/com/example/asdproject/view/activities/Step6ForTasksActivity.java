@@ -1,7 +1,9 @@
 package com.example.asdproject.view.activities;
 
 import android.os.Bundle;
+import android.text.BidiFormatter;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +67,7 @@ public class Step6ForTasksActivity extends Fragment {
         questionsContainer = v.findViewById(R.id.questionsContainer);
         btnContinue = v.findViewById(R.id.btnContinue);
 
-        buildQuestionsUI(inflater);
+        buildQuestionsUI();
 
         btnContinue.setOnClickListener(view -> {
             String finalAnswer = collectAnswers();
@@ -79,7 +81,7 @@ public class Step6ForTasksActivity extends Fragment {
     }
 
     /** Creates UI blocks: question + answer box */
-    private void buildQuestionsUI(LayoutInflater inflater) {
+    private void buildQuestionsUI() {
 
         if (TextUtils.isEmpty(discussionPrompts)) {
             return;
@@ -91,22 +93,27 @@ public class Step6ForTasksActivity extends Fragment {
         for (String line : lines) {
             if (TextUtils.isEmpty(line.trim())) continue;
 
-            questions.add(line.trim());
+            String questionText = line.trim();
+            questions.add(questionText);
 
             // Question text
             TextView txtQuestion = new TextView(requireContext());
-            txtQuestion.setText(line.trim());
             txtQuestion.setTextColor(0xFF085F63);
             txtQuestion.setTextSize(16);
             txtQuestion.setPadding(0, 12, 0, 6);
+            applyContentDirection(txtQuestion, questionText);
 
             // Answer box
             EditText edtAnswer = new EditText(requireContext());
             edtAnswer.setBackgroundResource(R.drawable.step_button_selector);
-            edtAnswer.setHint("Write your answer here...");
+            edtAnswer.setHint(getString(R.string.step6_tasks_answer_hint));
             edtAnswer.setPadding(16, 16, 16, 16);
             edtAnswer.setMinLines(2);
             edtAnswer.setTextColor(0xFF085F63);
+
+            // keep answer input friendly to current app language
+            edtAnswer.setTextDirection(View.TEXT_DIRECTION_LOCALE);
+            edtAnswer.setGravity(Gravity.START);
 
             questionsContainer.addView(txtQuestion);
             questionsContainer.addView(edtAnswer);
@@ -129,5 +136,49 @@ public class Step6ForTasksActivity extends Fragment {
         }
 
         return sb.toString().trim();
+    }
+
+    // bayan added here - display task questions according to the language they were written in
+    private void applyContentDirection(TextView textView, String text) {
+        if (text == null) {
+            textView.setText("");
+            return;
+        }
+
+        boolean isRtl = isRtlText(text);
+
+        BidiFormatter bidi = BidiFormatter.getInstance(isRtl);
+        textView.setText(bidi.unicodeWrap(text));
+
+        if (isRtl) {
+            textView.setTextDirection(View.TEXT_DIRECTION_RTL);
+            textView.setGravity(Gravity.RIGHT);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+        } else {
+            textView.setTextDirection(View.TEXT_DIRECTION_LTR);
+            textView.setGravity(Gravity.LEFT);
+            textView.setTextAlignment(View.TEXT_ALIGNMENT_GRAVITY);
+        }
+    }
+
+    // bayan added here - detect direction from the first strong character
+    private boolean isRtlText(String text) {
+        if (text == null) return false;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            byte dir = Character.getDirectionality(c);
+
+            if (dir == Character.DIRECTIONALITY_RIGHT_TO_LEFT ||
+                    dir == Character.DIRECTIONALITY_RIGHT_TO_LEFT_ARABIC) {
+                return true;
+            }
+
+            if (dir == Character.DIRECTIONALITY_LEFT_TO_RIGHT) {
+                return false;
+            }
+        }
+
+        return false;
     }
 }

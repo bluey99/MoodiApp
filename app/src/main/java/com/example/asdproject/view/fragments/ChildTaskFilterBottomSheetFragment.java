@@ -21,7 +21,6 @@ public class ChildTaskFilterBottomSheetFragment extends BottomSheetDialogFragmen
 
     private OnFilterSelectedListener listener;
 
-
     public ChildTaskFilterBottomSheetFragment(OnFilterSelectedListener listener) {
         this.listener = listener;
     }
@@ -38,7 +37,6 @@ public class ChildTaskFilterBottomSheetFragment extends BottomSheetDialogFragmen
         Button btnAll = view.findViewById(R.id.btnAll);
         ImageView btnMom = view.findViewById(R.id.btnMom);
         ImageView btnTherapist = view.findViewById(R.id.btnTherapist);
-
 
         btnAll.setOnClickListener(v -> {
             listener.onFilterSelected(null);

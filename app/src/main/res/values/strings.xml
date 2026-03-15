@@ -140,6 +140,11 @@
     <string name="step6_note_helper">Write anything you want to remember about this moment</string>
     <string name="step6_note_hint">Write here...</string>
 
+    <!--step 6 - for task-->
+    <string name="step6_tasks_title">Discussion Questions</string>
+    <string name="step6_tasks_subtitle">Answer each question below</string>
+    <string name="step6_tasks_answer_hint">Write your answer here...</string>
+
     <!-- step 7 -->
     <string name="review_title">Let’s review your feeling</string>
     <string name="review_submit">Submit</string>
@@ -153,6 +158,44 @@
     <string name="review_intensity_number">%1$d / 5</string>
     <string name="review_intensity_placeholder">Intensity: Medium</string>
     <string name="review_intensity_number_placeholder">3 / 5</string>
+
+    <!--child task flow-->
+    <string name="child_tasks_header_title">My Tasks</string>
+    <string name="child_tasks_missing_child_id">Child id is missing – cannot load tasks</string>
+
+    <string name="child_tasks_count_placeholder">Tasks waiting: 0</string>
+    <string name="child_tasks_count_all">Tasks waiting: %1$d</string>
+    <string name="child_tasks_count_parent">Mom tasks: %1$d</string>
+    <string name="child_tasks_count_therapist">Therapist tasks: %1$d</string>
+
+    <string name="child_tasks_empty">No tasks right now</string>
+
+    <string name="task_item_title_placeholder">New Task</string>
+    <string name="task_item_by_parent">Task by Parent</string>
+    <string name="task_item_by_therapist">Task by Therapist</string>
+    <!--task filter-->
+    <string name="task_filter_title">Filter tasks by</string>
+    <string name="task_filter_by_parent">Filter by Parent</string>
+    <string name="task_filter_by_therapist">Filter by Therapist</string>
+    <string name="task_filter_clear">Clear filter</string>
+    <!--task detail screen-->
+    <string name="task_details_header_parent">Task from Parent</string>
+    <string name="task_details_header_therapist">Task from Therapist</string>
+
+    <string name="task_details_title_parent">Task by Parent</string>
+    <string name="task_details_title_therapist">Task by Therapist</string>
+
+    <string name="task_details_creator_parent">Parent</string>
+    <string name="task_details_creator_therapist">Therapist</string>
+
+    <string name="task_details_sender_avatar">Task sender avatar</string>
+
+    <string name="task_details_task_name_placeholder">Task name</string>
+    <string name="task_details_when_placeholder">When:</string>
+    <string name="task_details_when">When: %1$s</string>
+    <string name="task_details_prompt_placeholder">Prompt text goes here</string>
+
+    <string name="task_details_log_now">Log Now</string>
 
     <!-- ================================================== -->
     <!-- Parent screens -->

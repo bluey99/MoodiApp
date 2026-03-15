@@ -6,15 +6,13 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:text="Filter tasks by"
+        android:text="@string/task_filter_title"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#085F63"
         android:layout_marginBottom="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
-
 
     <LinearLayout
         android:orientation="horizontal"
@@ -29,7 +27,7 @@
             android:layout_height="72dp"
             android:layout_marginEnd="24dp"
             android:src="@drawable/ic_parent"
-            android:contentDescription="Filter by Mom"
+            android:contentDescription="@string/task_filter_by_parent"
             android:background="@drawable/pill_button_selector"
             android:padding="12dp" />
 
@@ -38,7 +36,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:src="@drawable/ic_therapist"
-            android:contentDescription="Filter by Therapist"
+            android:contentDescription="@string/task_filter_by_therapist"
             android:background="@drawable/pill_button_selector"
             android:padding="12dp" />
 
@@ -46,7 +44,7 @@
 
     <Button
         android:id="@+id/btnAll"
-        android:text="Clear filter"
+        android:text="@string/task_filter_clear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

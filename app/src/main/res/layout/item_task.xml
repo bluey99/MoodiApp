@@ -20,7 +20,7 @@
         android:id="@+id/txtTaskTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Task from mom"
+        android:text="@string/task_item_title_placeholder"
         android:textSize="16sp"
         android:textColor="#006B6C" />
 </LinearLayout>

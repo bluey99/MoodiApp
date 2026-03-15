@@ -7,13 +7,10 @@
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-
-    <!-- HEADER (same one you already use) -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_history_header" />
 
-    <!-- SENDER SECTION -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,7 +23,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:src="@drawable/ic_parent"
-            android:contentDescription="Task sender avatar" />
+            android:contentDescription="@string/task_details_sender_avatar" />
 
         <TextView
             android:id="@+id/txtTitle"
@@ -49,7 +46,6 @@
 
     </LinearLayout>
 
-    <!-- TASK CARD -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,57 +54,51 @@
         android:background="@drawable/role_card_bg"
         android:padding="20dp">
 
-        <!-- Task name -->
         <TextView
             android:id="@+id/txtTaskName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Task name"
+            android:text="@string/task_details_task_name_placeholder"
             android:textSize="16sp"
             android:textStyle="bold"
             android:textColor="#006B6C" />
 
-        <!-- When -->
         <TextView
             android:id="@+id/txtWhen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="When:"
+            android:text="@string/task_details_when_placeholder"
             android:textSize="14sp"
             android:textColor="#4F8F90"
             android:layout_marginTop="8dp" />
 
-        <!-- Divider -->
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginVertical="12dp"
             android:background="#D6ECEC" />
 
-        <!-- Prompt -->
         <TextView
             android:id="@+id/txtPrompt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Prompt text goes here"
+            android:text="@string/task_details_prompt_placeholder"
             android:textSize="15sp"
             android:textColor="#085F63"
             android:lineSpacingExtra="4dp" />
     </LinearLayout>
 
-    <!-- ACTION BUTTON -->
     <Button
         android:id="@+id/btnLogNow"
         android:layout_width="200dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
         android:layout_marginBottom="32dp"
-        android:text="Log Now"
+        android:text="@string/task_details_log_now"
         android:textAllCaps="false"
         android:textSize="16sp"
         android:textColor="@color/LogNow"
         android:background="@drawable/pill_button_selector"
         app:backgroundTint="@null" />
-
 
 </LinearLayout>

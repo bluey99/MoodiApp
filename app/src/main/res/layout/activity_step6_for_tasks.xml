@@ -12,40 +12,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Title -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Discussion Questions"
+            android:text="@string/step6_tasks_title"
             android:textStyle="bold"
             android:textSize="22sp"
             android:textColor="#085F63"
             android:layout_marginBottom="6dp" />
 
-        <!-- Subtitle -->
         <TextView
             android:id="@+id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Answer each question below"
+            android:text="@string/step6_tasks_subtitle"
             android:textSize="14sp"
             android:textColor="#51787C"
             android:layout_marginBottom="20dp" />
 
-        <!-- Container for dynamic questions -->
         <LinearLayout
             android:id="@+id/questionsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" />
 
-        <!-- Continue Button -->
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnContinue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Continue"
+            android:text="@string/action_continue"
             android:textAllCaps="false"
             android:textColor="#085F63"
             android:textSize="16sp"

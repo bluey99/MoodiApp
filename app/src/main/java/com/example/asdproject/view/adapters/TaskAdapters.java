@@ -43,11 +43,10 @@ public class TaskAdapters extends RecyclerView.Adapter<TaskAdapters.TaskViewHold
         String creatorType = task.getCreatorType();
 
         if ("THERAPIST".equals(creatorType)) {
-            holder.txtTaskTitle.setText("Task by Therapist");
+            holder.txtTaskTitle.setText(holder.itemView.getContext().getString(R.string.task_item_by_therapist));
         } else {
-            holder.txtTaskTitle.setText("Task by Mom");
+            holder.txtTaskTitle.setText(holder.itemView.getContext().getString(R.string.task_item_by_parent));
         }
-
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), ChildTaskDetailsActivity.class);

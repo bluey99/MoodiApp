@@ -62,7 +62,7 @@ public class ChildTasksActivity extends AppCompatActivity {
         ImageView btnFilter  = header.findViewById(R.id.btnFilter);
         ImageView btnBack    = header.findViewById(R.id.btnBack);
 
-        headerTitle.setText("My Tasks");
+        headerTitle.setText(getString(R.string.child_tasks_header_title));
 
         txtTasksWaiting = findViewById(R.id.txtTaskCount);
 
@@ -88,7 +88,7 @@ public class ChildTasksActivity extends AppCompatActivity {
         childId = getIntent().getStringExtra("childId");
 
         if (childId == null || childId.trim().isEmpty()) {
-            Toast.makeText(this, "Child id is missing – cannot load tasks", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.child_tasks_missing_child_id), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -291,11 +291,11 @@ public class ChildTasksActivity extends AppCompatActivity {
         int count = taskList.size();
 
         if (selectedCreatorType == null) {
-            txtTasksWaiting.setText("Tasks waiting: " + count);
+            txtTasksWaiting.setText(getString(R.string.child_tasks_count_all, count));
         } else if ("PARENT".equals(selectedCreatorType)) {
-            txtTasksWaiting.setText("Mom tasks: " + count);
+            txtTasksWaiting.setText(getString(R.string.child_tasks_count_parent, count));
         } else if ("THERAPIST".equals(selectedCreatorType)) {
-            txtTasksWaiting.setText("Therapist tasks: " + count);
+            txtTasksWaiting.setText(getString(R.string.child_tasks_count_therapist, count));
         }
 
         txtTasksWaiting.setVisibility(count == 0 ? View.GONE : View.VISIBLE);

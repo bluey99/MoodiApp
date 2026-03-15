@@ -6,17 +6,15 @@
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-    <!-- HEADER (shared with history) -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_history_header" />
 
-    <!-- TASK COUNT PILL -->
     <TextView
         android:id="@+id/txtTaskCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tasks waiting: 0"
+        android:text="@string/child_tasks_count_placeholder"
         android:textSize="18sp"
         android:textColor="#085F63"
         android:layout_gravity="center"
@@ -24,12 +22,10 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/pill_button_selector" />
 
-    <!-- LOADING STATE -->
     <include
         android:id="@+id/loadingContainer"
         layout="@layout/view_loading_state" />
 
-    <!-- EMPTY STATE -->
     <LinearLayout
         android:id="@+id/emptyContainer"
         android:visibility="gone"
@@ -42,13 +38,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No tasks right now"
+            android:text="@string/child_tasks_empty"
             android:textSize="16sp"
             android:textColor="#4F8F90"
             android:padding="8dp" />
     </LinearLayout>
 
-    <!-- TASK LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerTasks"
         android:layout_width="match_parent"
