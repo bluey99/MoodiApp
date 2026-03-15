@@ -6,7 +6,13 @@ import android.text.InputType;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Space;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -15,9 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.asdproject.R;
 import com.example.asdproject.util.LocaleManager;
-import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReportsHistoryActivity extends BaseActivity {
 
@@ -111,8 +123,6 @@ public class ReportsHistoryActivity extends BaseActivity {
                 });
     }
 
-    // ---------------- DELETE ----------------
-
     private void confirmDeleteReport(ReportItem item) {
 
         new AlertDialog.Builder(this)
@@ -140,8 +150,6 @@ public class ReportsHistoryActivity extends BaseActivity {
                                 Toast.LENGTH_SHORT).show()
                 );
     }
-
-    // ---------------- EDIT ----------------
 
     private void openEditDialog(ReportItem item) {
 
@@ -207,8 +215,6 @@ public class ReportsHistoryActivity extends BaseActivity {
                 .show();
     }
 
-    // ---------------- MODEL ----------------
-
     private static class ReportItem {
 
         String docId;
@@ -236,8 +242,6 @@ public class ReportsHistoryActivity extends BaseActivity {
             return r;
         }
     }
-
-    // ---------------- ADAPTER ----------------
 
     private class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.VH> {
 
@@ -360,8 +364,6 @@ public class ReportsHistoryActivity extends BaseActivity {
         }
     }
 
-    // ---------------- HELPERS ----------------
-
     private TextView actionChip(String txt) {
 
         TextView tv = new TextView(this);
@@ -389,8 +391,11 @@ public class ReportsHistoryActivity extends BaseActivity {
         e.setHint(hint);
         e.setText(val);
 
-        if (multiline)
-            e.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+        if (multiline) {
+            e.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            e.setMinLines(3);
+            e.setGravity(Gravity.TOP | Gravity.START);
+        }
 
         return e;
     }
@@ -411,16 +416,16 @@ public class ReportsHistoryActivity extends BaseActivity {
         return s == null ? "" : s.trim();
     }
 
-    private boolean isEmpty(String s) {
+    private static boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
     }
 
     private String firstNonEmpty(String... vals) {
-
-        for (String v : vals)
-            if (v != null && !v.trim().isEmpty())
+        for (String v : vals) {
+            if (v != null && !v.trim().isEmpty()) {
                 return v.trim();
-
+            }
+        }
         return "";
     }
 }

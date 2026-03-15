@@ -7,7 +7,16 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
+import android.widget.Space;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -20,14 +29,21 @@ import com.example.asdproject.controller.FirebaseManager;
 import com.example.asdproject.util.LocaleManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class EmotionHistoryActivity extends BaseActivity {
 
-    private String childIdOrField;     // could be docId or childID
+    private String childIdOrField;
     private String childDocId;
     private String childName;
 
@@ -39,15 +55,13 @@ public class EmotionHistoryActivity extends BaseActivity {
 
     private ListenerRegistration historyReg;
 
-    // ===================== FILTERS =====================
     private enum TimeMode { ALL, TODAY, LAST_7_DAYS, LAST_30_DAYS }
     private TimeMode timeMode = TimeMode.ALL;
 
     private enum SourceMode { ALL, MOM, THERAPIST }
     private SourceMode sourceMode = SourceMode.ALL;
 
-    // Emotion filter
-    private String selectedEmotionKey = "";   // happy/sad/angry/afraid/disgusted/surprised/unsure/other
+    private String selectedEmotionKey = "";
     private String otherEmotionText = "";
 
     private SimpleDateFormat sdf;
@@ -108,9 +122,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         resolveChildDocIdThenListen();
     }
 
-    // ==========================================================
-    // Resolve child doc id then listen to history
-    // ==========================================================
     private void resolveChildDocIdThenListen() {
         FirebaseFirestore db = FirebaseManager.getDb();
 
@@ -166,12 +177,6 @@ public class EmotionHistoryActivity extends BaseActivity {
                 );
     }
 
-    // ==========================================================
-    // ✅ Read COMPLETED TASKS from history (logType == TASK)
-    // Source rule (your discovery):
-    // - has taskPrompt -> MOM
-    // - no taskPrompt  -> THERAPIST
-    // ==========================================================
     private void listenToTaskHistory(FirebaseFirestore db) {
         if (historyReg != null) historyReg.remove();
 
@@ -194,22 +199,19 @@ public class EmotionHistoryActivity extends BaseActivity {
 
                         if (!isTaskLog(doc)) continue;
 
-                        // Emotion in history:
                         String emotion = firstNonEmpty(doc.getString("feeling"), doc.getString("emotion"));
                         Long intensityLong = doc.getLong("intensity");
                         int intensity = (intensityLong == null) ? 0 : intensityLong.intValue();
 
-                        // Timestamp
                         Timestamp ts = doc.getTimestamp("timestamp");
                         long tsMillis = (ts == null) ? 0L : ts.toDate().getTime();
                         String tsText = (ts == null) ? "" : sdf.format(ts.toDate());
 
-                        String taskName   = safe(doc.getString("taskName"));
+                        String taskName = safe(doc.getString("taskName"));
                         String taskPrompt = safe(doc.getString("taskPrompt"));
                         String discussionPrompts = safe(doc.getString("discussionPrompts"));
                         String note = safe(doc.getString("note"));
 
-                        // ✅ Source based on taskPrompt existence
                         SourceMode src = !isEmpty(taskPrompt) ? SourceMode.MOM : SourceMode.THERAPIST;
 
                         String displayPrompts = firstNonEmpty(discussionPrompts, taskPrompt, note);
@@ -228,12 +230,9 @@ public class EmotionHistoryActivity extends BaseActivity {
     private boolean isTaskLog(DocumentSnapshot doc) {
         if (doc == null) return false;
         String logType = safe(doc.getString("logType")).toUpperCase(Locale.getDefault());
-        return logType.equals("TASK"); // ONLY TASK, not SELF
+        return logType.equals("TASK");
     }
 
-    // ==========================================================
-    // ✅ Pretty Filter Bottom Sheet (Time + Source + Emotion)
-    // ==========================================================
     private void showPrettyFilterBottomSheet() {
         BottomSheetDialog sheet = new BottomSheetDialog(this);
 
@@ -247,15 +246,14 @@ public class EmotionHistoryActivity extends BaseActivity {
         title.setTypeface(title.getTypeface(), android.graphics.Typeface.BOLD);
         root.addView(title);
 
-        // ----- TIME -----
         root.addView(sectionLabel(getString(R.string.filter_time_section)));
         RadioGroup rgTime = new RadioGroup(this);
         rgTime.setOrientation(LinearLayout.VERTICAL);
 
-        RadioButton rbAll   = timeRadio(getString(R.string.filter_time_all),  TimeMode.ALL);
+        RadioButton rbAll = timeRadio(getString(R.string.filter_time_all), TimeMode.ALL);
         RadioButton rbToday = timeRadio(getString(R.string.filter_time_today), TimeMode.TODAY);
-        RadioButton rb7     = timeRadio(getString(R.string.filter_time_7),    TimeMode.LAST_7_DAYS);
-        RadioButton rb30    = timeRadio(getString(R.string.filter_time_30),   TimeMode.LAST_30_DAYS);
+        RadioButton rb7 = timeRadio(getString(R.string.filter_time_7), TimeMode.LAST_7_DAYS);
+        RadioButton rb30 = timeRadio(getString(R.string.filter_time_30), TimeMode.LAST_30_DAYS);
 
         rgTime.addView(rbAll);
         rgTime.addView(rbToday);
@@ -269,7 +267,6 @@ public class EmotionHistoryActivity extends BaseActivity {
 
         root.addView(rgTime);
 
-        // ----- SOURCE -----
         root.addView(sectionLabel(getString(R.string.filter_source_section)));
         RadioGroup rgSrc = new RadioGroup(this);
         rgSrc.setOrientation(LinearLayout.VERTICAL);
@@ -288,7 +285,6 @@ public class EmotionHistoryActivity extends BaseActivity {
 
         root.addView(rgSrc);
 
-        // ----- EMOTION -----
         root.addView(sectionLabel(getString(R.string.filter_emotion_section)));
         Button btnPickEmotion = nicePickerButton(getEmotionPickerButtonText());
         btnPickEmotion.setOnClickListener(v -> {
@@ -297,7 +293,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         });
         root.addView(btnPickEmotion);
 
-        // ----- ACTIONS -----
         LinearLayout actions = new LinearLayout(this);
         actions.setOrientation(LinearLayout.HORIZONTAL);
         actions.setGravity(Gravity.END);
@@ -380,9 +375,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         return b;
     }
 
-    // ==========================================================
-    // Emotion picker dialog (WITH DRAWABLE ICONS)
-    // ==========================================================
     private void showEmotionPickerDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle(getString(R.string.filter_choose_emotion));
@@ -428,7 +420,6 @@ public class EmotionHistoryActivity extends BaseActivity {
             }
         });
 
-        // preselect
         if (!isEmpty(selectedEmotionKey)) {
             for (int i = 0; i < rg.getChildCount(); i++) {
                 View v = rg.getChildAt(i);
@@ -481,8 +472,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         return getString(R.string.emotion_other);
     }
 
-    // ✅ Uses YOUR drawable names:
-    // emoji_afraid.png, emoji_angry.png, emoji_disgusted.png, emoji_happy.png, emoji_sad.png, emoji_surprised.png, emoji_unsure.png
     private int getEmotionIconRes(String key) {
         if ("afraid".equals(key)) return R.drawable.emoji_afraid;
         if ("angry".equals(key)) return R.drawable.emoji_angry;
@@ -491,7 +480,7 @@ public class EmotionHistoryActivity extends BaseActivity {
         if ("sad".equals(key)) return R.drawable.emoji_sad;
         if ("surprised".equals(key)) return R.drawable.emoji_surprised;
         if ("unsure".equals(key)) return R.drawable.emoji_unsure;
-        return 0; // other => no icon
+        return 0;
     }
 
     private String normalizeEmotionKey(String raw) {
@@ -506,9 +495,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         return "";
     }
 
-    // ==========================================================
-    // Apply filters
-    // ==========================================================
     private void applyFilters() {
         shown.clear();
 
@@ -532,9 +518,7 @@ public class EmotionHistoryActivity extends BaseActivity {
 
             if (minTs > 0L && it.tsMillis > 0L && it.tsMillis < minTs) continue;
 
-            if (sourceMode != SourceMode.ALL) {
-                if (it.source != sourceMode) continue;
-            }
+            if (sourceMode != SourceMode.ALL && it.source != sourceMode) continue;
 
             if (!isEmpty(selectedEmotionKey)) {
                 String itemKey = normalizeEmotionKey(it.emotion);
@@ -554,9 +538,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         adapter.notifyDataSetChanged();
     }
 
-    // ==========================================================
-    // Model
-    // ==========================================================
     private static class Item {
         final String timestamp;
         final String taskName;
@@ -578,9 +559,6 @@ public class EmotionHistoryActivity extends BaseActivity {
         }
     }
 
-    // ==========================================================
-    // Adapter (programmatic UI)
-    // ==========================================================
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.VH> {
 
         private final List<Item> list;
@@ -647,7 +625,6 @@ public class EmotionHistoryActivity extends BaseActivity {
             tvTimestamp.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             tvTimestamp.setTextColor(0xFF000000);
 
-            // Info row (horizontal): icon + emotion + intensity + source
             LinearLayout infoRow = new LinearLayout(parent.getContext());
             LinearLayout.LayoutParams infoLp = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -741,7 +718,9 @@ public class EmotionHistoryActivity extends BaseActivity {
         }
 
         @Override
-        public int getItemCount() { return list.size(); }
+        public int getItemCount() {
+            return list.size();
+        }
 
         class VH extends RecyclerView.ViewHolder {
             final TextView tvTask, tvTimestamp, tvEmotion, tvIntensity, tvSource, tvPrompts;
@@ -773,10 +752,8 @@ public class EmotionHistoryActivity extends BaseActivity {
         if (historyReg != null) historyReg.remove();
     }
 
-    // ==========================================================
-    // Helpers
-    // ==========================================================
     private String safe(String s) { return (s == null) ? "" : s.trim(); }
+
     private boolean isEmpty(String s) { return s == null || s.trim().isEmpty(); }
 
     private String firstNonEmpty(String... vals) {
