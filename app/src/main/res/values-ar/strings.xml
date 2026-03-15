@@ -51,10 +51,10 @@
     <string name="streak_days">🌱 أنت تتابع منذ %1$d أيام</string>
     <string name="streak_regular">🌱 أنت منتظم في التسجيل (%1$d أيام)</string>
 
-    <string name="home_question">كيف تشعر؟</string>
+    <string name="home_question">كيف حاسس؟</string>
 
     <string name="home_log_emotion_title">سجّل شعورك</string>
-    <string name="home_log_emotion_subtitle">كيف تشعر الآن؟</string>
+    <string name="home_log_emotion_subtitle">كيف حاسس إسا؟</string>
 
     <string name="home_my_tasks_title">مهامي</string>
     <string name="home_my_tasks_subtitle">شوف الأشياء اللي عليّ</string>
@@ -228,11 +228,55 @@
 
     <string name="history_filter_apply">تطبيق الفلاتر</string>
     <string name="history_filter_clear">مسح الفلاتر</string>
-    <!--t-->
+    <!--history detail screen-->
     <string name="emotion_detail_header_title">شعوري</string>
     <string name="emotion_detail_emotion_placeholder">مستغرب</string>
     <string name="emotion_detail_intensity_placeholder">قديش كان قوي: ٣ / ٥</string>
     <string name="emotion_detail_intensity_text">قديش كان قوي: %1$d / 5</string>
+    <!--child calming-tools flow-->
+    <string name="calming_tools_header_title">أدواتي</string>
+    <string name="calming_tools_intro">اختر شي يساعدك تحس أحسن</string>
+
+    <string name="calming_tools_breathing_title">تمرين تنفس</string>
+    <string name="calming_tools_breathing_subtitle">تنفّس بهدوء حتى تهدى</string>
+
+    <string name="calming_tools_music_title">موسيقى</string>
+    <string name="calming_tools_music_subtitle">اسمع أصوات هادئة</string>
+
+    <string name="calming_tools_visual_title">هدوء بصري</string>
+    <string name="calming_tools_visual_subtitle">تطلع على شي مريح وهادي</string>
+
+    <string name="calming_tools_help_title">اطلب مساعدة</string>
+    <string name="calming_tools_help_subtitle">احكي لحدا إني محتاج دعم</string>
+
+    <string name="calming_tools_encouragement">أنت عم تعمل شغل رائع.\nإنك تاخذ وقت حتى تهدي حالك مهارة حلوة جدًا.</string>
+    <string name="calming_tools_heart_cd">أيقونة قلب</string>
+
+    <!--calming tool-breathing exercise-->
+    <string name="breathing_header_title">تمرين تنفس</string>
+    <string name="breathing_note">يلا نعملها سوا 🤍</string>
+
+    <string name="breathing_instruction_in">خد نفس</string>
+    <string name="breathing_instruction_hold">حبّسه</string>
+    <string name="breathing_instruction_out">طلّع النفس</string>
+    <!--calming tool-visual stimming-->
+    <string name="visual_calm_header_title">هدوء بصري</string>
+    <string name="visual_calm_note">ممكن بس تتطلع شوي 🤍</string>
+    <string name="visual_calm_adjust">تعديل</string>
+    <!--visual stimming filter-->
+    <string name="visual_stim_settings_title">عدّل بالطريقة اللي بتريحك</string>
+    <string name="visual_stim_settings_helper">بتقدر تغيّر هذا بأي وقت 🤍</string>
+
+    <string name="visual_stim_settings_speed">السرعة</string>
+    <string name="visual_stim_settings_size">حجم الدائرة</string>
+
+    <string name="visual_stim_speed_slow">بطيء</string>
+    <string name="visual_stim_speed_normal">عادي</string>
+    <string name="visual_stim_speed_fast">سريع</string>
+
+    <string name="visual_stim_size_small">صغير</string>
+    <string name="visual_stim_size_medium">متوسط</string>
+    <string name="visual_stim_size_large">كبير</string>
 
 
     <!-- ================================================== -->

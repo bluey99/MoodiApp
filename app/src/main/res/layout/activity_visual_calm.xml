@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="14dp"
-            android:text="you can just watch for a bit 🤍"
+            android:text="@string/visual_calm_note"
             android:textSize="14sp"
             android:fontFamily="sans-serif"
             android:textColor="#6FAFB2"
@@ -39,15 +39,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="12dp"
-            android:text="Adjust"
+            android:text="@string/visual_calm_adjust"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:paddingHorizontal="18dp"
             android:paddingVertical="8dp"
             android:background="@drawable/pill_button_selector" />
 
-
-        <!-- The visual fills the rest of the screen -->
         <com.example.asdproject.view.views.VisualStimmingView
             android:id="@+id/visualStimmingView"
             android:layout_width="match_parent"

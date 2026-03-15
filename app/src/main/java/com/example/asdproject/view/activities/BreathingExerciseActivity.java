@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleHelper;
 import com.example.asdproject.util.SimpleAnimatorListener;
 
 public class BreathingExerciseActivity extends AppCompatActivity {
@@ -20,19 +21,19 @@ public class BreathingExerciseActivity extends AppCompatActivity {
     private View circle;
     private View glow;
     private TextView txtInstruction;
+    private TextView txtBreathNote;
 
     private AnimatorSet breathingLoop;
     private boolean shouldLoop = true;
-    private TextView txtBreathNote;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleHelper.applyLanguage(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_breathing_exercise);
 
-
         View header = findViewById(R.id.header);
+
         // hide filter icon on breathing screen
         View filter = header.findViewById(R.id.btnFilter);
         if (filter != null) {
@@ -42,8 +43,10 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         header.findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         TextView title = header.findViewById(R.id.txtHeaderTitle);
-        title.setText("Breathing Exercise");
+        title.setText(getString(R.string.breathing_header_title));
+
         txtBreathNote = findViewById(R.id.txtBreathNote);
+
         // fade companion note in once on screen open
         txtBreathNote.postDelayed(() ->
                         txtBreathNote.animate()
@@ -119,9 +122,8 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         glowIn.setInterpolator(interpolator);
 
         inhaleX.addListener(new SimpleAnimatorListener(() ->
-                updateInstructionText("breathe in")
+                updateInstructionText(getString(R.string.breathing_instruction_in))
         ));
-
 
         AnimatorSet inhale = new AnimatorSet();
         inhale.playTogether(inhaleX, inhaleY, glowIn);
@@ -130,9 +132,8 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         ValueAnimator holdIn = ValueAnimator.ofFloat(0f, 1f);
         holdIn.setDuration(holdDuration);
         holdIn.addListener(new SimpleAnimatorListener(() ->
-                updateInstructionText("hold")
+                updateInstructionText(getString(R.string.breathing_instruction_hold))
         ));
-
 
         // ---------- EXHALE ----------
         ObjectAnimator exhaleX =
@@ -151,9 +152,8 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         glowOut.setInterpolator(interpolator);
 
         exhaleX.addListener(new SimpleAnimatorListener(() ->
-                updateInstructionText("breathe out")
+                updateInstructionText(getString(R.string.breathing_instruction_out))
         ));
-
 
         AnimatorSet exhale = new AnimatorSet();
         exhale.playTogether(exhaleX, exhaleY, glowOut);
@@ -166,7 +166,6 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         AnimatorSet cycle = new AnimatorSet();
         cycle.playSequentially(inhale, holdIn, exhale, holdOut);
 
-        //  loop safely by creating a NEW cycle
         cycle.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -180,7 +179,7 @@ public class BreathingExerciseActivity extends AppCompatActivity {
         return cycle;
     }
 
-    //  gently fade instruction text instead of snapping
+    // gently fade instruction text instead of snapping
     private void updateInstructionText(String newText) {
         txtInstruction.animate()
                 .alpha(0f)
@@ -194,5 +193,4 @@ public class BreathingExerciseActivity extends AppCompatActivity {
                 })
                 .start();
     }
-
 }

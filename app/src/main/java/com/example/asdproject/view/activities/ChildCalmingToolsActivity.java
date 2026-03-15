@@ -8,9 +8,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleHelper;
 
 /**
- * CalmingToolsActivity
+ * ChildCalmingToolsActivity
  *
  * Entry screen for child calming tools.
  * Provides gentle, pressure-free options to help the child regulate.
@@ -22,23 +23,22 @@ public class ChildCalmingToolsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleHelper.applyLanguage(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calming_tools);
 
         View header = findViewById(R.id.header);
+
         // Hide filter button – not relevant for calming tools
         ImageView btnFilter = header.findViewById(R.id.btnFilter);
         if (btnFilter != null) {
             btnFilter.setVisibility(View.GONE);
         }
+
         TextView title = header.findViewById(R.id.txtHeaderTitle);
-        title.setText("My tools");
+        title.setText(getString(R.string.calming_tools_header_title));
 
         header.findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-
-
-        // Back button
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         // Tool cards
         findViewById(R.id.cardBreathing).setOnClickListener(v -> {
@@ -58,8 +58,6 @@ public class ChildCalmingToolsActivity extends AppCompatActivity {
                     )
             );
         });
-
-
 
         findViewById(R.id.cardMusic).setOnClickListener(v -> {
             // TODO: open MusicActivity

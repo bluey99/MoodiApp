@@ -4,13 +4,11 @@
     android:layout_height="wrap_content"
     android:padding="24dp">
 
-    <!-- Full-height alignment container -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="400dp">
 
-        <!-- Centered content -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -18,7 +16,6 @@
             android:gravity="center"
             android:layout_gravity="center">
 
-            <!-- Main yellow panel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,33 +24,30 @@
                 android:background="@drawable/child_panel_background"
                 android:gravity="center_horizontal">
 
-                <!-- Title -->
                 <TextView
                     android:id="@+id/txtTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Adjust what feels right"
+                    android:text="@string/visual_stim_settings_title"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
                     android:layout_marginBottom="6dp" />
 
-                <!-- Helper -->
                 <TextView
                     android:id="@+id/txtHelper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="You can change this anytime 🤍"
+                    android:text="@string/visual_stim_settings_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_marginBottom="24dp"
                     android:gravity="center" />
 
-                <!-- SPEED -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Speed"
+                    android:text="@string/visual_stim_settings_speed"
                     android:textSize="14sp"
                     android:textColor="#4A7F82"
                     android:layout_marginBottom="8dp" />
@@ -68,16 +62,15 @@
                     android:id="@+id/txtSpeedLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Normal"
+                    android:text="@string/visual_stim_speed_normal"
                     android:textSize="12sp"
                     android:textColor="#6FAFB2"
                     android:layout_marginBottom="20dp" />
 
-                <!-- SIZE -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Circle size"
+                    android:text="@string/visual_stim_settings_size"
                     android:textSize="14sp"
                     android:textColor="#4A7F82"
                     android:layout_marginBottom="8dp" />
@@ -92,7 +85,7 @@
                     android:id="@+id/txtSizeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Medium"
+                    android:text="@string/visual_stim_size_medium"
                     android:textSize="12sp"
                     android:textColor="#6FAFB2" />
 

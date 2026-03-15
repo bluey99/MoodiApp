@@ -7,7 +7,6 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <!-- Reused header -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_history_header" />
@@ -21,27 +20,23 @@
         android:clipChildren="false"
         android:clipToPadding="false">
 
-        <!-- Gentle companion note -->
         <TextView
             android:id="@+id/txtBreathNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="16dp"
-            android:text="let’s do this together 🤍"
+            android:text="@string/breathing_note"
             android:textSize="14sp"
             android:fontFamily="sans-serif"
             android:textColor="#6FAFB2"
             android:alpha="0" />
 
-
-        <!-- TOP SPACER -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <!-- Breathing visual -->
         <FrameLayout
             android:layout_width="300dp"
             android:layout_height="300dp"
@@ -66,24 +61,21 @@
                 android:background="@drawable/breathing_circle" />
         </FrameLayout>
 
-        <!-- Instruction -->
         <TextView
             android:id="@+id/txtBreathInstruction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="breathe in"
+            android:text="@string/breathing_instruction_in"
             android:textSize="18sp"
             android:fontFamily="sans-serif-medium"
             android:textColor="#4A7F82" />
 
-        <!-- BOTTOM SPACER -->
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
     </LinearLayout>
-
 
 </LinearLayout>

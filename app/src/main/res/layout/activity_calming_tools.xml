@@ -7,12 +7,10 @@
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-    <!-- HEADER (REUSED EXACTLY) -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_history_header" />
 
-    <!-- SCROLLABLE CONTENT (same structure as ChildHome) -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,7 +22,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- MAIN CONTENT PANEL -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,11 +29,10 @@
                 android:padding="20dp"
                 android:background="@drawable/child_panel_background">
 
-                <!-- INTRO TEXT -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Choose something to help you feel better"
+                    android:text="@string/calming_tools_intro"
                     android:textSize="16sp"
                     android:textColor="#085F63"
                     android:layout_marginBottom="20dp" />
@@ -52,19 +48,19 @@
                     android:background="@drawable/pill_button_selector">
 
                     <TextView
-                        android:text="Breathing Exercise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_breathing_title"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="#085F63"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textColor="#085F63" />
 
                     <TextView
-                        android:text="Breathe slowly to stay calm"
-                        android:textSize="14sp"
-                        android:textColor="#4C5257"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_breathing_subtitle"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257" />
                 </LinearLayout>
 
                 <!-- MUSIC TOOL -->
@@ -78,22 +74,22 @@
                     android:background="@drawable/pill_button_selector">
 
                     <TextView
-                        android:text="Music"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_music_title"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="#085F63"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textColor="#085F63" />
 
                     <TextView
-                        android:text="Listen to peaceful sounds"
-                        android:textSize="14sp"
-                        android:textColor="#4C5257"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_music_subtitle"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257" />
                 </LinearLayout>
 
-                <!-- VISUAL TOOL (NEW) -->
+                <!-- VISUAL TOOL -->
                 <LinearLayout
                     android:id="@+id/cardVisual"
                     android:layout_width="match_parent"
@@ -104,19 +100,19 @@
                     android:background="@drawable/pill_button_selector">
 
                     <TextView
-                        android:text="Visual Calm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_visual_title"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="#085F63"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textColor="#085F63" />
 
                     <TextView
-                        android:text="Look at something calming"
-                        android:textSize="14sp"
-                        android:textColor="#4C5257"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_visual_subtitle"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257" />
                 </LinearLayout>
 
                 <!-- ASK FOR HELP TOOL -->
@@ -129,22 +125,20 @@
                     android:background="@drawable/pill_button_selector">
 
                     <TextView
-                        android:text="Ask for help"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_help_title"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        android:textColor="#085F63"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:textColor="#085F63" />
 
                     <TextView
-                        android:text="Tell someone I need support"
-                        android:textSize="14sp"
-                        android:textColor="#4C5257"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="@string/calming_tools_help_subtitle"
+                        android:textSize="14sp"
+                        android:textColor="#4C5257" />
                 </LinearLayout>
-
-                <!-- ENCOURAGEMENT -->
 
             </LinearLayout>
 
@@ -160,16 +154,18 @@
                     android:layout_height="28dp"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_heart"
-                    android:tint="#68C4C5" />
+                    android:tint="#68C4C5"
+                    android:contentDescription="@string/calming_tools_heart_cd" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="You're doing great.\nTaking time to calm yourself is a wonderful skill."
+                    android:text="@string/calming_tools_encouragement"
                     android:textColor="#085F63"
                     android:textSize="14sp" />
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 

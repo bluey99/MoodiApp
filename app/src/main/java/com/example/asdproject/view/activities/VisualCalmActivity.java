@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.asdproject.R;
+import com.example.asdproject.util.LocaleHelper;
 import com.example.asdproject.view.fragments.VisualStimSettingsBottomSheetFragment;
 import com.example.asdproject.view.views.VisualStimmingView;
 
@@ -32,6 +33,7 @@ public class VisualCalmActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleHelper.applyLanguage(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visual_calm);
 
@@ -43,7 +45,7 @@ public class VisualCalmActivity extends AppCompatActivity
         header.findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
         TextView title = header.findViewById(R.id.txtHeaderTitle);
-        title.setText("Visual Calm");
+        title.setText(getString(R.string.visual_calm_header_title));
 
         txtVisualNote = findViewById(R.id.txtVisualNote);
         txtVisualNote.postDelayed(() ->
@@ -80,4 +82,3 @@ public class VisualCalmActivity extends AppCompatActivity
         stimView.setSizeMultiplier(size);
     }
 }
-

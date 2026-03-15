@@ -228,12 +228,55 @@
 
     <string name="history_filter_apply">Apply Filters</string>
     <string name="history_filter_clear">Clear Filters</string>
-
-    <!--t-->
+    <!--history detail screen-->
     <string name="emotion_detail_header_title">My Feeling</string>
-<string name="emotion_detail_emotion_placeholder">Surprised</string>
-<string name="emotion_detail_intensity_placeholder">How strong it felt: 3 / 5</string>
-<string name="emotion_detail_intensity_text">How strong it felt: %1$d / 5</string>
+    <string name="emotion_detail_emotion_placeholder">Surprised</string>
+    <string name="emotion_detail_intensity_placeholder">How strong it felt: 3 / 5</string>
+    <string name="emotion_detail_intensity_text">How strong it felt: %1$d / 5</string>
+    <!--child calming-tools flow-->
+    <string name="calming_tools_header_title">My Tools</string>
+    <string name="calming_tools_intro">Choose something to help you feel better</string>
+
+    <string name="calming_tools_breathing_title">Breathing Exercise</string>
+    <string name="calming_tools_breathing_subtitle">Breathe slowly to stay calm</string>
+
+    <string name="calming_tools_music_title">Music</string>
+    <string name="calming_tools_music_subtitle">Listen to peaceful sounds</string>
+
+    <string name="calming_tools_visual_title">Visual Calm</string>
+    <string name="calming_tools_visual_subtitle">Look at something calming</string>
+
+    <string name="calming_tools_help_title">Ask for help</string>
+    <string name="calming_tools_help_subtitle">Tell someone I need support</string>
+
+    <string name="calming_tools_encouragement">You’re doing great.\nTaking time to calm yourself is a wonderful skill.</string>
+    <string name="calming_tools_heart_cd">Heart icon</string>
+
+    <!--calming tool-breathing exercise-->
+    <string name="breathing_header_title">Breathing Exercise</string>
+    <string name="breathing_note">let’s do this together 🤍</string>
+
+    <string name="breathing_instruction_in">breathe in</string>
+    <string name="breathing_instruction_hold">hold</string>
+    <string name="breathing_instruction_out">breathe out</string>
+    <!--calming tool-visual stimming-->
+    <string name="visual_calm_header_title">Visual Calm</string>
+    <string name="visual_calm_note">you can just watch for a bit 🤍</string>
+    <string name="visual_calm_adjust">Adjust</string>
+    <!--visual stimming filter-->
+    <string name="visual_stim_settings_title">Adjust what feels right</string>
+    <string name="visual_stim_settings_helper">You can change this anytime 🤍</string>
+
+    <string name="visual_stim_settings_speed">Speed</string>
+    <string name="visual_stim_settings_size">Circle size</string>
+
+    <string name="visual_stim_speed_slow">Slow</string>
+    <string name="visual_stim_speed_normal">Normal</string>
+    <string name="visual_stim_speed_fast">Fast</string>
+
+    <string name="visual_stim_size_small">Small</string>
+    <string name="visual_stim_size_medium">Medium</string>
+    <string name="visual_stim_size_large">Large</string>
 
     <!-- ================================================== -->
     <!-- Parent screens -->

@@ -38,7 +38,7 @@ public class VisualStimSettingsBottomSheetFragment extends BottomSheetDialogFrag
     private float initialSpeed = 1f;
     private float initialSize  = 1f;
 
-    // bayan added here - factory with current values
+    // factory with current values
     public static VisualStimSettingsBottomSheetFragment newInstance(
             float speed,
             float size
@@ -89,20 +89,19 @@ public class VisualStimSettingsBottomSheetFragment extends BottomSheetDialogFrag
         sliderSpeed.setProgress(reverseMap(initialSpeed, 0.7f, 1.5f));
         sliderSize.setProgress(reverseMap(initialSize, 0.85f, 1.25f));
 
+        // initialize label text from current values
+        updateSpeedLabel(sliderSpeed.getProgress(), txtSpeedLabel);
+        updateSizeLabel(sliderSize.getProgress(), txtSizeLabel);
+
         // SPEED
         sliderSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                // SPEED mapping – tighter and perceptual-friendly
                 float speed = map(progress, 0.7f, 1.5f);
-
 
                 if (listener != null) listener.onSpeedChanged(speed);
 
-                txtSpeedLabel.setText(
-                        progress < 33 ? "Slow" :
-                                progress < 66 ? "Normal" : "Fast"
-                );
+                updateSpeedLabel(progress, txtSpeedLabel);
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -117,10 +116,7 @@ public class VisualStimSettingsBottomSheetFragment extends BottomSheetDialogFrag
 
                 if (listener != null) listener.onSizeChanged(size);
 
-                txtSizeLabel.setText(
-                        progress < 33 ? "Small" :
-                                progress < 66 ? "Medium" : "Large"
-                );
+                updateSizeLabel(progress, txtSizeLabel);
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -128,13 +124,32 @@ public class VisualStimSettingsBottomSheetFragment extends BottomSheetDialogFrag
         });
     }
 
+    private void updateSpeedLabel(int progress, TextView label) {
+        if (progress < 33) {
+            label.setText(getString(R.string.visual_stim_speed_slow));
+        } else if (progress < 66) {
+            label.setText(getString(R.string.visual_stim_speed_normal));
+        } else {
+            label.setText(getString(R.string.visual_stim_speed_fast));
+        }
+    }
+
+    private void updateSizeLabel(int progress, TextView label) {
+        if (progress < 33) {
+            label.setText(getString(R.string.visual_stim_size_small));
+        } else if (progress < 66) {
+            label.setText(getString(R.string.visual_stim_size_medium));
+        } else {
+            label.setText(getString(R.string.visual_stim_size_large));
+        }
+    }
+
     private float map(int progress, float min, float max) {
         return min + (progress / 100f) * (max - min);
     }
 
-    // bayan added here - map float back to slider position
+    // map float back to slider position
     private int reverseMap(float value, float min, float max) {
         return Math.round(((value - min) / (max - min)) * 100f);
     }
 }
-
