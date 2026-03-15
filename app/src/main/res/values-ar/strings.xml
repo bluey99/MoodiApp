@@ -196,6 +196,45 @@
     <string name="task_details_prompt_placeholder">نص المهمة يظهر هنا</string>
 
     <string name="task_details_log_now">سجّل الآن</string>
+
+    <!--child history flow-->
+    <string name="history_header_title">سجلّي</string>
+    <string name="history_empty">ما في سجل لحد الآن</string>
+
+    <string name="history_section_this_week">هذا الأسبوع</string>
+    <string name="history_section_earlier">أقدم</string>
+
+    <string name="history_time_7d">٧ أيام</string>
+    <string name="history_time_30d">٣٠ يوم</string>
+    <string name="history_emotion_icon_cd">أيقونة الشعور</string>
+    <string name="history_emotion_name_placeholder">سعيد</string>
+    <string name="history_task_badge">من مهمة</string>
+    <string name="history_intensity_placeholder">قوة الشعور: 4</string>
+    <string name="history_intensity_text">قوة الشعور: %1$d</string>
+    <string name="history_task_prompt_placeholder">سؤال المهمة</string>
+    <string name="history_task_prompt_prefix">المهمة: </string>
+    <string name="history_note_placeholder">ما في ملاحظة</string>
+    <!--history filter-->
+    <string name="history_filter_title">فلترة السجل</string>
+    <string name="history_filter_emotion">الشعور</string>
+    <string name="history_filter_intensity">قوة الشعور</string>
+    <string name="history_filter_time">الوقت</string>
+
+    <string name="history_filter_any_intensity">أي درجة</string>
+
+    <string name="history_filter_all_time">كل الوقت</string>
+    <string name="history_filter_last_7_days">آخر ٧ أيام</string>
+    <string name="history_filter_last_30_days">آخر ٣٠ يوم</string>
+
+    <string name="history_filter_apply">تطبيق الفلاتر</string>
+    <string name="history_filter_clear">مسح الفلاتر</string>
+    <!--t-->
+    <string name="emotion_detail_header_title">شعوري</string>
+    <string name="emotion_detail_emotion_placeholder">مستغرب</string>
+    <string name="emotion_detail_intensity_placeholder">قديش كان قوي: ٣ / ٥</string>
+    <string name="emotion_detail_intensity_text">قديش كان قوي: %1$d / 5</string>
+
+
     <!-- ================================================== -->
     <!-- Parent screens -->
     <!-- ================================================== -->

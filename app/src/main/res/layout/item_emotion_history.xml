@@ -8,53 +8,48 @@
     android:gravity="center_vertical"
     android:layout_marginBottom="16dp">
 
-    <!-- Emotion Icon -->
     <ImageView
         android:id="@+id/imgEmotion"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         android:src="@drawable/ic_child"
-        android:contentDescription="Emotion icon" />
+        android:contentDescription="@string/history_emotion_icon_cd" />
 
-    <!-- Text content -->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <!-- Feeling title -->
         <TextView
             android:id="@+id/txtEmotionName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Happy"
+            android:text="@string/history_emotion_name_placeholder"
             android:textColor="#085F63"
             android:textStyle="bold"
             android:textSize="18sp" />
+
         <TextView
             android:id="@+id/txtTaskBadge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="From task"
+            android:text="@string/history_task_badge"
             android:textSize="12sp"
             android:textColor="#6A8F8E"
             android:visibility="gone"
-            android:layout_marginTop="2dp"/>
+            android:layout_marginTop="2dp" />
 
-
-        <!-- Intensity Label -->
         <TextView
             android:id="@+id/txtIntensity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Intensity: 4"
+            android:text="@string/history_intensity_placeholder"
             android:textColor="#085F63"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
 
-        <!-- MINI INTENSITY GLASS -->
         <FrameLayout
             android:id="@+id/historyGlassContainer"
             android:layout_width="28dp"
@@ -73,26 +68,24 @@
 
         <TextView
             android:id="@+id/txtTaskPrompt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Task prompt"
+            android:text="@string/history_task_prompt_placeholder"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:textStyle="bold"
             android:visibility="gone"
-            android:layout_marginTop="6dp"/>
+            android:layout_marginTop="6dp" />
 
-        <!-- Note preview -->
         <TextView
             android:id="@+id/txtNotePreview"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="No note"
+            android:text="@string/history_note_placeholder"
             android:textColor="#4C5257"
             android:textSize="14sp"
             android:layout_marginTop="4dp" />
 
-        <!-- Timestamp -->
         <TextView
             android:id="@+id/txtTimestamp"
             android:layout_width="wrap_content"

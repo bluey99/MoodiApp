@@ -197,6 +197,44 @@
 
     <string name="task_details_log_now">Log Now</string>
 
+    <!--child history flow-->
+    <string name="history_header_title">My History</string>
+    <string name="history_empty">No history yet</string>
+
+    <string name="history_section_this_week">This Week</string>
+    <string name="history_section_earlier">Earlier</string>
+
+    <string name="history_time_7d">7d</string>
+    <string name="history_time_30d">30d</string>
+    <string name="history_emotion_icon_cd">Emotion icon</string>
+    <string name="history_emotion_name_placeholder">Happy</string>
+    <string name="history_task_badge">From task</string>
+    <string name="history_intensity_placeholder">Intensity: 4</string>
+    <string name="history_intensity_text">Intensity: %1$d</string>
+    <string name="history_task_prompt_placeholder">Task prompt</string>
+    <string name="history_task_prompt_prefix">Task: </string>
+    <string name="history_note_placeholder">No note</string>
+    <!--history filter-->
+    <string name="history_filter_title">Filter History</string>
+    <string name="history_filter_emotion">Emotion</string>
+    <string name="history_filter_intensity">Intensity</string>
+    <string name="history_filter_time">Time</string>
+
+    <string name="history_filter_any_intensity">Any intensity</string>
+
+    <string name="history_filter_all_time">All time</string>
+    <string name="history_filter_last_7_days">Last 7 days</string>
+    <string name="history_filter_last_30_days">Last 30 days</string>
+
+    <string name="history_filter_apply">Apply Filters</string>
+    <string name="history_filter_clear">Clear Filters</string>
+
+    <!--t-->
+    <string name="emotion_detail_header_title">My Feeling</string>
+<string name="emotion_detail_emotion_placeholder">Surprised</string>
+<string name="emotion_detail_intensity_placeholder">How strong it felt: 3 / 5</string>
+<string name="emotion_detail_intensity_text">How strong it felt: %1$d / 5</string>
+
     <!-- ================================================== -->
     <!-- Parent screens -->
     <!-- ================================================== -->

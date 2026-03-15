@@ -23,19 +23,9 @@ import com.google.android.material.chip.ChipGroup;
  * Supported filters:
  * - Emotion (single selection via chips)
  * - Intensity (single exact value, 1–5, via glass selector)
- *
- * Design decisions:
- * - Intensity is a single value (NOT a range)
- * - Intensity = -1 means "Any intensity"
- * - This fragment ONLY handles UI + user input
- * - Actual filtering logic is handled in ChildHistoryActivity
  */
 public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment {
 
-    /**
-     * Listener implemented by the hosting Activity.
-     * Used to pass the selected filter values back.
-     */
     public interface Listener {
         void onFiltersApplied(
                 String emotion,
@@ -43,8 +33,6 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
                 String timeFilter
         );
     }
-
-    /* ===================== STATE ===================== */
 
     private Listener listener;
 
@@ -58,15 +46,12 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
      */
     private int selectedIntensity = -1;
 
-    //Selected time filter
+    // Selected time filter
     private String selectedTime = "ALL";
-
 
     public void setListener(Listener listener) {
         this.listener = listener;
     }
-
-    /* ===================== LIFECYCLE ===================== */
 
     @Nullable
     @Override
@@ -81,7 +66,6 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
 
         ChipGroup chipGroupEmotions = view.findViewById(R.id.chipGroupEmotions);
 
-        // Play feedback animation on chip tap
         for (int i = 0; i < chipGroupEmotions.getChildCount(); i++) {
             View chip = chipGroupEmotions.getChildAt(i);
             chip.setOnClickListener(v ->
@@ -90,7 +74,6 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             );
         }
 
-        // Handle emotion selection
         chipGroupEmotions.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds == null || checkedIds.isEmpty()) {
                 selectedEmotion = null;
@@ -105,6 +88,7 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
 
             selectedEmotion = chip.getTag().toString().trim().toUpperCase();
         });
+
         /* ===================== TIME FILTER ===================== */
 
         ChipGroup chipGroupTime = view.findViewById(R.id.chipGroupTime);
@@ -124,18 +108,15 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             });
         }
 
-
-        /* ===================== INTENSITY (GLASS SELECTOR) ===================== */
+        /* ===================== INTENSITY ===================== */
 
         View fillView = view.findViewById(R.id.fillView);
         View fillContainer = view.findViewById(R.id.fillContainer);
         TextView txtIntensityLabel = view.findViewById(R.id.txtIntensityLabel);
 
-        // Default state: no intensity filter
         selectedIntensity = -1;
-        txtIntensityLabel.setText("Any intensity");
+        txtIntensityLabel.setText(getString(R.string.history_filter_any_intensity));
 
-        // Each tap cycles intensity: Any → 1 → 2 → 3 → 4 → 5 → 1 ...
         fillContainer.setOnClickListener(v -> {
 
             if (selectedIntensity == -1) {
@@ -155,7 +136,6 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
         Button btnApply = view.findViewById(R.id.btnApplyFilters);
         Button btnClear = view.findViewById(R.id.btnClearFilters);
 
-        // Apply filters and notify activity
         btnApply.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onFiltersApplied(
@@ -163,12 +143,10 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
                         selectedIntensity,
                         selectedTime
                 );
-
             }
             dismiss();
         });
 
-        // Clear all filters and reset state
         btnClear.setOnClickListener(v -> {
             chipGroupEmotions.clearCheck();
             chipGroupTime.clearCheck();
@@ -177,9 +155,8 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             selectedIntensity = -1;
             selectedTime = "ALL";
 
-            txtIntensityLabel.setText("Any intensity");
+            txtIntensityLabel.setText(getString(R.string.history_filter_any_intensity));
 
-            // 🔹 RESET GLASS VISUALLY (IMPORTANT)
             ViewGroup.LayoutParams params = fillView.getLayoutParams();
             params.height = (int) (
                     40 * fillView.getResources().getDisplayMetrics().density
@@ -197,19 +174,9 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             dismiss();
         });
 
-
         return view;
     }
 
-    /* ===================== UI HELPERS ===================== */
-
-    /**
-     * Updates the glass UI to visually represent the selected intensity.
-     *
-     * @param level     intensity level (1–5)
-     * @param fillView  the colored fill inside the glass
-     * @param label     descriptive text shown below the glass
-     */
     private void updateGlassUI(
             int level,
             View fillView,
@@ -223,31 +190,30 @@ public class HistoryFilterBottomSheetFragment extends BottomSheetDialogFragment 
             case 1:
                 heightDp = 40;
                 backgroundRes = R.drawable.intensity_fill_level1;
-                text = "Just a little";
+                text = getString(R.string.step4_intensity_level_1);
                 break;
             case 2:
                 heightDp = 80;
                 backgroundRes = R.drawable.intensity_fill_level2;
-                text = "A little bit";
+                text = getString(R.string.step4_intensity_level_2);
                 break;
             case 3:
                 heightDp = 120;
                 backgroundRes = R.drawable.intensity_fill_level3;
-                text = "Medium";
+                text = getString(R.string.step4_intensity_level_3);
                 break;
             case 4:
                 heightDp = 160;
                 backgroundRes = R.drawable.intensity_fill_level4;
-                text = "A lot";
+                text = getString(R.string.step4_intensity_level_4);
                 break;
             default:
                 heightDp = 200;
                 backgroundRes = R.drawable.intensity_fill_level5;
-                text = "Very much";
+                text = getString(R.string.step4_intensity_level_5);
                 break;
         }
 
-        // Convert dp → px and update fill height
         ViewGroup.LayoutParams params = fillView.getLayoutParams();
         params.height = (int) (
                 heightDp * fillView.getResources().getDisplayMetrics().density

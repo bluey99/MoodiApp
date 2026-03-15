@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -5,12 +6,10 @@
     android:layout_height="match_parent"
     android:background="#E3F4F4">
 
-    <!-- HEADER -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_history_header" />
 
-    <!-- LOG COUNT -->
     <LinearLayout
         android:id="@+id/filterPill"
         android:layout_height="wrap_content"
@@ -24,10 +23,8 @@
         android:elevation="3dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
-
         android:background="@drawable/pill_button_selector">
 
-        <!-- LEFT: filters -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,8 +32,7 @@
             android:gravity="center_vertical"
             android:alpha="0.85">
 
-
-        <ImageView
+            <ImageView
                 android:id="@+id/imgPillEmotion"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -68,12 +64,10 @@
                 android:visibility="gone"/>
         </LinearLayout>
 
-        <!-- DIVIDER SPACE -->
         <View
             android:layout_width="16dp"
             android:layout_height="1dp"/>
 
-        <!-- DIVIDER : -->
         <TextView
             android:id="@+id/txtPillDivider"
             android:layout_width="wrap_content"
@@ -85,8 +79,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="4dp"/>
 
-
-        <!-- RIGHT: count -->
         <TextView
             android:id="@+id/txtPillCount"
             android:layout_width="wrap_content"
@@ -97,14 +89,10 @@
 
     </LinearLayout>
 
-
-
-    <!-- LOADING (INCLUDED) -->
     <include
         android:id="@+id/loadingContainer"
         layout="@layout/view_loading_state" />
 
-    <!-- EMPTY STATE -->
     <LinearLayout
         android:id="@+id/emptyContainer"
         android:visibility="gone"
@@ -113,10 +101,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp">
-        ...
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_empty"
+            android:textSize="16sp"
+            android:textColor="#4F8F90"
+            android:padding="8dp" />
     </LinearLayout>
 
-    <!-- LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"

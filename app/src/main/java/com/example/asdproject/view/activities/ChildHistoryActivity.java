@@ -13,10 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.asdproject.R;
 import com.example.asdproject.controller.FirebaseManager;
 import com.example.asdproject.model.EmotionLog;
+import com.example.asdproject.util.LocaleHelper;
 import com.example.asdproject.view.adapters.HistoryAdapter;
 import com.example.asdproject.view.fragments.HistoryFilterBottomSheetFragment;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +32,6 @@ import java.util.List;
  *
  * Data is fetched once from Firestore and cached locally.
  * All filters are applied locally to ensure fast UI updates.
- *
- * UX note:
- * Filter feedback is shown ONLY in the log count pill
- * (e.g. "Filtered feelings (Surprised): 1")
  */
 public class ChildHistoryActivity extends AppCompatActivity {
 
@@ -78,6 +76,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        LocaleHelper.applyLanguage(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_child_history);
 
@@ -98,7 +97,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
         View header = findViewById(R.id.header);
 
         TextView headerTitle = header.findViewById(R.id.txtHeaderTitle);
-        headerTitle.setText("My History");
+        headerTitle.setText(getString(R.string.history_header_title));
 
         header.findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         btnFilter = header.findViewById(R.id.btnFilter);
@@ -146,7 +145,6 @@ public class ChildHistoryActivity extends AppCompatActivity {
             loadHistoryWithFilters();
         });
 
-
         sheet.show(getSupportFragmentManager(), "HistoryFilter");
     }
 
@@ -169,7 +167,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         FirebaseFirestore db = FirebaseManager.getDb();
 
-// 1) Resolve Firestore document ID using REAL childID
+        // 1) Resolve Firestore document ID using REAL childID
         db.collection("children")
                 .whereEqualTo("childID", childId)
                 .limit(1)
@@ -204,7 +202,6 @@ public class ChildHistoryActivity extends AppCompatActivity {
                             .addOnFailureListener(e -> showEmptyState());
                 })
                 .addOnFailureListener(e -> showEmptyState());
-
     }
 
     /* ===================== FILTERING ===================== */
@@ -226,7 +223,6 @@ public class ChildHistoryActivity extends AppCompatActivity {
             if (selectedIntensity != -1 && log.getIntensity() != selectedIntensity) {
                 continue;
             }
-
 
             if (selectedTime != TimeFilter.ALL && log.getTimestamp() != null) {
                 long days =
@@ -284,12 +280,12 @@ public class ChildHistoryActivity extends AppCompatActivity {
         }
 
         if (!thisWeek.isEmpty()) {
-            grouped.add("This Week");
+            grouped.add(getString(R.string.history_section_this_week));
             grouped.addAll(thisWeek);
         }
 
         if (!older.isEmpty()) {
-            grouped.add("Earlier");
+            grouped.add(getString(R.string.history_section_earlier));
             grouped.addAll(older);
         }
 
@@ -309,23 +305,14 @@ public class ChildHistoryActivity extends AppCompatActivity {
         recyclerHistory.setVisibility(View.VISIBLE);
     }
 
-
     private void showEmptyState() {
         loadingContainer.setVisibility(View.GONE);
         recyclerHistory.setVisibility(View.GONE);
         emptyContainer.setVisibility(View.VISIBLE);
-
-        // IMPORTANT:
-        // txtLogCount visibility is controlled by updateHistoryUI()
     }
-
 
     /* ===================== UTIL ===================== */
 
-    private String capitalize(String text) {
-        if (text == null || text.isEmpty()) return text;
-        return text.substring(0, 1).toUpperCase() + text.substring(1);
-    }
     private int emotionToDrawable(String emotion) {
         if (emotion == null) return 0;
 
@@ -372,12 +359,11 @@ public class ChildHistoryActivity extends AppCompatActivity {
                 imgPillEmotion.setVisibility(View.VISIBLE);
                 imgPillEmotion.setImageResource(icon);
             } else {
-                imgPillEmotion.setVisibility(View.GONE); // OTHER → text only
+                imgPillEmotion.setVisibility(View.GONE);
             }
         } else {
             imgPillEmotion.setVisibility(View.GONE);
         }
-
 
         if (selectedIntensity != -1) {
             miniGlass.setVisibility(View.VISIBLE);
@@ -388,10 +374,10 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         if (selectedTime == TimeFilter.LAST_7_DAYS) {
             txtPillTime.setVisibility(View.VISIBLE);
-            txtPillTime.setText("7d");
+            txtPillTime.setText(getString(R.string.history_time_7d));
         } else if (selectedTime == TimeFilter.LAST_30_DAYS) {
             txtPillTime.setVisibility(View.VISIBLE);
-            txtPillTime.setText("30d");
+            txtPillTime.setText(getString(R.string.history_time_30d));
         } else {
             txtPillTime.setVisibility(View.GONE);
         }
@@ -399,11 +385,9 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
     private void updateMiniGlass(int intensity) {
 
-        // miniGlass is 36dp tall → get actual pixel height
         int glassHeightPx = miniGlass.getHeight();
 
         if (glassHeightPx == 0) {
-            // Layout not measured yet → retry after layout pass
             miniGlass.post(() -> updateMiniGlass(intensity));
             return;
         }
@@ -415,7 +399,7 @@ public class ChildHistoryActivity extends AppCompatActivity {
             case 2: percent = 0.4f; break;
             case 3: percent = 0.6f; break;
             case 4: percent = 0.8f; break;
-            default: percent = 1.0f; break; // level 5 = FULL
+            default: percent = 1.0f; break;
         }
 
         int fillHeight = Math.round(glassHeightPx * percent);
@@ -424,7 +408,6 @@ public class ChildHistoryActivity extends AppCompatActivity {
         params.height = fillHeight;
         miniGlassFill.setLayoutParams(params);
 
-        // Keep your existing color logic
         int bgRes;
         switch (intensity) {
             case 1: bgRes = R.drawable.intensity_fill_level1; break;
@@ -436,8 +419,4 @@ public class ChildHistoryActivity extends AppCompatActivity {
 
         miniGlassFill.setBackgroundResource(bgRes);
     }
-
-
-
-
 }

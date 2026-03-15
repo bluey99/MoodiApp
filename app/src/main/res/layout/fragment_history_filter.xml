@@ -7,21 +7,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Filter History"
+        android:text="@string/history_filter_title"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#085F63"
         android:layout_marginBottom="20dp"/>
 
-    <!-- Emotion section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Emotion"
+        android:text="@string/history_filter_emotion"
         android:textStyle="bold"
         android:textColor="#4C5257"
         android:layout_marginBottom="8dp"/>
@@ -36,7 +34,6 @@
         app:chipSpacingHorizontal="8dp"
         app:chipSpacingVertical="8dp">
 
-        <!-- Happy -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipHappy"
             android:layout_width="wrap_content"
@@ -45,11 +42,11 @@
             android:minHeight="72dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Happy"
+            android:text="@string/step3_feeling_happy"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="HAPPY"
-            android:contentDescription="Happy"
+            android:contentDescription="@string/step3_feeling_happy"
             app:chipIcon="@drawable/emoji_happy"
             app:chipIconSize="36dp"
             app:chipIconVisible="true"
@@ -59,7 +56,6 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Sad -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipSad"
             android:layout_width="wrap_content"
@@ -68,11 +64,11 @@
             android:minHeight="72dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Sad"
+            android:text="@string/step3_feeling_sad"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="SAD"
-            android:contentDescription="Sad"
+            android:contentDescription="@string/step3_feeling_sad"
             app:chipIcon="@drawable/emoji_sad"
             app:chipIconSize="36dp"
             app:chipIconVisible="true"
@@ -82,7 +78,6 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Angry -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAngry"
             android:layout_width="wrap_content"
@@ -91,11 +86,11 @@
             android:minHeight="72dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Angry"
+            android:text="@string/step3_feeling_angry"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="ANGRY"
-            android:contentDescription="Angry"
+            android:contentDescription="@string/step3_feeling_angry"
             app:chipIcon="@drawable/emoji_angry"
             app:chipIconSize="36dp"
             app:chipIconVisible="true"
@@ -105,7 +100,6 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Afraid -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAfraid"
             android:layout_width="wrap_content"
@@ -114,11 +108,11 @@
             android:minHeight="72dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Afraid"
+            android:text="@string/step3_feeling_afraid"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="AFRAID"
-            android:contentDescription="Afraid"
+            android:contentDescription="@string/step3_feeling_afraid"
             app:chipIcon="@drawable/emoji_afraid"
             app:chipIconSize="36dp"
             app:chipIconVisible="true"
@@ -128,7 +122,6 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Surprised -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipSurprised"
             android:layout_width="wrap_content"
@@ -137,11 +130,11 @@
             android:minHeight="72dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="10dp"
-            android:text="Surprised"
+            android:text="@string/step3_feeling_surprised"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="SURPRISED"
-            android:contentDescription="Surprised"
+            android:contentDescription="@string/step3_feeling_surprised"
             app:chipIcon="@drawable/emoji_surprised"
             app:chipIconSize="36dp"
             app:chipIconVisible="true"
@@ -150,14 +143,14 @@
             app:chipBackgroundColor="@color/chip_emotion_selector"
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
-        <!-- Disgust -->
+
         <com.google.android.material.chip.Chip
             android:id="@+id/chipDisgust"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="110dp"
             android:minHeight="72dp"
-            android:text="Disgust"
+            android:text="@string/step3_feeling_disgust"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="DISGUST"
@@ -168,14 +161,13 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Unsure -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipUnsure"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="110dp"
             android:minHeight="72dp"
-            android:text="Unsure"
+            android:text="@string/step3_feeling_unsure"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="UNSURE"
@@ -186,14 +178,13 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-        <!-- Other -->
         <com.google.android.material.chip.Chip
             android:id="@+id/chipOther"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="110dp"
             android:minHeight="72dp"
-            android:text="Other"
+            android:text="@string/step3_feeling_other"
             android:textSize="14sp"
             android:textColor="#085F63"
             android:tag="OTHER"
@@ -201,15 +192,12 @@
             app:checkedIconVisible="false"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
-
-
     </com.google.android.material.chip.ChipGroup>
 
-    <!-- Intensity placeholder -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Intensity"
+        android:text="@string/history_filter_intensity"
         android:textStyle="bold"
         android:textColor="#4C5257"
         android:layout_marginBottom="6dp"/>
@@ -247,17 +235,15 @@
         android:id="@+id/txtIntensityLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tap to set intensity"
+        android:text="@string/history_filter_any_intensity"
         android:textColor="#7A7A7A"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"/>
 
-
-    <!-- Time placeholder -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="@string/history_filter_time"
         android:textStyle="bold"
         android:textColor="#4C5257"
         android:layout_marginBottom="6dp"/>
@@ -275,7 +261,7 @@
             android:id="@+id/chipAllTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="All time"
+            android:text="@string/history_filter_all_time"
             android:tag="ALL"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
@@ -283,7 +269,7 @@
             android:id="@+id/chipLast7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last 7 days"
+            android:text="@string/history_filter_last_7_days"
             android:tag="LAST_7_DAYS"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
@@ -291,26 +277,23 @@
             android:id="@+id/chipLast30"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last 30 days"
+            android:text="@string/history_filter_last_30_days"
             android:tag="LAST_30_DAYS"
             style="@style/Widget.MaterialComponents.Chip.Choice"/>
 
     </com.google.android.material.chip.ChipGroup>
 
-
-    <!-- Apply -->
     <Button
         android:id="@+id/btnApplyFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Apply Filters"/>
+        android:text="@string/history_filter_apply"/>
 
-    <!-- Clear -->
     <Button
         android:id="@+id/btnClearFilters"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Clear Filters"
+        android:text="@string/history_filter_clear"
         android:layout_marginTop="8dp"/>
 
 </LinearLayout>

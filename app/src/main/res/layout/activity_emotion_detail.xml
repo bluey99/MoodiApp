@@ -6,18 +6,15 @@
     android:orientation="vertical"
     android:background="#E3F4F4">
 
-    <!-- REUSABLE HEADER (same height as ChildHistory) -->
     <include
         android:id="@+id/header"
         layout="@layout/view_child_header" />
 
-    <!-- SCROLLABLE CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <!-- CONTENT CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,28 +23,26 @@
             android:layout_marginTop="24dp"
             android:gravity="center_horizontal">
 
-            <!-- Emotion title -->
             <TextView
                 android:id="@+id/txtDetailEmotionName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Surprised"
+                android:text="@string/emotion_detail_emotion_placeholder"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="#4C5257"
                 android:padding="16dp"
                 android:background="@drawable/card_child_button"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp" />
 
-            <!-- Emotion icon -->
             <ImageView
                 android:id="@+id/imgDetailEmotion"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:src="@drawable/ic_child"
-                android:layout_marginBottom="12dp"/>
+                android:layout_marginBottom="12dp"
+                android:contentDescription="@string/history_emotion_icon_cd" />
 
-            <!-- Intensity glass -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -73,13 +68,12 @@
                     android:id="@+id/txtDetailIntensity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="How strong it felt: 3 / 5"
+                    android:text="@string/emotion_detail_intensity_placeholder"
                     android:textSize="16sp"
                     android:textColor="#085F63"
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
 
-            <!-- Timestamp -->
             <TextView
                 android:id="@+id/txtDetailTimestamp"
                 android:layout_width="wrap_content"
@@ -88,7 +82,6 @@
                 android:textColor="#4C5257"
                 android:layout_marginTop="12dp"/>
 
-            <!-- Divider -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -96,7 +89,6 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="12dp"/>
 
-            <!-- Note -->
             <TextView
                 android:id="@+id/txtDetailNote"
                 android:layout_width="match_parent"
