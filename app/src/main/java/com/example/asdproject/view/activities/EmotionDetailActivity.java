@@ -115,22 +115,22 @@ public class EmotionDetailActivity extends AppCompatActivity {
     private String getLocalizedFeelingLabel(Feeling feeling) {
         switch (feeling) {
             case HAPPY:
-                return getString(R.string.step3_feeling_happy);
+                return getString(R.string.step4_feeling_happy);
             case SAD:
-                return getString(R.string.step3_feeling_sad);
+                return getString(R.string.step4_feeling_sad);
             case ANGRY:
-                return getString(R.string.step3_feeling_angry);
+                return getString(R.string.step4_feeling_angry);
             case SURPRISED:
-                return getString(R.string.step3_feeling_surprised);
+                return getString(R.string.step4_feeling_surprised);
             case AFRAID:
-                return getString(R.string.step3_feeling_afraid);
+                return getString(R.string.step4_feeling_afraid);
             case DISGUST:
-                return getString(R.string.step3_feeling_disgust);
+                return getString(R.string.step4_feeling_disgust);
             case UNSURE:
-                return getString(R.string.step3_feeling_unsure);
+                return getString(R.string.step4_feeling_unsure);
             case OTHER:
             default:
-                return getString(R.string.step3_feeling_other);
+                return getString(R.string.step4_feeling_other);
         }
     }
 

@@ -31,7 +31,7 @@ import java.io.ByteArrayOutputStream;
  * Step 5 – Optional photo capture.
  * Child may take a picture, or skip directly.
  */
-public class Step5PhotoFragment extends Fragment {
+public class Step6PhotoFragment extends Fragment {
 
     public interface Listener {
         void onPhotoCaptured(String photoUrl); // may be null
@@ -77,8 +77,8 @@ public class Step5PhotoFragment extends Fragment {
             );
 
     /** Factory */
-    public static Step5PhotoFragment newInstance(String childId) {
-        Step5PhotoFragment fragment = new Step5PhotoFragment();
+    public static Step6PhotoFragment newInstance(String childId) {
+        Step6PhotoFragment fragment = new Step6PhotoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_CHILD_ID, childId);
         fragment.setArguments(args);
@@ -111,7 +111,7 @@ public class Step5PhotoFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_step5_photo, container, false);
+        View view = inflater.inflate(R.layout.fragment_step6_photo, container, false);
 
         cameraCard = view.findViewById(R.id.cameraCard);
         imgPreview = view.findViewById(R.id.imgPhotoPreview);

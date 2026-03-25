@@ -33,16 +33,19 @@ public class EmotionLog implements java.io.Serializable {
     /** Step 2: Location selected by the child. */
     private String location;
 
-    /** Step 3: Feeling label (e.g., Happy, Angry, Scared). */
+    /** Step 3: Who was with the child during the event. */
+    private String companion;
+
+    /** Step 4: Feeling label (e.g., Happy, Angry, Scared). */
     private String feeling;
 
-    /** Step 4: Intensity level on a 1–5 scale. */
+    /** Step 5: Intensity level on a 1–5 scale. */
     private int intensity;
 
-    /** Step 5: Download URL of the uploaded photo (or null if skipped). */
+    /** Step 6: Download URL of the uploaded photo (or null if skipped). */
     private String photoUri;
 
-    /** Step 6: Optional note text written by the child. */
+    /** Step 7: Optional note text written by the child. */
     private String note;
 
     /** Automatically assigned when saving the log. */
@@ -66,6 +69,7 @@ public class EmotionLog implements java.io.Serializable {
         this.childId = childId;
         this.situation = draft.situation;
         this.location = draft.location;
+        this.companion = draft.companion;
         this.feeling = draft.feeling;
         this.intensity = draft.intensity;
         this.photoUri = draft.photoUri;
@@ -89,6 +93,9 @@ public class EmotionLog implements java.io.Serializable {
 
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
+
+    public String getCompanion() { return companion; }
+    public void setCompanion(String companion) { this.companion = companion; }
 
     public String getFeeling() { return feeling; }
     public void setFeeling(String feeling) { this.feeling = feeling; }

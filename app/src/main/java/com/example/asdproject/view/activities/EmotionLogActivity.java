@@ -14,16 +14,18 @@ import com.example.asdproject.controller.EmotionRepository;
 import com.example.asdproject.model.EmotionLog;
 import com.example.asdproject.model.EmotionLogDraft;
 import com.example.asdproject.model.Feeling;
+import com.example.asdproject.view.fragments.CustomCompanionBottomSheet;
 import com.example.asdproject.view.fragments.CustomLocationBottomSheet;
 import com.example.asdproject.view.fragments.CustomSituationBottomSheet;
 import com.example.asdproject.view.fragments.Step1SituationFragment;
 import com.example.asdproject.view.fragments.Step2WhereFragment;
-import com.example.asdproject.view.fragments.Step3FeelingFragment;
+import com.example.asdproject.view.fragments.Step4FeelingFragment;
 import com.example.asdproject.view.fragments.CustomFeelingBottomSheet;
-import com.example.asdproject.view.fragments.Step4IntensityFragment;
-import com.example.asdproject.view.fragments.Step5PhotoFragment;
-import com.example.asdproject.view.fragments.Step6NoteFragment;
-import com.example.asdproject.view.fragments.Step7ReviewFragment;
+import com.example.asdproject.view.fragments.Step3WhoWithFragment;
+import com.example.asdproject.view.fragments.Step5IntensityFragment;
+import com.example.asdproject.view.fragments.Step6PhotoFragment;
+import com.example.asdproject.view.fragments.Step7NoteFragment;
+import com.example.asdproject.view.fragments.Step8ReviewFragment;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -35,24 +37,27 @@ import java.util.Map;
  * Steps:
  *  1 → Situation
  *  2 → Location
- *  3 → Feeling
- *  4 → Intensity
- *  5 → Photo (optional)
- *  6 → Notes (optional) / Discussion Prompts (for tasks)
- *  7 → Review + Save
+ *  3 → Companion
+ *  4 → Feeling
+ *  5 → Intensity
+ *  6 → Photo (optional)
+ *  7 → Notes (optional) / Discussion Prompts (for tasks)
+ *  8 → Review + Save
  */
 public class EmotionLogActivity extends AppCompatActivity
         implements Step1SituationFragment.Listener,
         CustomSituationBottomSheet.Listener,
         Step2WhereFragment.Listener,
         CustomLocationBottomSheet.Listener,
-        Step3FeelingFragment.Listener,
+        Step3WhoWithFragment.Listener,
+        CustomCompanionBottomSheet.Listener,
+        Step4FeelingFragment.Listener,
         CustomFeelingBottomSheet.Listener,
-        Step4IntensityFragment.Listener,
-        Step5PhotoFragment.Listener,
-        Step6NoteFragment.Listener,
+        Step5IntensityFragment.Listener,
+        Step6PhotoFragment.Listener,
+        Step7NoteFragment.Listener,
         Step6ForTasksActivity.Listener,
-        Step7ReviewFragment.Listener {
+        Step8ReviewFragment.Listener {
 
     /** Temporary container for all user inputs */
     private final EmotionLogDraft draft = new EmotionLogDraft();
@@ -63,14 +68,14 @@ public class EmotionLogActivity extends AppCompatActivity
     /** childID FIELD value (not necessarily Firestore doc id) */
     private String childId;
 
-    /** Current step index (1–7) */
+    /** Current step index (1–8) */
     private int currentStep = 1;
 
     /** Shared UI elements */
     private TextView txtStepIndicator;
     private ImageView btnBack;
     private View stepProgressFill;
-    private static final int TOTAL_STEPS = 7;
+    private static final int TOTAL_STEPS = 8;
     private View headerView;
 
     private int startStep = 1;
@@ -171,19 +176,30 @@ public class EmotionLogActivity extends AppCompatActivity
         switch (step) {
             case 1: replaceFragment(new Step1SituationFragment()); break;
             case 2: replaceFragment(new Step2WhereFragment()); break;
-            case 3: replaceFragment(new Step3FeelingFragment()); break;
-            case 4: replaceFragment(new Step4IntensityFragment()); break;
-            case 5: replaceFragment(Step5PhotoFragment.newInstance(childId)); break;
 
-            case 6:
+// Step 3 (who was with you)
+            case 3: replaceFragment(new Step3WhoWithFragment()); break;
+
+// feeling becomes step 4
+            case 4: replaceFragment(new Step4FeelingFragment()); break;
+
+// intensity becomes step 5
+            case 5: replaceFragment(new Step5IntensityFragment()); break;
+
+// photo becomes step 6
+            case 6: replaceFragment(Step6PhotoFragment.newInstance(childId)); break;
+
+// note / task becomes step 7
+            case 7:
                 if ("TASK".equals(logType)) {
                     replaceFragment(Step6ForTasksActivity.newInstance(discussionPrompts));
                 } else {
-                    replaceFragment(new Step6NoteFragment());
+                    replaceFragment(new Step7NoteFragment());
                 }
                 break;
 
-            case 7: replaceFragment(Step7ReviewFragment.newInstance(draft)); break;
+// review becomes step 8
+            case 8: replaceFragment(Step8ReviewFragment.newInstance(draft)); break;
         }
     }
 
@@ -235,9 +251,27 @@ public class EmotionLogActivity extends AppCompatActivity
     }
 
     @Override
+    public void onCompanionSelected(String companion) {
+        draft.companion = companion;
+        showStep(4);
+    }
+
+    @Override
+    public void onRequestCustomCompanion() {
+        new CustomCompanionBottomSheet()
+                .show(getSupportFragmentManager(), "CustomCompanionBottomSheet");
+    }
+
+    @Override
+    public void onCustomCompanionEntered(String companion) {
+        draft.companion = companion.trim();
+        showStep(4);
+    }
+
+    @Override
     public void onFeelingSelected(Feeling feeling) {
         draft.feeling = feeling.name();
-        showStep(4);
+        showStep(5);
     }
 
     @Override
@@ -251,31 +285,31 @@ public class EmotionLogActivity extends AppCompatActivity
     public void onCustomFeelingEntered(String feelingText) {
         // save typed feeling directly (same pattern as situation/location)
         draft.feeling = feelingText.trim();
-        showStep(4);
+        showStep(5);
     }
 
     @Override
     public void onIntensitySelected(int intensityLevel) {
         draft.intensity = intensityLevel;
-        showStep(5);
+        showStep(6);
     }
 
     @Override
     public void onPhotoCaptured(String photoUrl) {
         draft.photoUri = photoUrl;
-        showStep(6);
+        showStep(7);
     }
 
     @Override
     public void onNoteEntered(String note) {
         draft.note = note;
-        showStep(7);
+        showStep(8);
     }
 
     @Override
     public void onTaskAnswerEntered(String answer) {
         draft.note = answer;
-        showStep(7);
+        showStep(8);
     }
 
     @Override
@@ -399,4 +433,8 @@ public class EmotionLogActivity extends AppCompatActivity
                     // don't crash if notification fails
                 });
     }
+
+
+
+
 }

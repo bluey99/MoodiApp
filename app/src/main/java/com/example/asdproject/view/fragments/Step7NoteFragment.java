@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.asdproject.R;
 
-public class Step6NoteFragment extends Fragment {
+public class Step7NoteFragment extends Fragment {
 
     public interface Listener {
         void onNoteEntered(String note);
@@ -33,7 +33,7 @@ public class Step6NoteFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Parent must implement Step6NoteFragment.Listener");
+            throw new IllegalStateException("Parent must implement Step7NoteFragment.Listener");
         }
     }
 
@@ -43,7 +43,7 @@ public class Step6NoteFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_step6_note, container, false);
+        View view = inflater.inflate(R.layout.fragment_step7_note, container, false);
 
         editNote = view.findViewById(R.id.editNote);
         btnContinue = view.findViewById(R.id.btnNoteContinue);

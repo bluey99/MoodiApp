@@ -26,7 +26,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/step3_feeling_question"
+                    android:text="@string/step4_feeling_question"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#085F63"
@@ -36,7 +36,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/step3_feeling_helper"
+                    android:text="@string/step4_feeling_helper"
                     android:textSize="14sp"
                     android:textColor="#51787C"
                     android:layout_gravity="center"
@@ -69,7 +69,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_happy"
+                            android:text="@string/step4_feeling_happy"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -94,7 +94,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_sad"
+                            android:text="@string/step4_feeling_sad"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -119,7 +119,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_angry"
+                            android:text="@string/step4_feeling_angry"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -144,7 +144,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_surprised"
+                            android:text="@string/step4_feeling_surprised"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -169,7 +169,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_afraid"
+                            android:text="@string/step4_feeling_afraid"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -194,7 +194,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_disgust"
+                            android:text="@string/step4_feeling_disgust"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -219,7 +219,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_unsure"
+                            android:text="@string/step4_feeling_unsure"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -244,7 +244,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/step3_feeling_other"
+                            android:text="@string/step4_feeling_other"
                             android:textColor="#085F63"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />

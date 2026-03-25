@@ -24,7 +24,7 @@ import com.example.asdproject.util.IntensityHelper;
  * Allows the child to select intensity (1–5) by tapping a vertical “glass”.
  * The fill height smoothly animates, and labels/colors change per level.
  */
-public class Step4IntensityFragment extends Fragment {
+public class Step5IntensityFragment extends Fragment {
 
     /** Callback to the hosting Activity. */
     public interface Listener {
@@ -56,7 +56,7 @@ public class Step4IntensityFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Parent must implement Step4IntensityFragment.Listener");
+            throw new IllegalStateException("Parent must implement Step5IntensityFragment.Listener");
         }
     }
 
@@ -66,7 +66,7 @@ public class Step4IntensityFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_step4_intensity, container, false);
+        View view = inflater.inflate(R.layout.fragment_step5_intensity, container, false);
 
         // Link UI
         fillContainer = view.findViewById(R.id.fillContainer);

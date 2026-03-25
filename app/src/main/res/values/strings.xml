@@ -13,7 +13,6 @@
 
     <string name="action_cancel">Cancel</string>
     <string name="action_continue">Continue</string>
-    <string name="action_back">Back</string>
     <string name="cd_back">Back</string>
 
     <string name="ok">OK</string>
@@ -26,6 +25,8 @@
     <!-- ================================================== -->
     <!-- Child screens -->
     <!-- ================================================== -->
+
+
 
     <!-- child home / top bar -->
     <string name="cd_notifications">Notifications</string>
@@ -97,24 +98,36 @@
     <string name="custom_location_counter_placeholder">0 / 25</string>
     <string name="custom_location_counter">%1$d / %2$d</string>
 
-    <!-- step 3 -->
-    <string name="step3_feeling_question">How did you feel?</string>
-    <string name="step3_feeling_helper">Choose</string>
+    <!--step 3-->
+    <string name="step3_who_with_option_1">I was alone</string>
+    <string name="step3_who_with_option_2">With my family</string>
+    <string name="step3_who_with_option_3">With friends</string>
+    <string name="step3_who_with_option_4">Someone else</string>
+    <string name="custom_companion_title">Who was with you?</string>
+    <string name="custom_companion_helper">Tell us who was with you</string>
+    <string name="custom_companion_hint">Type here...</string>
+    <string name="custom_companion_counter">%1$d/%2$d</string>
+    <string name="custom_companion_counter_placeholder">0/25</string>
+    <string name="review_label_companion">Who was with me</string>
 
-    <string name="step3_feeling_happy">Happy</string>
-    <string name="step3_feeling_sad">Sad</string>
-    <string name="step3_feeling_angry">Angry</string>
-    <string name="step3_feeling_surprised">Surprised</string>
-    <string name="step3_feeling_afraid">Afraid</string>
-    <string name="step3_feeling_disgust">Disgust</string>
-    <string name="step3_feeling_unsure">Unsure</string>
-    <string name="step3_feeling_other">Other</string>
+    <!-- step 4 -->
+    <string name="step4_feeling_question">How did you feel?</string>
+    <string name="step4_feeling_helper">Choose</string>
+
+    <string name="step4_feeling_happy">Happy</string>
+    <string name="step4_feeling_sad">Sad</string>
+    <string name="step4_feeling_angry">Angry</string>
+    <string name="step4_feeling_surprised">Surprised</string>
+    <string name="step4_feeling_afraid">Afraid</string>
+    <string name="step4_feeling_disgust">Disgust</string>
+    <string name="step4_feeling_unsure">Unsure</string>
+    <string name="step4_feeling_other">Other</string>
 
     <string name="custom_feeling_title">What feeling was it?</string>
     <string name="custom_feeling_helper">You can write it in your own words 😊</string>
     <string name="custom_feeling_hint">Type a feeling...</string>
 
-    <!-- step 4 -->
+    <!-- step 5 -->
     <string name="step4_intensity_question">How big was the feeling?</string>
     <string name="step4_intensity_helper">Tap to fill the glass with your feeling</string>
 
@@ -124,7 +137,7 @@
     <string name="step4_intensity_level_4">A lot</string>
     <string name="step4_intensity_level_5">Very much</string>
 
-    <!-- step 5 -->
+    <!-- step 6 -->
     <string name="step5_photo_question">Can we see your feeling?</string>
     <string name="step5_photo_helper">Take a photo of your face right now</string>
     <string name="step5_photo_tap">Tap to take a photo</string>
@@ -135,17 +148,17 @@
     <string name="error_missing_child_information">Missing child information</string>
     <string name="action_skip">Skip</string>
 
-    <!-- step 6 -->
+    <!-- step 7 -->
     <string name="step6_note_title">Do you want to tell us more?</string>
     <string name="step6_note_helper">Write anything you want to remember about this moment</string>
     <string name="step6_note_hint">Write here...</string>
 
-    <!--step 6 - for task-->
+    <!--step 7 - for task-->
     <string name="step6_tasks_title">Discussion Questions</string>
     <string name="step6_tasks_subtitle">Answer each question below</string>
     <string name="step6_tasks_answer_hint">Write your answer here...</string>
 
-    <!-- step 7 -->
+    <!-- step 8 -->
     <string name="review_title">Let’s review your feeling</string>
     <string name="review_submit">Submit</string>
 

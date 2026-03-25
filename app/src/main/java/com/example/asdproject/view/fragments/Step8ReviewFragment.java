@@ -22,7 +22,7 @@ import com.example.asdproject.model.EmotionLogDraft;
  * Step 7 – Review screen
  * Shows a complete summary plus a visual intensity glass.
  */
-public class Step7ReviewFragment extends Fragment {
+public class Step8ReviewFragment extends Fragment {
 
     public interface Listener {
         void onReviewConfirmed();
@@ -32,8 +32,8 @@ public class Step7ReviewFragment extends Fragment {
     private static final String ARG_DRAFT = "draft";
     private EmotionLogDraft draft;
 
-    public static Step7ReviewFragment newInstance(EmotionLogDraft draft) {
-        Step7ReviewFragment f = new Step7ReviewFragment();
+    public static Step8ReviewFragment newInstance(EmotionLogDraft draft) {
+        Step8ReviewFragment f = new Step8ReviewFragment();
         Bundle b = new Bundle();
         b.putSerializable(ARG_DRAFT, draft);
         f.setArguments(b);
@@ -44,7 +44,7 @@ public class Step7ReviewFragment extends Fragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (!(context instanceof Listener)) {
-            throw new IllegalStateException("Parent must implement Step7ReviewFragment.Listener");
+            throw new IllegalStateException("Parent must implement Step8ReviewFragment.Listener");
         }
         listener = (Listener) context;
     }
@@ -55,7 +55,7 @@ public class Step7ReviewFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_step7_review, container, false);
+        View v = inflater.inflate(R.layout.fragment_step8_review, container, false);
 
         draft = (EmotionLogDraft) getArguments().getSerializable(ARG_DRAFT);
 
@@ -64,6 +64,7 @@ public class Step7ReviewFragment extends Fragment {
 
         addSummaryRow(summary, getString(R.string.review_label_situation), draft.situation);
         addSummaryRow(summary, getString(R.string.review_label_location), draft.location);
+        addSummaryRow(summary, getString(R.string.review_label_companion), draft.companion);
         addSummaryRow(summary, getString(R.string.review_label_feeling), draft.feeling);
         if (draft.note != null && !draft.note.trim().isEmpty()) {
             addSummaryRow(summary, getString(R.string.review_label_note), draft.note);

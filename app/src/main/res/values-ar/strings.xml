@@ -13,7 +13,6 @@
 
     <string name="action_cancel">إلغاء</string>
     <string name="action_continue">متابعة</string>
-    <string name="action_back">رجوع</string>
     <string name="cd_back">رجوع</string>
 
     <string name="ok">حسنًا</string>
@@ -97,24 +96,40 @@
     <string name="custom_location_counter_placeholder">0 / 25</string>
     <string name="custom_location_counter">%1$d / %2$d</string>
 
-    <!-- step 3 -->
-    <string name="step3_feeling_question">كيف كان شعورك؟</string>
-    <string name="step3_feeling_helper">اختار</string>
 
-    <string name="step3_feeling_happy">مبسوط</string>
-    <string name="step3_feeling_sad">حزين</string>
-    <string name="step3_feeling_angry">عصبي</string>
-    <string name="step3_feeling_surprised">متفاجئ</string>
-    <string name="step3_feeling_afraid">خايف</string>
-    <string name="step3_feeling_disgust">مشمئز</string>
-    <string name="step3_feeling_unsure">مش متأكد</string>
-    <string name="step3_feeling_other">غيره</string>
+    <!-- step 3 -->
+    <string name="step3_who_with_option_1">كنت لحالي</string>
+    <string name="step3_who_with_option_2">مع أهلي</string>
+    <string name="step3_who_with_option_3">مع صحابي</string>
+    <string name="step3_who_with_option_4">مع حدا تاني</string>
+
+    <string name="custom_companion_title">مين كان معك؟</string>
+    <string name="custom_companion_helper">احكيلنا مين كان معك</string>
+    <string name="custom_companion_hint">اكتب هون...</string>
+
+    <string name="custom_companion_counter">%1$d/%2$d</string>
+    <string name="custom_companion_counter_placeholder">0/25</string>
+
+    <string name="review_label_companion">مين كان معي</string>
+
+    <!-- step 4 -->
+    <string name="step4_feeling_question">كيف كان شعورك؟</string>
+    <string name="step4_feeling_helper">اختار</string>
+
+    <string name="step4_feeling_happy">مبسوط</string>
+    <string name="step4_feeling_sad">حزين</string>
+    <string name="step4_feeling_angry">عصبي</string>
+    <string name="step4_feeling_surprised">متفاجئ</string>
+    <string name="step4_feeling_afraid">خايف</string>
+    <string name="step4_feeling_disgust">مشمئز</string>
+    <string name="step4_feeling_unsure">مش متأكد</string>
+    <string name="step4_feeling_other">غيره</string>
 
     <string name="custom_feeling_title">شو كان شعورك؟</string>
     <string name="custom_feeling_helper">اكتبه بطريقتك 😊</string>
     <string name="custom_feeling_hint">اكتب الشعور...</string>
 
-    <!-- step 4 -->
+    <!-- step 5 -->
     <string name="step4_intensity_question">قديش كان الشعور قوي؟</string>
     <string name="step4_intensity_helper">اضغط عشان تعبي الكاسة بقد شعورك</string>
 
@@ -124,7 +139,7 @@
     <string name="step4_intensity_level_4">كثير</string>
     <string name="step4_intensity_level_5">كثير جدًا</string>
 
-    <!-- step 5 -->
+    <!-- step 6 -->
     <string name="step5_photo_question">ممكن نشوف شعورك؟</string>
     <string name="step5_photo_helper">صوّر وجهك</string>
     <string name="step5_photo_tap">اضغط لتصوير صورة</string>
@@ -135,17 +150,17 @@
     <string name="error_missing_child_information">معلومات الطفل غير موجودة</string>
     <string name="action_skip">تخطي</string>
 
-    <!-- step 6 -->
+    <!-- step 7 -->
     <string name="step6_note_title">بدك تحكيلنا أكثر؟</string>
     <string name="step6_note_helper">اكتب أي شيء بتحبو عن هاللحظة</string>
     <string name="step6_note_hint">اكتب هون...</string>
 
-    <!--step 6 - for task-->
+    <!--step 7 - for task-->
     <string name="step6_tasks_title">أسئلة للنقاش</string>
     <string name="step6_tasks_subtitle">جاوب على كل سؤال تحت</string>
     <string name="step6_tasks_answer_hint">اكتب جوابك هون...</string>
 
-    <!-- step 7 -->
+    <!-- step 8 -->
     <string name="review_title">يلا نراجع شعورك</string>
     <string name="review_submit">حفظ</string>
 

@@ -259,22 +259,22 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private String getLocalizedFeelingLabel(Context context, Feeling feeling) {
         switch (feeling) {
             case HAPPY:
-                return context.getString(R.string.step3_feeling_happy);
+                return context.getString(R.string.step4_feeling_happy);
             case SAD:
-                return context.getString(R.string.step3_feeling_sad);
+                return context.getString(R.string.step4_feeling_sad);
             case ANGRY:
-                return context.getString(R.string.step3_feeling_angry);
+                return context.getString(R.string.step4_feeling_angry);
             case SURPRISED:
-                return context.getString(R.string.step3_feeling_surprised);
+                return context.getString(R.string.step4_feeling_surprised);
             case AFRAID:
-                return context.getString(R.string.step3_feeling_afraid);
+                return context.getString(R.string.step4_feeling_afraid);
             case DISGUST:
-                return context.getString(R.string.step3_feeling_disgust);
+                return context.getString(R.string.step4_feeling_disgust);
             case UNSURE:
-                return context.getString(R.string.step3_feeling_unsure);
+                return context.getString(R.string.step4_feeling_unsure);
             case OTHER:
             default:
-                return context.getString(R.string.step3_feeling_other);
+                return context.getString(R.string.step4_feeling_other);
         }
     }
 }

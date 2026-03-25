@@ -15,17 +15,19 @@ public class EmotionLogDraft implements java.io.Serializable {
     public String location;
 
     // Step 3
-    public String feeling;   // renamed from "emotion"
+    public String companion; // stores who was with the child during the event
 
     // Step 4
-    public int intensity;    // 1–5 scale
+    public String feeling;   // renamed from "emotion"
 
     // Step 5
-    public String photoUri;
+    public int intensity;    // 1–5 scale
 
     // Step 6
-    public String note;      // Optional free-text note
+    public String photoUri;
 
+    // Step 7
+    public String note;      // Optional free-text note
     // Future extension
     // public String voiceUri;
 }

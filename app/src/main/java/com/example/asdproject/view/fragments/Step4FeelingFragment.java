@@ -21,7 +21,7 @@ import com.example.asdproject.util.FeelingUiMapper;
  * The child selects which feeling they experienced.
  * Uses ChildButtonHelper for unified animation + selected-state visuals.
  */
-public class Step3FeelingFragment extends Fragment {
+public class Step4FeelingFragment extends Fragment {
 
     /** Callback interface implemented by the hosting Activity. */
     public interface Listener {
@@ -39,7 +39,7 @@ public class Step3FeelingFragment extends Fragment {
         if (context instanceof Listener) {
             listener = (Listener) context;
         } else {
-            throw new IllegalStateException("Parent must implement Step3FeelingFragment.Listener");
+            throw new IllegalStateException("Parent must implement Step4FeelingFragment.Listener");
         }
     }
 
@@ -49,7 +49,7 @@ public class Step3FeelingFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_step3_feelings, container, false);
+        View view = inflater.inflate(R.layout.fragment_step4_feelings, container, false);
 
         View btnHappy     = view.findViewById(R.id.btnHappy);
         View btnSad       = view.findViewById(R.id.btnSad);
