@@ -161,6 +161,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         intent.putExtra("timestamp", log.getTimestamp() != null
                 ? log.getTimestamp().toDate().getTime()
                 : 0L);
+
+        // pass full log details to the detail screen
+        intent.putExtra("situation", log.getSituation());
+        intent.putExtra("location", log.getLocation());
+        intent.putExtra("companion", log.getCompanion());
+
         context.startActivity(intent);
     }
 

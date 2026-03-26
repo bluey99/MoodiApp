@@ -31,6 +31,9 @@ public class EmotionDetailActivity extends AppCompatActivity {
     private TextView txtIntensity;
     private TextView txtTimestamp;
     private TextView txtNote;
+    private TextView txtSituation;
+    private TextView txtLocation;
+    private TextView txtCompanion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,9 @@ public class EmotionDetailActivity extends AppCompatActivity {
         txtIntensity = findViewById(R.id.txtDetailIntensity);
         txtTimestamp = findViewById(R.id.txtDetailTimestamp);
         txtNote = findViewById(R.id.txtDetailNote);
+        txtSituation = findViewById(R.id.txtDetailSituation);
+        txtLocation = findViewById(R.id.txtDetailLocation);
+        txtCompanion = findViewById(R.id.txtDetailCompanion);
 
         // Extract emotion entry data
         String emotionStr = getIntent().getStringExtra("feeling");
@@ -69,6 +75,9 @@ public class EmotionDetailActivity extends AppCompatActivity {
         int intensity = getIntent().getIntExtra("intensity", 0);
         String note = getIntent().getStringExtra("note");
         long timestamp = getIntent().getLongExtra("timestamp", 0);
+        String situation = getIntent().getStringExtra("situation");
+        String location = getIntent().getStringExtra("location");
+        String companion = getIntent().getStringExtra("companion");
 
         // --- INTENSITY GLASS ---
         View glass = findViewById(R.id.detailGlassContainer);
@@ -97,6 +106,39 @@ public class EmotionDetailActivity extends AppCompatActivity {
             txtTimestamp.setText(sdf.format(new Date(timestamp)));
         } else {
             txtTimestamp.setVisibility(View.GONE);
+        }
+
+        // show situation if available
+        if (situation == null || situation.trim().isEmpty()) {
+            txtSituation.setVisibility(View.GONE);
+        } else {
+            applyContentDirection(
+                    txtSituation,
+                    getString(R.string.emotion_detail_situation_text, situation)
+            );
+            txtSituation.setVisibility(View.VISIBLE);
+        }
+
+        // show location if available
+        if (location == null || location.trim().isEmpty()) {
+            txtLocation.setVisibility(View.GONE);
+        } else {
+            applyContentDirection(
+                    txtLocation,
+                    getString(R.string.emotion_detail_location_text, location)
+            );
+            txtLocation.setVisibility(View.VISIBLE);
+        }
+
+        //  show companion if available
+        if (companion == null || companion.trim().isEmpty()) {
+            txtCompanion.setVisibility(View.GONE);
+        } else {
+            applyContentDirection(
+                    txtCompanion,
+                    getString(R.string.emotion_detail_companion_text, companion)
+            );
+            txtCompanion.setVisibility(View.VISIBLE);
         }
 
         // Show note if exists
@@ -134,7 +176,7 @@ public class EmotionDetailActivity extends AppCompatActivity {
         }
     }
 
-    // bayan added here - display content according to the language it was written in
+    // display content according to the language it was written in
     private void applyContentDirection(TextView textView, String text) {
         if (text == null) {
             textView.setText("");
@@ -156,7 +198,7 @@ public class EmotionDetailActivity extends AppCompatActivity {
         }
     }
 
-    // bayan added here - detect direction from the first strong character
+    // detect direction from the first strong character
     private boolean isRtlText(String text) {
         if (text == null) return false;
 

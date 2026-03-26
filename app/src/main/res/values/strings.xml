@@ -246,6 +246,9 @@
     <string name="emotion_detail_emotion_placeholder">Surprised</string>
     <string name="emotion_detail_intensity_placeholder">How strong it felt: 3 / 5</string>
     <string name="emotion_detail_intensity_text">How strong it felt: %1$d / 5</string>
+    <string name="emotion_detail_situation_text">Situation: %1$s</string>
+    <string name="emotion_detail_location_text">Location: %1$s</string>
+    <string name="emotion_detail_companion_text">With: %1$s</string>
     <!--child calming-tools flow-->
     <string name="calming_tools_header_title">My Tools</string>
     <string name="calming_tools_intro">Choose something to help you feel better</string>

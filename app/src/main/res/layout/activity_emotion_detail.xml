@@ -81,6 +81,35 @@
                 android:textSize="16sp"
                 android:textColor="#4C5257"
                 android:layout_marginTop="12dp"/>
+            <TextView
+                android:id="@+id/txtDetailSituation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#4C5257"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/txtDetailLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#4C5257"
+                android:layout_marginTop="6dp"
+                android:visibility="gone"
+                android:padding="8dp" />
+
+            <TextView
+                android:id="@+id/txtDetailCompanion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#4C5257"
+                android:layout_marginTop="6dp"
+                android:visibility="gone"
+                android:padding="8dp" />
 
             <View
                 android:layout_width="match_parent"

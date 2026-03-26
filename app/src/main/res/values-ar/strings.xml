@@ -248,6 +248,9 @@
     <string name="emotion_detail_emotion_placeholder">مستغرب</string>
     <string name="emotion_detail_intensity_placeholder">قديش كان قوي: ٣ / ٥</string>
     <string name="emotion_detail_intensity_text">قديش كان قوي: %1$d / 5</string>
+    <string name="emotion_detail_situation_text">الموقف: %1$s</string>
+    <string name="emotion_detail_location_text">المكان: %1$s</string>
+    <string name="emotion_detail_companion_text">كنت مع: %1$s</string>
     <!--child calming-tools flow-->
     <string name="calming_tools_header_title">أدواتي</string>
     <string name="calming_tools_intro">اختر شي يساعدك تحس أحسن</string>
