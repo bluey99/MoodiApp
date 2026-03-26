@@ -1,11 +1,13 @@
 package com.example.asdproject.model;
 
+import com.google.firebase.firestore.PropertyName;
+
 public class Task {
 
     private String id;                 // Firestore document ID
     private String taskName;           // "Neighborhood Walk"
 
-    private String childId;            // "507293184"
+    private String childId;            // mapped from Firestore "childID"
 
     private String creatorId;          // "parent2" or therapist id
     private String creatorType;        // "PARENT" or "THERAPIST"
@@ -14,15 +16,15 @@ public class Task {
     private String discussionPrompts;  // "How are u?"
 
     private String status;             // "ASSIGNED" or "COMPLETED"
-    private boolean seenByChild; // false by default
-
-
+    private boolean seenByChild;       // false by default
 
     // Empty constructor required by Firestore
     public Task() { }
 
     public String getId() { return id; }
     public String getTaskName() { return taskName; }
+
+    @PropertyName("childID")
     public String getChildId() { return childId; }
 
     public String getCreatorId() { return creatorId; }
@@ -33,8 +35,14 @@ public class Task {
 
     public String getStatus() { return status; }
 
+    public boolean isSeenByChild() {
+        return seenByChild;
+    }
+
     public void setId(String id) { this.id = id; }
     public void setTaskName(String taskName) { this.taskName = taskName; }
+
+    @PropertyName("childID")
     public void setChildId(String childId) { this.childId = childId; }
 
     public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
@@ -44,12 +52,8 @@ public class Task {
     public void setDiscussionPrompts(String discussionPrompts) { this.discussionPrompts = discussionPrompts; }
 
     public void setStatus(String status) { this.status = status; }
-    public boolean isSeenByChild() {
-        return seenByChild;
-    }
 
     public void setSeenByChild(boolean seenByChild) {
         this.seenByChild = seenByChild;
     }
-
 }
